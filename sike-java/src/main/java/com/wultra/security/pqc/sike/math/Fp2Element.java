@@ -131,7 +131,7 @@ public class Fp2Element {
     }
 
     /**
-     * Multiple two elements.
+     * Multiply two elements.
      * @param y Other element.
      * @return Calculation result.
      */

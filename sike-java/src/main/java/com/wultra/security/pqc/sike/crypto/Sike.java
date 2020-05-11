@@ -68,8 +68,8 @@ public class Sike {
 
     /**
      * SIKE decapsulation.
-     * @param sk3 Bob's secret key.
-     * @param pk3 Bob's private key.
+     * @param sk3 Bob's private key.
+     * @param pk3 Bob's public key.
      * @param encrypted Encrypted message received from Alice.
      * @return Shared secret.
      */

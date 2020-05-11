@@ -8,5 +8,5 @@ For the most recent documentation, please visit [SIKE Java Documentation](./docs
 
 ## License
 
-PowerAuth Server is licensed using GNU AGPLv3 license. Please consult us at hello@wultra.com for the software use.
+SIKE Java is licensed using GNU AGPLv3 license. Please consult us at hello@wultra.com for the software use.
 

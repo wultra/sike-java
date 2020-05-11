@@ -43,7 +43,7 @@
 
     <issueManagement>
         <system>Github</system>
-        <url>https://github.com/wultra/powerauth-java/issues</url>
+        <url>https://github.com/wultra/sike-java/issues</url>
     </issueManagement>
 
     <modules>

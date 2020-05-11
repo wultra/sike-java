@@ -50,7 +50,7 @@ public class Sike {
 
     /**
      * SIKE encapsulation.
-     * @param pk3 Alice's public key.
+     * @param pk3 Bob's public key.
      * @return Encapsulation result with shared secret and encrypted message.
      */
     public EncapsulationResult encapsulate(PublicKey pk3) {

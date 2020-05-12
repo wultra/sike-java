@@ -96,7 +96,7 @@ public class Sike {
         byte[] m = decrypt(sk3, encrypted);
         byte[] r = generateR(m, pk3.getEncoded());
         BigInteger key = new BigInteger(r).mod(sikeParam.getPrime());
-        PrivateKey rKey = new SidhPrivateKey(sikeParam, key, false);
+        PrivateKey rKey = new SidhPrivateKey(sikeParam, key);
         PublicKey c0Key = keyGenerator.derivePublicKey(Party.ALICE, rKey);
         byte[] k;
         if (c0Key.equals(encrypted.getC0())) {
@@ -139,7 +139,7 @@ public class Sike {
         } else {
             // Convert value r into private key
             BigInteger key = new BigInteger(r).mod(sikeParam.getPrime());
-            sk2 = new SidhPrivateKey(sikeParam, key,  false);
+            sk2 = new SidhPrivateKey(sikeParam, key);
         }
         PublicKey c0 = keyGenerator.derivePublicKey(Party.ALICE, sk2);
         Fp2Element j = sidh.generateSharedSecret(Party.ALICE, sk2, pk3);

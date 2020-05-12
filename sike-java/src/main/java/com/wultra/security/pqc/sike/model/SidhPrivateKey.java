@@ -40,28 +40,22 @@ public class SidhPrivateKey implements PrivateKey {
      * Construct private key from a number.
      * @param sikeParam SIKE parameters.
      * @param key Number value the private key.
-     * @param enableDecaps Whether private key should support SIKE decapsulation.
      */
-    public SidhPrivateKey(SikeParam sikeParam, BigInteger key, boolean enableDecaps) {
+    public SidhPrivateKey(SikeParam sikeParam, BigInteger key) {
         this.sikeParam = sikeParam;
         this.key = new FpElement(sikeParam.getPrime(), key);
         // TODO - verify the private key
-        if (enableDecaps) {
-            RandomGenerator randomGenerator = new RandomGenerator();
-            s = randomGenerator.generateRandomBytes(sikeParam.getMessageBytes());
-        } else {
-            s = null;
-        }
+        RandomGenerator randomGenerator = new RandomGenerator();
+        s = randomGenerator.generateRandomBytes(sikeParam.getMessageBytes());
     }
 
     /**
      * Construct private key from bytes.
      * @param sikeParam SIKE parameters.
      * @param bytes Byte value of the private key.
-     * @param enabledDecaps Whether private key should support SIKE decapsulation.
      */
-    public SidhPrivateKey(SikeParam sikeParam, byte[] bytes, boolean enabledDecaps) {
-        this(sikeParam, BigIntegers.fromUnsignedByteArray(bytes), enabledDecaps);
+    public SidhPrivateKey(SikeParam sikeParam, byte[] bytes) {
+        this(sikeParam, BigIntegers.fromUnsignedByteArray(bytes));
     }
 
     // TODO add constructor with official octet format from SIKE specification

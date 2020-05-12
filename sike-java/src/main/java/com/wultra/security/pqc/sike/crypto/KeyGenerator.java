@@ -57,17 +57,7 @@ public class KeyGenerator {
      * @return Generated key pair.
      */
     public KeyPair generateKeyPair(Party party) {
-        return generateKeyPair(party, false);
-    }
-
-    /**
-     * Generate a key pair.
-     * @param party Alice or Bob.
-     * @param enableDecaps Whether generated private key is usable for decapsulation in SIKE.
-     * @return Generated key pair.
-     */
-    public KeyPair generateKeyPair(Party party, boolean enableDecaps) {
-        PrivateKey privateKey = generatePrivateKey(party, enableDecaps);
+        PrivateKey privateKey = generatePrivateKey(party);
         PublicKey publicKey = derivePublicKey(party, privateKey);
         return new KeyPair(publicKey, privateKey);
     }
@@ -75,19 +65,9 @@ public class KeyGenerator {
     /**
      * Generate a private key.
      * @param party Alice or Bob.
-     * @return Generated private key.
-     */
-    public PrivateKey generatePrivateKey(Party party) {
-        return generatePrivateKey(party, false);
-    }
-
-    /**
-     * Generate a private key.
-     * @param party Alice or Bob.
-     * @param enableDecaps Whether generated private key is usable for decapsulation in SIKE.
      * @return Generated key pair.
      */
-    public PrivateKey generatePrivateKey(Party party, boolean enableDecaps) {
+    public PrivateKey generatePrivateKey(Party party) {
         /* Static key values for testing
         if (party == Party.ALICE) {
             return new SidhPrivateKey(new BigInteger("11"));
@@ -99,7 +79,7 @@ public class KeyGenerator {
         */
         // TODO - improve key generation algorithm, see reference implementation
         BigInteger randomKey = randomGenerator.generateRandomKey(sikeParam);
-        return new SidhPrivateKey(sikeParam, randomKey, enableDecaps);
+        return new SidhPrivateKey(sikeParam, randomKey);
     }
 
     /**

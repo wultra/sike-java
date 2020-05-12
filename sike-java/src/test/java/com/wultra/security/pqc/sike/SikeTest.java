@@ -48,7 +48,7 @@ public class SikeTest {
         sike = new Sike(sikeParam);
         System.out.println("Prime: " + sikeParam.getPrime());
         // Enable key decapsulation
-        keyPair = keyGenerator.generateKeyPair(Party.BOB, true);
+        keyPair = keyGenerator.generateKeyPair(Party.BOB);
         System.out.println("Bob's keypair:");
         System.out.println("Private key: " + keyPair.getPrivate());
         System.out.println("Public key: " + keyPair.getPublic());

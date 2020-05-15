@@ -16,10 +16,11 @@
  */
 package com.wultra.security.pqc.sike;
 
-import com.wultra.security.pqc.sike.crypto.Sidh;
 import com.wultra.security.pqc.sike.crypto.KeyGenerator;
+import com.wultra.security.pqc.sike.crypto.Sidh;
 import com.wultra.security.pqc.sike.math.Fp2Element;
-import com.wultra.security.pqc.sike.model.*;
+import com.wultra.security.pqc.sike.model.ImplementationType;
+import com.wultra.security.pqc.sike.model.Party;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;

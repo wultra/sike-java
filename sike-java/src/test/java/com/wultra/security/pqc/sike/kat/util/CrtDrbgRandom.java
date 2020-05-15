@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.pqc.sike.util;
+package com.wultra.security.pqc.sike.kat.util;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;

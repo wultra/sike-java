@@ -87,7 +87,7 @@ public class SikeRandomTest {
         // Encrypted message is sent to Bob
         EncryptedMessage encrypted = encapsulationResult.getEncryptedMessage();
         byte[] secretDecaps = sike.decapsulate(keyPair.getPrivate(), keyPair.getPublic(), encrypted);
-        System.out.println("Bob's shared secret: " + new String(Base64.encode(secretDecaps)));
+        System.out.println("Bob's shared secret:   " + new String(Base64.encode(secretDecaps)));
         boolean match = Arrays.equals(encapsulationResult.getSecret(), secretDecaps);
         System.out.println("Shared secrets match: " + match);
         assertTrue(match, "Decapsulation failed");

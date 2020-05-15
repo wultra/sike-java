@@ -19,9 +19,9 @@ package com.wultra.security.pqc.sike;
 import com.wultra.security.pqc.sike.crypto.KeyGenerator;
 import com.wultra.security.pqc.sike.crypto.RandomGenerator;
 import com.wultra.security.pqc.sike.crypto.Sike;
+import com.wultra.security.pqc.sike.kat.util.CrtDrbgRandom;
 import com.wultra.security.pqc.sike.model.*;
 import com.wultra.security.pqc.sike.param.SikeParam;
-import com.wultra.security.pqc.sike.util.CrtDrbgRandom;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
@@ -74,7 +74,7 @@ public class SikeDeterministicTest {
         assertEquals("C9933FA642DC0AEA9985786ED36B98D3", OctetEncoding.toOctetString(c1, 16));
 
         byte[] secretDecaps = sike.decapsulate(keyPair.getPrivate(), keyPair.getPublic(), encrypted);
-        System.out.println("Bob's shared secret: " + new String(Base64.encode(secretDecaps)));
+        System.out.println("Bob's shared secret:   " + new String(Base64.encode(secretDecaps)));
         assertEquals("35F7F8FF388714DEDC41F139078CEDC9", OctetEncoding.toOctetString(secretDecaps, 16));
 
         boolean match = Arrays.equals(encapsulationResult.getSecret(), secretDecaps);

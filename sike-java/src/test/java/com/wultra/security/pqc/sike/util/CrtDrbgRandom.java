@@ -84,7 +84,7 @@ public class CrtDrbgRandom extends SecureRandom {
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
 
         for (int i = 0; i <= output.length / val.length; i++) {
-            int bytesToCopy = ((output.length - i * val.length) > val.length) ? val.length : (output.length - i * VALUE_SIZE);
+            int bytesToCopy = Math.min((output.length - i * VALUE_SIZE), VALUE_SIZE);
 
             if (bytesToCopy != 0) {
                 addOne(value);

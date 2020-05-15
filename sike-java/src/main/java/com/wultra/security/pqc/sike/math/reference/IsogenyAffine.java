@@ -16,11 +16,13 @@
  */
 package com.wultra.security.pqc.sike.math.reference;
 
-import com.wultra.security.pqc.sike.math.*;
+import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.FpElement;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.math.api.Isogeny;
 import com.wultra.security.pqc.sike.math.api.Montgomery;
-import com.wultra.security.pqc.sike.model.*;
+import com.wultra.security.pqc.sike.model.EvaluatedCurve;
+import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
 import java.math.BigInteger;
@@ -261,7 +263,7 @@ public class IsogenyAffine implements Isogeny {
     public Fp2Element isoEx2(SikeParam sikeParam, FpElement sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2) {
         EvaluatedCurve iso = montgomery.getYpYqAB(sikeParam, p2, q2, r2);
         MontgomeryCurve curve = iso.getCurve();
-        Fp2Point s = montgomery.doubleAndAdd(curve, sk2.getX(), iso.getQ());
+        Fp2Point s = montgomery.doubleAndAdd(curve, sk2.getX(), iso.getQ(), sikeParam.getMsbA());
         s = montgomery.xAdd(curve, iso.getP(), s);
         EvaluatedCurve iso2 = iso2e(curve, s);
         return montgomery.jInv(iso2.getCurve());
@@ -271,7 +273,7 @@ public class IsogenyAffine implements Isogeny {
     public Fp2Element isoEx3(SikeParam sikeParam, FpElement sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3) {
         EvaluatedCurve iso = montgomery.getYpYqAB(sikeParam, p3, q3, r3);
         MontgomeryCurve curve = iso.getCurve();
-        Fp2Point s = montgomery.doubleAndAdd(curve, sk3.getX(), iso.getQ());
+        Fp2Point s = montgomery.doubleAndAdd(curve, sk3.getX(), iso.getQ(), sikeParam.getMsbB() - 1);
         s = montgomery.xAdd(curve, iso.getP(), s);
         EvaluatedCurve iso3 = iso3e(curve, s);
         return montgomery.jInv(iso3.getCurve());

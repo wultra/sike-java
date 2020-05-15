@@ -16,7 +16,8 @@
  */
 package com.wultra.security.pqc.sike.param;
 
-import com.wultra.security.pqc.sike.math.*;
+import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.FpElement;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.math.api.Isogeny;
 import com.wultra.security.pqc.sike.math.api.Montgomery;
@@ -41,13 +42,21 @@ public class SikeParam {
     private String name;
     private Fp2Element a;
     private Fp2Element b;
-    private int ea;
-    private int eb;
+    private BigInteger lA;
+    private BigInteger lB;
+    private int eA;
+    private int eB;
+    private BigInteger ordA;
+    private BigInteger ordB;
+
+    private int msbA;
+    private int msbB;
+
     private BigInteger prime;
-    private Fp2Point pa;
-    private Fp2Point qa;
-    private Fp2Point pb;
-    private Fp2Point qb;
+    private Fp2Point pA;
+    private Fp2Point qA;
+    private Fp2Point pB;
+    private Fp2Point qB;
     private int cryptoBytes;
     private int messageBytes;
 
@@ -100,6 +109,22 @@ public class SikeParam {
     }
 
     /**
+     * Get parameter lA.
+     * @return Parameter lA.
+     */
+    public BigInteger getlA() {
+        return lA;
+    }
+
+    /**
+     * Get parameter lB.
+     * @return Parameter lB.
+     */
+    public BigInteger getlB() {
+        return lB;
+    }
+
+    /**
      * Get Montgomery coefficient a for starting curve.
      * @return Montgomery coefficient a for starting curve.
      */
@@ -116,19 +141,51 @@ public class SikeParam {
     }
 
     /**
-     * Get parameter EA.
-     * @return Parameter EA.
+     * Get parameter eA.
+     * @return Parameter eA.
      */
     public int getEA() {
-        return ea;
+        return eA;
     }
 
     /**
-     * Get parameter EB.
-     * @return Parameter EB.
+     * Get parameter eB.
+     * @return Parameter eB.
      */
     public int getEB() {
-        return eb;
+        return eB;
+    }
+
+    /**
+     * Get number lA^eA.
+     * @return Number lA^eA.
+     */
+    public BigInteger getOrdA() {
+        return ordA;
+    }
+
+    /**
+     * Get number lB^eB.
+     * @return Number lB^eB.
+     */
+    public BigInteger getOrdB() {
+        return ordB;
+    }
+
+    /**
+     * Get most significant bit of A.
+     * @return Most significant bit of A.
+     */
+    public int getMsbA() {
+        return msbA;
+    }
+
+    /**
+     * Get most significant bit of B.
+     * @return Most sigificant bit of B.
+     */
+    public int getMsbB() {
+        return msbB;
     }
 
     /**
@@ -144,7 +201,7 @@ public class SikeParam {
      * @return Public point PA.
      */
     public Fp2Point getPA() {
-        return pa;
+        return pA;
     }
 
     /**
@@ -152,7 +209,7 @@ public class SikeParam {
      * @return Public point QA.
      */
     public Fp2Point getQA() {
-        return qa;
+        return qA;
     }
 
     /**
@@ -160,7 +217,7 @@ public class SikeParam {
      * @return Public point PB.
      */
     public Fp2Point getPB() {
-        return pb;
+        return pB;
     }
 
     /**
@@ -168,7 +225,7 @@ public class SikeParam {
      * @return Public point QB.
      */
     public Fp2Point getQB() {
-        return qb;
+        return qB;
     }
 
     /**
@@ -227,13 +284,19 @@ public class SikeParam {
         this.name = "SIKEp434";
         this.a = PUBLIC_PARAM_ELEMENT_A;
         this.b = PUBLIC_PARAM_ELEMENT_B;
-        this.ea = FIELD_PRIME_PARAM_EA;
-        this.eb = FIELD_PRIME_PARAM_EB;
+        this.eA = FIELD_PRIME_PARAM_EA;
+        this.eB = FIELD_PRIME_PARAM_EB;
+        this.lA = new BigInteger("2");
+        this.lB = new BigInteger("3");
+        this.ordA = lA.pow(eA);
+        this.ordB = lB.pow(eB);
+        this.msbA = ordA.bitLength();
+        this.msbB = ordB.bitLength();
         this.prime = FIELD_PRIME;
-        this.pa = PUBLIC_POINT_PA;
-        this.pb = PUBLIC_POINT_PB;
-        this.qa = PUBLIC_POINT_QA;
-        this.qb = PUBLIC_POINT_QB;
+        this.pA = PUBLIC_POINT_PA;
+        this.pB = PUBLIC_POINT_PB;
+        this.qA = PUBLIC_POINT_QA;
+        this.qB = PUBLIC_POINT_QB;
         this.cryptoBytes = 16;
         this.messageBytes = 16;
     }

@@ -18,7 +18,10 @@ package com.wultra.security.pqc.sike;
 
 import com.wultra.security.pqc.sike.crypto.KeyGenerator;
 import com.wultra.security.pqc.sike.crypto.Sike;
-import com.wultra.security.pqc.sike.model.*;
+import com.wultra.security.pqc.sike.model.EncapsulationResult;
+import com.wultra.security.pqc.sike.model.EncryptedMessage;
+import com.wultra.security.pqc.sike.model.ImplementationType;
+import com.wultra.security.pqc.sike.model.Party;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
@@ -28,12 +31,14 @@ import java.security.KeyPair;
 import java.security.Security;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Test of SIKE key encapsulation.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-public class SikeTest {
+public class SikeRandomTest {
 
     private Sike sike;
     private KeyPair keyPair;
@@ -85,8 +90,6 @@ public class SikeTest {
         System.out.println("Bob's shared secret: " + new String(Base64.encode(secretDecaps)));
         boolean match = Arrays.equals(encapsulationResult.getSecret(), secretDecaps);
         System.out.println("Shared secrets match: " + match);
-        if (!match) {
-            throw new RuntimeException("Decapsulation failed");
-        }
+        assertTrue(match, "Decapsulation failed");
     }
 }

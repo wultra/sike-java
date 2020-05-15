@@ -16,7 +16,7 @@
  */
 package com.wultra.security.pqc.sike.math;
 
-import org.bouncycastle.util.BigIntegers;
+import com.wultra.security.pqc.sike.util.ByteEncoding;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -143,12 +143,7 @@ public class FpElement {
      * @return Encoded element in bytes.
      */
     public byte[] getEncoded() {
-        byte[] byteValue = BigIntegers.asUnsignedByteArray(x);
-        byte[] encoded = new byte[primeSize];
-        int offset = primeSize - byteValue.length;
-        // Pad the value with zeros to match prime byte length
-        System.arraycopy(byteValue, 0, encoded, offset, byteValue.length);
-        return encoded;
+        return ByteEncoding.toByteArray(x, primeSize);
     }
 
     @Override

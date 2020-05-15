@@ -35,9 +35,10 @@ public interface Montgomery {
      * @param curve Current curve.
      * @param m Scalar value.
      * @param p Point on the curve.
+     * @param msb Most significant bit.
      * @return Calculated new point.
      */
-    Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p);
+    Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int msb);
 
     /**
      * Double a point.

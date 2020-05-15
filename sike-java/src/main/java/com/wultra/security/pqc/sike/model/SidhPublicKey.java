@@ -18,6 +18,7 @@ package com.wultra.security.pqc.sike.model;
 
 import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.param.SikeParam;
+import com.wultra.security.pqc.sike.util.OctetEncoding;
 
 import java.security.PublicKey;
 import java.util.Objects;
@@ -102,7 +103,19 @@ public class SidhPublicKey implements PublicKey {
         return encoded;
     }
 
-    // TODO encode public key using official octet format from SIKE specification
+    /**
+     * Convert public key to octet string.
+     * @return Octet string.
+     */
+    public String toOctetString() {
+        int length = (sikeParam.getPrime().bitLength() + 7) / 8;
+        return OctetEncoding.toOctetString(px.getX0().getX(), length) +
+                OctetEncoding.toOctetString(px.getX1().getX(), length) +
+                OctetEncoding.toOctetString(qx.getX0().getX(), length) +
+                OctetEncoding.toOctetString(qx.getX1().getX(), length) +
+                OctetEncoding.toOctetString(rx.getX0().getX(), length) +
+                OctetEncoding.toOctetString(rx.getX1().getX(), length);
+    }
 
     @Override
     public String toString() {

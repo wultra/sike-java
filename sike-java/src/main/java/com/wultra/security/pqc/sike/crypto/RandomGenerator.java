@@ -16,9 +16,6 @@
  */
 package com.wultra.security.pqc.sike.crypto;
 
-import com.wultra.security.pqc.sike.param.SikeParam;
-
-import java.math.BigInteger;
 import java.security.SecureRandom;
 
 /**
@@ -29,16 +26,21 @@ import java.security.SecureRandom;
 public class RandomGenerator {
 
     // TODO - consider using Secure Random from Bouncy Castle
-    private final SecureRandom secureRandom = new SecureRandom();
+    private final SecureRandom secureRandom;
 
     /**
-     * Generate a random key.
-     * @param sikeParam SIKE parameters.
-     * @return Random BigInteger usable as a private key.
+     * Random generator constructor.
      */
-    public BigInteger generateRandomKey(SikeParam sikeParam) {
-        BigInteger prime = sikeParam.getPrime();
-        return new BigInteger(prime.bitLength(), secureRandom);
+    public RandomGenerator() {
+        secureRandom = new SecureRandom();
+    }
+
+    /**
+     * Random generator constructor with provided SecureRandom.
+     * @param secureRandom SecureRandom implementation to use.
+     */
+    public RandomGenerator(SecureRandom secureRandom) {
+        this.secureRandom = secureRandom;
     }
 
     /**

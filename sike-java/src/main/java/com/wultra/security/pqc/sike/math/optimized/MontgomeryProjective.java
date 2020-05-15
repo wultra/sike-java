@@ -35,7 +35,7 @@ public class MontgomeryProjective implements Montgomery {
     // TODO - implement optimized algorithms
 
     @Override
-    public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p) {
+    public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int msb) {
         throw new RuntimeException("Not implemented yet");
     }
 

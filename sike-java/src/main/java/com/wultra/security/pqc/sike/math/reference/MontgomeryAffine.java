@@ -19,7 +19,8 @@ package com.wultra.security.pqc.sike.math.reference;
 import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.math.api.Montgomery;
-import com.wultra.security.pqc.sike.model.*;
+import com.wultra.security.pqc.sike.model.EvaluatedCurve;
+import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
 import java.math.BigInteger;
@@ -32,11 +33,10 @@ import java.math.BigInteger;
 public class MontgomeryAffine implements Montgomery {
 
     @Override
-    public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p) {
+    public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int msb) {
         BigInteger prime = curve.getSikeParam().getPrime();
         Fp2Point q = Fp2PointAffine.infinity(prime);
-        int length = m.bitLength();
-        for (int i = length - 1; i >= 0; i--) {
+        for (int i = msb - 1; i >= 0; i--) {
             q = xDbl(curve, q);
             if (m.testBit(i)) {
                 q = xAdd(curve, q, p);

@@ -19,11 +19,13 @@ package com.wultra.security.pqc.sike.crypto;
 import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.model.*;
 import com.wultra.security.pqc.sike.param.SikeParam;
+import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.Sha3;
 
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 
 /**
  * SIKE key encapsulation.
@@ -33,10 +35,9 @@ import java.security.PublicKey;
 public class Sike {
 
     private final SikeParam sikeParam;
+    private final RandomGenerator randomGenerator;
     private final KeyGenerator keyGenerator;
     private final Sidh sidh;
-
-    private final RandomGenerator randomGenerator = new RandomGenerator();
 
     /**
      * SIKE key encapsulation constructor.
@@ -44,7 +45,19 @@ public class Sike {
      */
     public Sike(SikeParam sikeParam) {
         this.sikeParam = sikeParam;
+        this.randomGenerator = new RandomGenerator();
         keyGenerator = new KeyGenerator(sikeParam);
+        sidh = new Sidh(sikeParam);
+    }
+
+    /**
+     * SIKE key encapsulation constructor with specified SecureRandom.
+     * @param sikeParam SIKE parameters.
+     */
+    public Sike(SikeParam sikeParam, SecureRandom secureRandom) {
+        this.sikeParam = sikeParam;
+        this.randomGenerator = new RandomGenerator(secureRandom);
+        keyGenerator = new KeyGenerator(sikeParam, randomGenerator);
         sidh = new Sidh(sikeParam);
     }
 
@@ -95,7 +108,7 @@ public class Sike {
         }
         byte[] m = decrypt(sk3, encrypted);
         byte[] r = generateR(m, pk3.getEncoded());
-        BigInteger key = new BigInteger(r).mod(sikeParam.getPrime());
+        BigInteger key = ByteEncoding.fromByteArray(r);
         PrivateKey rKey = new SidhPrivateKey(sikeParam, key);
         PublicKey c0Key = keyGenerator.derivePublicKey(Party.ALICE, rKey);
         byte[] k;
@@ -138,7 +151,7 @@ public class Sike {
             sk2 = keyGenerator.generatePrivateKey(Party.ALICE);
         } else {
             // Convert value r into private key
-            BigInteger key = new BigInteger(r).mod(sikeParam.getPrime());
+            BigInteger key = ByteEncoding.fromByteArray(r);
             sk2 = new SidhPrivateKey(sikeParam, key);
         }
         PublicKey c0 = keyGenerator.derivePublicKey(Party.ALICE, sk2);
@@ -185,7 +198,7 @@ public class Sike {
         byte[] dataR = new byte[(m.length + pk3Enc.length)];
         System.arraycopy(m, 0, dataR, 0, m.length);
         System.arraycopy(pk3Enc, 0, dataR, m.length, pk3Enc.length);
-        return Sha3.shake256(dataR, sikeParam.getMessageBytes());
+        return Sha3.shake256(dataR, (sikeParam.getMsbA() + 7) / 8) ;
     }
 
     private byte[] generateK(byte[] m, byte[] c0, byte[] c1) {

@@ -16,10 +16,10 @@
  */
 package com.wultra.security.pqc.sike.model;
 
-import com.wultra.security.pqc.sike.crypto.RandomGenerator;
 import com.wultra.security.pqc.sike.math.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
-import org.bouncycastle.util.BigIntegers;
+import com.wultra.security.pqc.sike.util.ByteEncoding;
+import com.wultra.security.pqc.sike.util.OctetEncoding;
 
 import java.math.BigInteger;
 import java.security.PrivateKey;
@@ -34,7 +34,7 @@ public class SidhPrivateKey implements PrivateKey {
 
     private final SikeParam sikeParam;
     private final FpElement key;
-    private final byte[] s;
+    private byte[] s;
 
     /**
      * Construct private key from a number.
@@ -45,8 +45,6 @@ public class SidhPrivateKey implements PrivateKey {
         this.sikeParam = sikeParam;
         this.key = new FpElement(sikeParam.getPrime(), key);
         // TODO - verify the private key
-        RandomGenerator randomGenerator = new RandomGenerator();
-        s = randomGenerator.generateRandomBytes(sikeParam.getMessageBytes());
     }
 
     /**
@@ -55,7 +53,19 @@ public class SidhPrivateKey implements PrivateKey {
      * @param bytes Byte value of the private key.
      */
     public SidhPrivateKey(SikeParam sikeParam, byte[] bytes) {
-        this(sikeParam, BigIntegers.fromUnsignedByteArray(bytes));
+        this(sikeParam, ByteEncoding.fromByteArray(bytes));
+    }
+
+
+    /**
+     * Construct private key from bytes with specified parameter s for SIKE decapsulation.
+     * @param sikeParam SIKE parameters.
+     * @param key Byte value of the private key.
+     * @param s Parameter s for SIKE decapsulation
+     */
+    public SidhPrivateKey(SikeParam sikeParam, BigInteger key, byte[] s) {
+        this(sikeParam, key);
+        this.s = s;
     }
 
     // TODO add constructor with official octet format from SIKE specification
@@ -103,7 +113,17 @@ public class SidhPrivateKey implements PrivateKey {
         return key.getEncoded();
     }
 
-    // TODO encode public key using official octet format from SIKE specification
+    /**
+     * Convert private key into an octet string.
+     * @return Octet string.
+     */
+    public String toOctetString() {
+        String prefix = "";
+        if (s != null) {
+            prefix = OctetEncoding.toOctetString(s, 16);
+        }
+        return prefix + OctetEncoding.toOctetString(key.getX(), (sikeParam.getMsbA() + 7) / 8);
+    }
 
     @Override
     public String toString() {

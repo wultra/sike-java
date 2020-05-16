@@ -30,7 +30,6 @@ public class Fp2Element {
     private final FpElement x1;
 
     private final BigInteger prime;
-    private final int primeSize;
 
     /**
      * The F(p^2) field element constructor for given F(p) elements.
@@ -40,7 +39,6 @@ public class Fp2Element {
      */
     public Fp2Element(BigInteger prime, FpElement x0, FpElement x1) {
         this.prime = prime;
-        this.primeSize = prime.bitLength() / 8 + 1;
         this.x0 = x0;
         this.x1 = x1;
     }
@@ -53,7 +51,6 @@ public class Fp2Element {
      */
     public Fp2Element(BigInteger prime, int x0i, int x1i) {
         this.prime = prime;
-        this.primeSize = prime.bitLength() / 8 + 1;
         this.x0 = new FpElement(prime, x0i);
         this.x1 = new FpElement(prime, x1i);
     }
@@ -287,12 +284,20 @@ public class Fp2Element {
      * @return Encoded element in bytes.
      */
     public byte[] getEncoded() {
-        byte[] encoded = new byte[primeSize * 2];
         byte[] x0Encoded = x0.getEncoded();
         byte[] x1Encoded = x1.getEncoded();
-        System.arraycopy(x0Encoded, 0, encoded, 0, primeSize);
-        System.arraycopy(x1Encoded, 0, encoded, primeSize, primeSize);
+        byte[] encoded = new byte[x0Encoded.length + x1Encoded.length];
+        System.arraycopy(x0Encoded, 0, encoded, 0, x0Encoded.length);
+        System.arraycopy(x1Encoded, 0, encoded, x0Encoded.length, x1Encoded.length);
         return encoded;
+    }
+
+    /**
+     * Convert element to octet string.
+     * @return Octet string.
+     */
+    public String toOctetString() {
+        return x0.toOctetString() + x1.toOctetString();
     }
 
     @Override

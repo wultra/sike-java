@@ -17,6 +17,7 @@
 package com.wultra.security.pqc.sike.math;
 
 import com.wultra.security.pqc.sike.util.ByteEncoding;
+import com.wultra.security.pqc.sike.util.OctetEncoding;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -31,7 +32,6 @@ public class FpElement {
     private final BigInteger x;
 
     private final BigInteger prime;
-    private final int primeSize;
 
     /**
      * The F(p^) field element constructor for given integer value.
@@ -40,7 +40,6 @@ public class FpElement {
      */
     public FpElement(BigInteger prime, int i) {
         this.prime = prime;
-        this.primeSize = prime.bitLength() / 8 + 1;
         this.x = new BigInteger(String.valueOf(i)).mod(prime);
     }
 
@@ -51,7 +50,6 @@ public class FpElement {
      */
     public FpElement(BigInteger prime, BigInteger x) {
         this.prime = prime;
-        this.primeSize = prime.bitLength() / 8 + 1;
         this.x = x.mod(prime);
     }
 
@@ -143,7 +141,17 @@ public class FpElement {
      * @return Encoded element in bytes.
      */
     public byte[] getEncoded() {
+        int primeSize = (prime.bitLength() + 7) / 8;
         return ByteEncoding.toByteArray(x, primeSize);
+    }
+
+    /**
+     * Convert element to octet string.
+     * @return Octet string.
+     */
+    public String toOctetString() {
+        int primeSize = (prime.bitLength() + 7) / 8;
+        return OctetEncoding.toOctetString(x, primeSize);
     }
 
     @Override

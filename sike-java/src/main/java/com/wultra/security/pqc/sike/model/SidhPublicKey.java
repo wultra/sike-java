@@ -18,7 +18,6 @@ package com.wultra.security.pqc.sike.model;
 
 import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.param.SikeParam;
-import com.wultra.security.pqc.sike.util.OctetEncoding;
 
 import java.security.PublicKey;
 import java.util.Objects;
@@ -92,14 +91,13 @@ public class SidhPublicKey implements PublicKey {
      * @return Public key encoded as bytes.
      */
     public byte[] getEncoded() {
-        int primeSize = sikeParam.getPrime().bitLength() / 8 + 1;
-        byte[] encoded = new byte[primeSize * 6];
         byte[] pxEncoded = px.getEncoded();
         byte[] qxEncoded = qx.getEncoded();
         byte[] rxEncoded = rx.getEncoded();
-        System.arraycopy(pxEncoded, 0, encoded, 0, primeSize * 2);
-        System.arraycopy(qxEncoded, 0, encoded, primeSize * 2, primeSize * 2);
-        System.arraycopy(rxEncoded, 0, encoded, primeSize * 4, primeSize * 2);
+        byte[] encoded = new byte[pxEncoded.length + qxEncoded.length + rxEncoded.length];
+        System.arraycopy(pxEncoded, 0, encoded, 0, pxEncoded.length);
+        System.arraycopy(qxEncoded, 0, encoded, pxEncoded.length, qxEncoded.length);
+        System.arraycopy(rxEncoded, 0, encoded, pxEncoded.length + qxEncoded.length, rxEncoded.length);
         return encoded;
     }
 
@@ -108,13 +106,7 @@ public class SidhPublicKey implements PublicKey {
      * @return Octet string.
      */
     public String toOctetString() {
-        int length = (sikeParam.getPrime().bitLength() + 7) / 8;
-        return OctetEncoding.toOctetString(px.getX0().getX(), length) +
-                OctetEncoding.toOctetString(px.getX1().getX(), length) +
-                OctetEncoding.toOctetString(qx.getX0().getX(), length) +
-                OctetEncoding.toOctetString(qx.getX1().getX(), length) +
-                OctetEncoding.toOctetString(rx.getX0().getX(), length) +
-                OctetEncoding.toOctetString(rx.getX1().getX(), length);
+        return px.toOctetString() + qx.toOctetString() + rx.toOctetString();
     }
 
     @Override

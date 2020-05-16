@@ -53,6 +53,7 @@ public class Sike {
     /**
      * SIKE key encapsulation constructor with specified SecureRandom.
      * @param sikeParam SIKE parameters.
+     * @param secureRandom SecureRandom to use.
      */
     public Sike(SikeParam sikeParam, SecureRandom secureRandom) {
         this.sikeParam = sikeParam;

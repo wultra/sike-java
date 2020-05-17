@@ -16,6 +16,8 @@
  */
 package com.wultra.security.pqc.sike.crypto;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 
 /**
@@ -25,14 +27,19 @@ import java.security.SecureRandom;
  */
 public class RandomGenerator {
 
-    // TODO - consider using Secure Random from Bouncy Castle
-    private final SecureRandom secureRandom;
+    private SecureRandom secureRandom;
 
     /**
      * Random generator constructor.
      */
     public RandomGenerator() {
-        secureRandom = new SecureRandom();
+        try {
+            // Use SecureRandom implementation from Bouncy Castle library, it is slower,
+            // however it reseeds periodically and it is quantum safe.
+            secureRandom = SecureRandom.getInstance("DEFAULT", "BC");
+        } catch (NoSuchProviderException | NoSuchAlgorithmException ex) {
+            secureRandom = new SecureRandom();
+        }
     }
 
     /**

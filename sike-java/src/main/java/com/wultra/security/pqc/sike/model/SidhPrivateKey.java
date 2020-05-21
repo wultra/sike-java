@@ -39,11 +39,11 @@ public class SidhPrivateKey implements PrivateKey {
     /**
      * Construct private key from a number.
      * @param sikeParam SIKE parameters.
-     * @param key Number value the private key.
+     * @param secret Secret value of the private key.
      */
-    public SidhPrivateKey(SikeParam sikeParam, BigInteger key) {
+    public SidhPrivateKey(SikeParam sikeParam, BigInteger secret) {
         this.sikeParam = sikeParam;
-        this.key = new FpElement(sikeParam.getPrime(), key);
+        this.key = new FpElement(sikeParam.getPrime(), secret);
         // TODO - verify the private key
     }
 

@@ -39,8 +39,8 @@ public class Fp2Element {
      */
     public Fp2Element(BigInteger prime, FpElement x0, FpElement x1) {
         this.prime = prime;
-        this.x0 = x0;
-        this.x1 = x1;
+        this.x0 = x0.copy();
+        this.x1 = x1.copy();
     }
 
     /**

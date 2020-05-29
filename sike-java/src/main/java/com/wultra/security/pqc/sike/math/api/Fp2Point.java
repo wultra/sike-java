@@ -88,4 +88,10 @@ public interface Fp2Point {
      */
     boolean isInfinite();
 
+    /**
+     * Copy the point.
+     * @return Point copy.
+     */
+    Fp2Point copy();
+
 }

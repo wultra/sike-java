@@ -22,6 +22,7 @@ import com.wultra.security.pqc.sike.crypto.Sike;
 import com.wultra.security.pqc.sike.kat.util.CrtDrbgRandom;
 import com.wultra.security.pqc.sike.model.*;
 import com.wultra.security.pqc.sike.param.SikeParam;
+import com.wultra.security.pqc.sike.param.SikeParamP434;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
@@ -52,7 +53,7 @@ public class SikeDeterministicTest {
     @Test
     public void testDeterministicSike() throws GeneralSecurityException {
         System.out.println("----------------------------------------");
-        SikeParam sikeParam = new SikeParam("SIKEp434", ImplementationType.REFERENCE);
+        SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         System.out.println("Prime: " + sikeParam.getPrime());
         byte[] seedBytes = DatatypeConverter.parseHexBinary(SEED);
         CrtDrbgRandom drbgRandom = new CrtDrbgRandom(seedBytes);

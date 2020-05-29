@@ -30,6 +30,7 @@ public class EvaluatedCurve {
     private final MontgomeryCurve curve;
     private final Fp2Point p;
     private final Fp2Point q;
+    private final Fp2Point r;
 
     /**
      * Curve constructor.
@@ -41,6 +42,21 @@ public class EvaluatedCurve {
         this.curve = curve;
         this.p = p;
         this.q = q;
+        this.r = null;
+    }
+
+    /**
+     * Curve constructor.
+     * @param curve Evaluated curve.
+     * @param p Optional point P.
+     * @param q Optional point Q.
+     * @param r Optional point R.
+     */
+    public EvaluatedCurve(MontgomeryCurve curve, Fp2Point p, Fp2Point q, Fp2Point r) {
+        this.curve = curve;
+        this.p = p;
+        this.q = q;
+        this.r = r;
     }
 
     /**
@@ -67,9 +83,17 @@ public class EvaluatedCurve {
         return q;
     }
 
+    /**
+     * Get optional point R.
+     * @return Optional point R.
+     */
+    public Fp2Point getR() {
+        return r;
+    }
+
     @Override
     public String toString() {
-        return curve + ", p = " + p + ", q = " + q;
+        return curve.toString();
     }
 
     @Override

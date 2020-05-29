@@ -17,28 +17,15 @@
 package com.wultra.security.pqc.sike.math.api;
 
 import com.wultra.security.pqc.sike.math.Fp2Element;
-import com.wultra.security.pqc.sike.model.EvaluatedCurve;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
-import java.math.BigInteger;
-
 /**
- * Elliptic curve mathematics on Montgomery curves.
+ * Elliptic curve mathematics on Montgomery curves. A common interface for all implementation types
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 public interface Montgomery {
-
-    /**
-     * Double-and-add scalar multiplication.
-     * @param curve Current curve.
-     * @param m Scalar value.
-     * @param p Point on the curve.
-     * @param msb Most significant bit.
-     * @return Calculated new point.
-     */
-    Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int msb);
 
     /**
      * Double a point.
@@ -75,24 +62,6 @@ public interface Montgomery {
     Fp2Point xTple(MontgomeryCurve curve, Fp2Point p, int e);
 
     /**
-     * Adding of two points.
-     * @param curve Current curve.
-     * @param p First point on the curve.
-     * @param q Second point on the curve.
-     * @return Calculated new point.
-     */
-    Fp2Point xAdd(MontgomeryCurve curve, Fp2Point p, Fp2Point q);
-
-    /**
-     * Recover the point R = P - Q.
-     * @param curve Current curve.
-     * @param p Point P.
-     * @param q Point Q.
-     * @return Calculated point R.
-     */
-    Fp2Point getXr(MontgomeryCurve curve, Fp2Point p, Fp2Point q);
-
-    /**
      * Calculate a j-invariant of a curve.
      * @param curve Current curve.
      * @return Calculated j-invariant.
@@ -108,15 +77,5 @@ public interface Montgomery {
      * @return Recovered coefficient a.
      */
     Fp2Element getA(SikeParam sikeParam, Fp2Element px, Fp2Element qx, Fp2Element rx);
-
-    /**
-     * Recover the curve and points P and Q.
-     * @param sikeParam SIKE parameters.
-     * @param px The x coordinate of point P.
-     * @param qx The x coordinate of point Q.
-     * @param rx The x coordinate of point R.
-     * @return A recovered curve and points P and Q.
-     */
-    EvaluatedCurve getYpYqAB(SikeParam sikeParam, Fp2Element px, Fp2Element qx, Fp2Element rx);
 
 }

@@ -17,20 +17,46 @@
 package com.wultra.security.pqc.sike.model;
 
 import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.model.optimized.MontgomeryConstants;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
-import java.util.Objects;
+import java.security.InvalidParameterException;
 
 /**
- * Montgomery curve paramters.
+ * Montgomery curve parameters.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 public class MontgomeryCurve {
 
     private final SikeParam sikeParam;
-    private final Fp2Element a;
-    private final Fp2Element b;
+    private Fp2Element a;
+    private Fp2Element b;
+    private MontgomeryConstants optimizedConstants;
+
+    /**
+     * Montgomery curve constructor.
+     * @param sikeParam SIKE parameters.
+     */
+    public MontgomeryCurve(SikeParam sikeParam) {
+        this.sikeParam = sikeParam;
+        if (sikeParam.getImplementationType() == ImplementationType.OPTIMIZED) {
+            optimizedConstants = new MontgomeryConstants(sikeParam);
+        }
+    }
+
+    /**
+     * Montgomery curve constructor.
+     * @param sikeParam SIKE parameters.
+     * @param a Montgomery curve coefficient a.
+     */
+    public MontgomeryCurve(SikeParam sikeParam, Fp2Element a) {
+        this.sikeParam = sikeParam;
+        this.a = a;
+        if (sikeParam.getImplementationType() == ImplementationType.OPTIMIZED) {
+            optimizedConstants = new MontgomeryConstants(sikeParam, a);
+        }
+    }
 
     /**
      * Montgomery curve constructor.
@@ -39,8 +65,7 @@ public class MontgomeryCurve {
      * @param b Montgomery curve coefficient b.
      */
     public MontgomeryCurve(SikeParam sikeParam, Fp2Element a, Fp2Element b) {
-        this.sikeParam = sikeParam;
-        this.a = a;
+        this(sikeParam, a);
         this.b = b;
     }
 
@@ -61,6 +86,14 @@ public class MontgomeryCurve {
     }
 
     /**
+     * Set Montgomery curve coefficient a.
+     * @param a Montgomery curve coefficient a.
+     */
+    public void setA(Fp2Element a) {
+        this.a = a;
+    }
+
+    /**
      * Get Montgomery curve coefficient b.
      * @return Montgomery curve coefficient b.
      */
@@ -68,22 +101,31 @@ public class MontgomeryCurve {
         return b;
     }
 
+    /**
+     * Set Montgomery curve coefficient b.
+     * @param b Montgomery curve coefficient b.
+     */
+    public void setB(Fp2Element b) {
+        this.b = b;
+    }
+
+    /**
+     * Get optimized montgomery constants for this curve.
+     * @return Optimized montgomery constants for this curve.
+     */
+    public MontgomeryConstants getOptimizedConstants() {
+        if (sikeParam.getImplementationType() != ImplementationType.OPTIMIZED) {
+            throw new InvalidParameterException("Invalid implementation type");
+        }
+        return optimizedConstants;
+    }
+
     @Override
     public String toString() {
-        return "p = " + sikeParam.getPrime() + ", a = " + a + ", b = " + b;
+        if (sikeParam.getImplementationType() == ImplementationType.OPTIMIZED) {
+            return "a = " + a + ", " + optimizedConstants;
+        }
+        return "a = " + a + ", b = " + b;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MontgomeryCurve that = (MontgomeryCurve) o;
-        return a.equals(that.a) &&
-                b.equals(that.b);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(a, b);
-    }
 }

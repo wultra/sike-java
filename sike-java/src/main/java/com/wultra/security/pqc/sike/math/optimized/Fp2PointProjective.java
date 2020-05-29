@@ -20,6 +20,7 @@ import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 
 import java.math.BigInteger;
+import java.security.InvalidParameterException;
 import java.util.Objects;
 
 /**
@@ -32,11 +33,21 @@ public class Fp2PointProjective implements Fp2Point {
     private final Fp2Element x;
     private final Fp2Element z;
 
+    /**
+     * Projective point constructor.
+     * @param x The x element.
+     * @param z The y element.
+     */
     public Fp2PointProjective(Fp2Element x, Fp2Element z) {
         this.x = x;
         this.z = z;
     }
 
+    /**
+     * Construct the point at infinity.
+     * @param prime Field prime.
+     * @return Point at infinity.
+     */
     public static Fp2Point infinity(BigInteger prime) {
         return new Fp2PointProjective(Fp2Element.zero(prime), Fp2Element.zero(prime));
     }
@@ -47,12 +58,11 @@ public class Fp2PointProjective implements Fp2Point {
     }
 
     /**
-     * The y coordinate is always null in projective coordinate system.
-     * @return Null value.
+     * The y coordinate is not defined in projective coordinate system.
      */
     @Override
     public Fp2Element getY() {
-        return null;
+        throw new InvalidParameterException("Invalid point coordinate");
     }
 
     @Override
@@ -95,6 +105,12 @@ public class Fp2PointProjective implements Fp2Point {
         throw new RuntimeException("Not implemented yet");
     }
 
+    @Override
+    public Fp2Point copy() {
+        return new Fp2PointProjective(x.copy(), z.copy());
+    }
+
+    @Override
     public String toString() {
         return "(" + x.toString() + ", " + z.toString() + ")";
     }

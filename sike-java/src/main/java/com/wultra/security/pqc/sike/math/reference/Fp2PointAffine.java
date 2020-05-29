@@ -20,6 +20,7 @@ import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 
 import java.math.BigInteger;
+import java.security.InvalidParameterException;
 import java.util.Objects;
 
 /**
@@ -32,11 +33,21 @@ public class Fp2PointAffine implements Fp2Point {
     private final Fp2Element x;
     private final Fp2Element y;
 
+    /**
+     * Affine point constructor.
+     * @param x The x element.
+     * @param y The y element.
+     */
     public Fp2PointAffine(Fp2Element x, Fp2Element y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Construct point at infinity.
+     * @param prime Field prime.
+     * @return Point at infinity.
+     */
     public static Fp2Point infinity(BigInteger prime) {
         return new Fp2PointAffine(Fp2Element.zero(prime), Fp2Element.zero(prime));
     }
@@ -52,12 +63,11 @@ public class Fp2PointAffine implements Fp2Point {
     }
 
     /**
-     * The z coordinate is always null in affine coordinate system.
-     * @return Null value.
+     * The z coordinate is not defined in affine coordinate system.
      */
     @Override
     public Fp2Element getZ() {
-        return null;
+        throw new InvalidParameterException("Invalid point coordinate");
     }
 
     @Override
@@ -93,6 +103,11 @@ public class Fp2PointAffine implements Fp2Point {
     @Override
     public boolean isInfinite() {
         return y.isZero();
+    }
+
+    @Override
+    public Fp2Point copy() {
+        return new Fp2PointAffine(x.copy(), y.copy());
     }
 
     public String toString() {

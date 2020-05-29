@@ -23,9 +23,7 @@ import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.Sha3;
 
 import java.math.BigInteger;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * SIKE key encapsulation.
@@ -66,12 +64,13 @@ public class Sike {
      * SIKE encapsulation.
      * @param pk3 Bob's public key.
      * @return Encapsulation result with shared secret and encrypted message.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    public EncapsulationResult encapsulate(PublicKey pk3) {
+    public EncapsulationResult encapsulate(PublicKey pk3) throws GeneralSecurityException {
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new IllegalArgumentException("Invalid public key");
+            throw new InvalidKeyException("Invalid public key");
         }
-        // TODO - basic public key validation
+        // TODO - missing public key validation in specification, reported to SIKE team
         byte[] m = randomGenerator.generateRandomBytes(sikeParam.getMessageBytes());
         byte[] r = generateR(m, pk3.getEncoded());
         EncryptedMessage encrypted = encrypt(pk3, m, r);
@@ -86,31 +85,33 @@ public class Sike {
      * @param pk3 Bob's public key.
      * @param encrypted Encrypted message received from Alice.
      * @return Shared secret.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    public byte[] decapsulate(PrivateKey sk3, PublicKey pk3, EncryptedMessage encrypted) {
+    public byte[] decapsulate(PrivateKey sk3, PublicKey pk3, EncryptedMessage encrypted) throws GeneralSecurityException {
         if (!(sk3 instanceof SidhPrivateKey)) {
-            throw new IllegalArgumentException("Invalid private key");
+            throw new InvalidKeyException("Invalid private key");
         }
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new IllegalArgumentException("Invalid public key");
+            throw new InvalidKeyException("Invalid public key");
         }
         if (encrypted == null) {
-            throw new IllegalArgumentException("Encrypted message is null");
+            throw new InvalidParameterException("Encrypted message is null");
         }
         if (encrypted.getC0() == null) {
-            throw new IllegalArgumentException("Invalid parameter c0");
+            throw new InvalidParameterException("Invalid parameter c0");
         }
         if (encrypted.getC1() == null) {
-            throw new IllegalArgumentException("Invalid parameter c1");
+            throw new InvalidParameterException("Invalid parameter c1");
         }
         SidhPrivateKey priv3 = (SidhPrivateKey) sk3;
         if (priv3.getS() == null) {
-            throw new IllegalArgumentException("Private key cannot be used for decapsulationn");
+            throw new InvalidParameterException("Private key cannot be used for decapsulation");
         }
         byte[] m = decrypt(sk3, encrypted);
         byte[] r = generateR(m, pk3.getEncoded());
-        BigInteger key = ByteEncoding.fromByteArray(r);
-        PrivateKey rKey = new SidhPrivateKey(sikeParam, key);
+        BigInteger modulo = new BigInteger("2").pow(sikeParam.getEA());
+        BigInteger key = ByteEncoding.fromByteArray(r).mod(modulo);
+        PrivateKey rKey = new SidhPrivateKey(sikeParam, Party.ALICE, key);
         PublicKey c0Key = keyGenerator.derivePublicKey(Party.ALICE, rKey);
         byte[] k;
         if (c0Key.equals(encrypted.getC0())) {
@@ -126,8 +127,9 @@ public class Sike {
      * @param pk3 Bob's public key.
      * @param m Message to encrypt, the message size must correspond to the SIKE parameter messageBytes.
      * @return Encrypted message.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    public EncryptedMessage encrypt(PublicKey pk3, byte[] m) {
+    public EncryptedMessage encrypt(PublicKey pk3, byte[] m) throws GeneralSecurityException {
         return encrypt(pk3, m, null);
     }
 
@@ -137,23 +139,25 @@ public class Sike {
      * @param m Message to encrypt, the message size must correspond to the SIKE parameter messageBytes.
      * @param r Optional byte representation of Alice's private key used in SIKE encapsulation.
      * @return Encrypted message.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    private EncryptedMessage encrypt(PublicKey pk3, byte[] m, byte[] r) {
+    private EncryptedMessage encrypt(PublicKey pk3, byte[] m, byte[] r) throws GeneralSecurityException {
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new IllegalArgumentException("Invalid public key");
+            throw new InvalidKeyException("Invalid public key");
         }
         if (m == null || m.length != sikeParam.getMessageBytes()) {
-            throw new IllegalArgumentException("Invalid message");
+            throw new InvalidParameterException("Invalid message");
         }
-        // TODO - basic public key validation
+        // TODO - missing public key validation in specification, reported to SIKE team
         PrivateKey sk2;
         if (r == null) {
             // Generate ephemeral private key
             sk2 = keyGenerator.generatePrivateKey(Party.ALICE);
         } else {
             // Convert value r into private key
-            BigInteger key = ByteEncoding.fromByteArray(r);
-            sk2 = new SidhPrivateKey(sikeParam, key);
+            BigInteger modulo = new BigInteger("2").pow(sikeParam.getEA());
+            BigInteger key = ByteEncoding.fromByteArray(r).mod(modulo);
+            sk2 = new SidhPrivateKey(sikeParam, Party.ALICE, key);
         }
         PublicKey c0 = keyGenerator.derivePublicKey(Party.ALICE, sk2);
         Fp2Element j = sidh.generateSharedSecret(Party.ALICE, sk2, pk3);
@@ -170,21 +174,22 @@ public class Sike {
      * @param sk3 Bob's private key.
      * @param encrypted Encrypted message received from Alice.
      * @return Decrypted message.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    public byte[] decrypt(PrivateKey sk3, EncryptedMessage encrypted) {
+    public byte[] decrypt(PrivateKey sk3, EncryptedMessage encrypted) throws GeneralSecurityException {
         if (!(sk3 instanceof SidhPrivateKey)) {
-            throw new IllegalArgumentException("Invalid private key");
+            throw new InvalidKeyException("Invalid private key");
         }
         if (encrypted == null) {
-            throw new IllegalArgumentException("Encrypted message is null");
+            throw new InvalidParameterException("Encrypted message is null");
         }
         PublicKey c0 = encrypted.getC0();
         if (!(c0 instanceof SidhPublicKey)) {
-            throw new IllegalArgumentException("Invalid public key");
+            throw new InvalidKeyException("Invalid public key");
         }
         byte[] c1 = encrypted.getC1();
         if (c1 == null) {
-            throw new IllegalArgumentException("Invalid parameter c1");
+            throw new InvalidParameterException("Invalid parameter c1");
         }
         Fp2Element j = sidh.generateSharedSecret(Party.BOB, sk3, c0);
         byte[] h = Sha3.shake256(j.getEncoded(), sikeParam.getMessageBytes());
@@ -195,13 +200,26 @@ public class Sike {
         return m;
     }
 
+    /**
+     * Generate the ephemeral private key r.
+     * @param m Nonce.
+     * @param pk3Enc Public key pk3 encoded in bytes.
+     * @return Ephemeral private key r encoded in bytes.
+     */
     private byte[] generateR(byte[] m, byte[] pk3Enc) {
         byte[] dataR = new byte[(m.length + pk3Enc.length)];
         System.arraycopy(m, 0, dataR, 0, m.length);
         System.arraycopy(pk3Enc, 0, dataR, m.length, pk3Enc.length);
-        return Sha3.shake256(dataR, (sikeParam.getMsbA() + 7) / 8) ;
+        return Sha3.shake256(dataR, (sikeParam.getMsbA() + 7) / 8);
     }
 
+    /**
+     * Generate the shared secret K.
+     * @param m Nonce.
+     * @param c0 Public key bytes.
+     * @param c1 Encrypted message bytes.
+     * @return Shared secret bytes.
+     */
     private byte[] generateK(byte[] m, byte[] c0, byte[] c1) {
         byte[] dataK = new byte[(m.length + c0.length + c1.length)];
         System.arraycopy(m, 0, dataK, 0, m.length);

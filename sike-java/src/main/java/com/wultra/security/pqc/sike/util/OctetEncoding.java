@@ -17,6 +17,7 @@
 package com.wultra.security.pqc.sike.util;
 
 import java.math.BigInteger;
+import java.security.InvalidParameterException;
 
 /**
  * Converter for octet encoding specified in SIKE specification.
@@ -33,7 +34,7 @@ public class OctetEncoding {
      */
     public static String toOctetString(BigInteger n, int length) {
         if (n.signum() == - 1) {
-            throw new IllegalArgumentException("Number is negative");
+            throw new InvalidParameterException("Number is negative");
         }
         String hex = n.toString(16).toUpperCase();
         if (hex.length() % 2 == 1) {
@@ -42,7 +43,7 @@ public class OctetEncoding {
         char[] chars = hex.toCharArray();
         int expectedLength = length * 2;
         if (chars.length > expectedLength) {
-            throw new IllegalArgumentException("Number is too large");
+            throw new InvalidParameterException("Number is too large, " + chars.length + ", " + expectedLength);
         }
         StringBuilder sb = new StringBuilder();
         for (int i = hex.length() - 1; i >= 0; i -= 2) {
@@ -73,7 +74,7 @@ public class OctetEncoding {
      */
     public static BigInteger fromOctetString(String str) {
         if (str == null || str.length() % 2 == 1) {
-            throw new IllegalArgumentException("Invalid octet string");
+            throw new InvalidParameterException("Invalid octet string");
         }
         char[] chars = str.toCharArray();
         StringBuilder sb = new StringBuilder();

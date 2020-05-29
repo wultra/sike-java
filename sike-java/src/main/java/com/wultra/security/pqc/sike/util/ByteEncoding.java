@@ -19,6 +19,7 @@ package com.wultra.security.pqc.sike.util;
 import org.bouncycastle.util.BigIntegers;
 
 import java.math.BigInteger;
+import java.security.InvalidParameterException;
 
 /**
  * Converter for byte encoding for compatibility with the GMP library.
@@ -46,7 +47,7 @@ public class ByteEncoding {
     public static byte[] toByteArray(BigInteger n, int length) {
         byte[] encoded = reverse(BigIntegers.asUnsignedByteArray(n));
         if (encoded.length > length) {
-            throw new IllegalArgumentException("Number is too large");
+            throw new InvalidParameterException("Number is too large");
         }
         if (encoded.length == length) {
             return encoded;

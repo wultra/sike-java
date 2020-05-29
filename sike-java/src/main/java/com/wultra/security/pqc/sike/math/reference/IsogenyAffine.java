@@ -17,12 +17,13 @@
 package com.wultra.security.pqc.sike.math.reference;
 
 import com.wultra.security.pqc.sike.math.Fp2Element;
-import com.wultra.security.pqc.sike.math.FpElement;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.math.api.Isogeny;
 import com.wultra.security.pqc.sike.math.api.Montgomery;
 import com.wultra.security.pqc.sike.model.EvaluatedCurve;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
+import com.wultra.security.pqc.sike.model.SidhPrivateKey;
+import com.wultra.security.pqc.sike.model.SidhPublicKey;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
 import java.math.BigInteger;
@@ -34,24 +35,24 @@ import java.math.BigInteger;
  */
 public class IsogenyAffine implements Isogeny {
 
-    private final Montgomery montgomery = new MontgomeryAffine();
-
     @Override
     public MontgomeryCurve curve2Iso(MontgomeryCurve curve, Fp2Point p2) {
         Fp2Element t1, aAp, bAp;
+        Fp2Element b = curve.getB();
         t1 = p2.getX().square();
         t1 = t1.add(t1);
         t1 = Fp2Element.one(curve.getSikeParam().getPrime()).subtract(t1);
         aAp = t1.add(t1);
-        bAp = p2.getX().multiply(curve.getB());
+        bAp = p2.getX().multiply(b);
         return new MontgomeryCurve(curve.getSikeParam(), aAp, bAp);
     }
 
     @Override
     public MontgomeryCurve curve3Iso(MontgomeryCurve curve, Fp2Point p3) {
         Fp2Element t1, t2, aAp, bAp;
+        Fp2Element b = curve.getB();
         t1 = p3.getX().square();
-        bAp = curve.getB().multiply(t1);
+        bAp = b.multiply(t1);
         t1 = t1.add(t1);
         t2 = t1.add(t1);
         t1 = t1.add(t2);
@@ -66,6 +67,7 @@ public class IsogenyAffine implements Isogeny {
     @Override
     public MontgomeryCurve curve4Iso(MontgomeryCurve curve, Fp2Point p4) {
         Fp2Element t1, t2, aAp, bAp;
+        Fp2Element b = curve.getB();
         t1 = p4.getX().square();
         aAp = t1.square();
         aAp = aAp.add(aAp);
@@ -74,7 +76,7 @@ public class IsogenyAffine implements Isogeny {
         aAp = aAp.subtract(t2);
         t1 = p4.getX().multiply(t1);
         t1 = t1.add(p4.getX());
-        t1 = t1.multiply(curve.getB());
+        t1 = t1.multiply(b);
         t2 = t2.inverse();
         t2 = t2.negate();
         bAp = t2.multiply(t1);
@@ -101,8 +103,9 @@ public class IsogenyAffine implements Isogeny {
     }
 
     @Override
-    public Fp2Point eval3Iso(BigInteger prime, Fp2Point q, Fp2Point p3) {
+    public Fp2Point eval3Iso(MontgomeryCurve curve, Fp2Point q, Fp2Point p3) {
         Fp2Element t1, t2, t3, t4, qxAp, qyAp;
+        BigInteger prime = curve.getSikeParam().getPrime();
         t1 = q.getX().square();
         t1 = t1.multiply(p3.getX());
         t2 = p3.getX().square();
@@ -128,8 +131,9 @@ public class IsogenyAffine implements Isogeny {
     }
 
     @Override
-    public Fp2Point eval4Iso(BigInteger prime, Fp2Point q, Fp2Point p4) {
+    public Fp2Point eval4Iso(MontgomeryCurve curve, Fp2Point q, Fp2Point p4) {
         Fp2Element t1, t2, t3, t4, t5, qxAp, qyAp;
+        BigInteger prime = curve.getSikeParam().getPrime();
         t1 = q.getX().square();
         t2 = t1.square();
         t3 = p4.getX().square();
@@ -194,86 +198,123 @@ public class IsogenyAffine implements Isogeny {
     }
 
     @Override
-    public EvaluatedCurve iso2e(MontgomeryCurve curve, Fp2Point s) {
-        return iso2e(curve, s, null, null);
-    }
-
-    @Override
-    public EvaluatedCurve iso2e(MontgomeryCurve curve, Fp2Point s, Fp2Point p, Fp2Point q) {
+    public EvaluatedCurve iso2e(MontgomeryCurve curve, Fp2Point s, Fp2Point ... points) {
+        Montgomery montgomery = curve.getSikeParam().getMontgomery();
         MontgomeryCurve curveAp = curve;
-        Fp2Point sAp = s, pAp = p, qAp = q;
-        Fp2Point t;
+        Fp2Point sAp = s, phiP = null, phiQ = null;
+        if (points.length == 2) {
+            phiP = points[0];
+            phiQ = points[1];
+        }
+        Fp2Point r;
         int eAp = curve.getSikeParam().getEA();
         if (eAp % 2 == 1) {
-            t = montgomery.xDble(curveAp, sAp, eAp - 1);
-            curveAp = curve2Iso(curveAp, t);
-            if (p != null) {
-                pAp = eval2Iso(pAp, t);
-            }
-            if (q != null) {
-                qAp = eval2Iso(qAp, t);
+            r = montgomery.xDble(curveAp, sAp, eAp - 1);
+            curveAp = curve2Iso(curveAp, r);
+            sAp = eval2Iso(sAp, r);
+            if (points.length == 2) {
+                phiP = eval2Iso(phiP, r);
+                phiQ = eval2Iso(phiQ, r);
             }
             eAp--;
         }
         for (int e = eAp - 2; e >= 0; e -= 2) {
-            t = montgomery.xDble(curveAp, sAp, e);
-            curveAp = curve4Iso(curveAp, t);
+            r = montgomery.xDble(curveAp, sAp, e);
+            curveAp = curve4Iso(curveAp, r);
             // Fix division by zero in reference implementation
             if (e > 0) {
-                sAp = eval4Iso(curveAp.getSikeParam().getPrime(), sAp, t);
+                sAp = eval4Iso(curveAp, sAp, r);
             }
-            if (p != null) {
-                pAp = eval4Iso(curveAp.getSikeParam().getPrime(), pAp, t);
-            }
-            if (q != null) {
-                qAp = eval4Iso(curveAp.getSikeParam().getPrime(), qAp, t);
+            if (points.length == 2) {
+                phiP = eval4Iso(curveAp, phiP, r);
+                phiQ = eval4Iso(curveAp, phiQ, r);
             }
         }
-        return new EvaluatedCurve(curveAp, pAp, qAp);
+        return new EvaluatedCurve(curveAp, phiP, phiQ);
     }
 
     @Override
-    public EvaluatedCurve iso3e(MontgomeryCurve curve, Fp2Point s) {
-        return iso3e(curve, s, null, null);
-    }
-
-    @Override
-    public EvaluatedCurve iso3e(MontgomeryCurve curve, Fp2Point s, Fp2Point p, Fp2Point q) {
+    public EvaluatedCurve iso3e(MontgomeryCurve curve, Fp2Point s, Fp2Point ... points) {
+        Montgomery montgomery = curve.getSikeParam().getMontgomery();
         MontgomeryCurve curveAp = curve;
-        Fp2Point sAp = s, pAp = p, qAp = q;
-        Fp2Point t;
+        Fp2Point sAp = s, phiP = null, phiQ = null;
+        if (points.length == 2) {
+            phiP = points[0];
+            phiQ = points[1];
+        }
+        Fp2Point r;
         for (int e = curve.getSikeParam().getEB() - 1; e >= 0; e--) {
-            t = montgomery.xTple(curveAp, sAp, e);
-            curveAp = curve3Iso(curveAp, t);
+            r = montgomery.xTple(curveAp, sAp, e);
+            curveAp = curve3Iso(curveAp, r);
             // Fix division by zero in reference implementation
             if (e > 0) {
-                sAp = eval3Iso(curveAp.getSikeParam().getPrime(), sAp, t);
+                sAp = eval3Iso(curveAp, sAp, r);
             }
-            if (p != null) {
-                pAp = eval3Iso(curveAp.getSikeParam().getPrime(), pAp, t);
-            }
-            if (q != null) {
-                qAp = eval3Iso(curveAp.getSikeParam().getPrime(), qAp, t);
+            if (points.length == 2) {
+                phiP = eval3Iso(curveAp, phiP, r);
+                phiQ = eval3Iso(curveAp, phiQ, r);
             }
         }
-        return new EvaluatedCurve(curveAp, pAp, qAp);
+        return new EvaluatedCurve(curveAp, phiP, phiQ);
     }
 
     @Override
-    public Fp2Element isoEx2(SikeParam sikeParam, FpElement sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2) {
+    public SidhPublicKey isoGen2(MontgomeryCurve curve, SidhPrivateKey privateKey) {
+        SikeParam sikeParam = curve.getSikeParam();
+        MontgomeryAffine montgomery = (MontgomeryAffine) sikeParam.getMontgomery();
+        Isogeny isogeny = sikeParam.getIsogeny();
+        Fp2Point s = montgomery.doubleAndAdd(curve, privateKey.getKey().getX(), sikeParam.getQA(), sikeParam.getMsbA());
+        s = montgomery.xAdd(curve, sikeParam.getPA(), s);
+        EvaluatedCurve evaluatedCurve = isogeny.iso2e(curve, s, sikeParam.getPB(), sikeParam.getQB());
+        return createPublicKey(sikeParam, evaluatedCurve);
+    }
+
+    @Override
+    public SidhPublicKey isoGen3(MontgomeryCurve curve, SidhPrivateKey privateKey) {
+        SikeParam sikeParam = curve.getSikeParam();
+        MontgomeryAffine montgomery = (MontgomeryAffine) sikeParam.getMontgomery();
+        Isogeny isogeny = sikeParam.getIsogeny();
+        Fp2Point s = montgomery.doubleAndAdd(curve, privateKey.getKey().getX(), sikeParam.getQB(), sikeParam.getMsbB() - 1);
+        s = montgomery.xAdd(curve, sikeParam.getPB(), s);
+        EvaluatedCurve evaluatedCurve = isogeny.iso3e(curve, s, sikeParam.getPA(), sikeParam.getQA());
+        return createPublicKey(sikeParam, evaluatedCurve);
+    }
+
+    /**
+     * Create a public key from evaluated curve.
+     * @param sikeParam SIKE parameters.
+     * @param evaluatedCurve Evaluated curve.
+     * @return Public key.
+     */
+    private SidhPublicKey createPublicKey(SikeParam sikeParam, EvaluatedCurve evaluatedCurve) {
+        MontgomeryAffine montgomery = (MontgomeryAffine) sikeParam.getMontgomery();
+        Fp2Point p = evaluatedCurve.getP();
+        Fp2Point q = evaluatedCurve.getQ();
+        Fp2Point r = montgomery.getXr(evaluatedCurve.getCurve(), p, q);
+
+        Fp2Element px = new Fp2Element(sikeParam.getPrime(), p.getX().getX0(), p.getX().getX1());
+        Fp2Element qx = new Fp2Element(sikeParam.getPrime(), q.getX().getX0(), q.getX().getX1());
+        Fp2Element rx = new Fp2Element(sikeParam.getPrime(), r.getX().getX0(), r.getX().getX1());
+        return new SidhPublicKey(sikeParam, px, qx, rx);
+    }
+
+    @Override
+    public Fp2Element isoEx2(SikeParam sikeParam, BigInteger sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2) {
+        MontgomeryAffine montgomery = (MontgomeryAffine) sikeParam.getMontgomery();
         EvaluatedCurve iso = montgomery.getYpYqAB(sikeParam, p2, q2, r2);
         MontgomeryCurve curve = iso.getCurve();
-        Fp2Point s = montgomery.doubleAndAdd(curve, sk2.getX(), iso.getQ(), sikeParam.getMsbA());
+        Fp2Point s = montgomery.doubleAndAdd(curve, sk2, iso.getQ(), sikeParam.getMsbA());
         s = montgomery.xAdd(curve, iso.getP(), s);
         EvaluatedCurve iso2 = iso2e(curve, s);
         return montgomery.jInv(iso2.getCurve());
     }
 
     @Override
-    public Fp2Element isoEx3(SikeParam sikeParam, FpElement sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3) {
+    public Fp2Element isoEx3(SikeParam sikeParam, BigInteger sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3) {
+        MontgomeryAffine montgomery = (MontgomeryAffine) sikeParam.getMontgomery();
         EvaluatedCurve iso = montgomery.getYpYqAB(sikeParam, p3, q3, r3);
         MontgomeryCurve curve = iso.getCurve();
-        Fp2Point s = montgomery.doubleAndAdd(curve, sk3.getX(), iso.getQ(), sikeParam.getMsbB() - 1);
+        Fp2Point s = montgomery.doubleAndAdd(curve, sk3, iso.getQ(), sikeParam.getMsbB() - 1);
         s = montgomery.xAdd(curve, iso.getP(), s);
         EvaluatedCurve iso3 = iso3e(curve, s);
         return montgomery.jInv(iso3.getCurve());

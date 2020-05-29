@@ -17,9 +17,10 @@
 package com.wultra.security.pqc.sike.math.api;
 
 import com.wultra.security.pqc.sike.math.Fp2Element;
-import com.wultra.security.pqc.sike.math.FpElement;
 import com.wultra.security.pqc.sike.model.EvaluatedCurve;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
+import com.wultra.security.pqc.sike.model.SidhPrivateKey;
+import com.wultra.security.pqc.sike.model.SidhPublicKey;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
 import java.math.BigInteger;
@@ -34,7 +35,7 @@ public interface Isogeny {
     /**
      * Compute a 2-isogenous curve.
      * @param curve Current curve.
-     * @param p2 Generator point with order equal to 2 on current curve.
+     * @param p2    Generator point with order equal to 2 on current curve.
      * @return A 2-isogenous curve.
      */
     MontgomeryCurve curve2Iso(MontgomeryCurve curve, Fp2Point p2);
@@ -65,57 +66,55 @@ public interface Isogeny {
 
     /**
      * Evaluate a 3-isogeny at a point.
-     * @param prime Field prime.
+     * @param curve Current curve.
      * @param q Point to be evaluated.
      * @param p3 Generator point with order equal to 3 on current curve.
      * @return Evaluated point.
      */
-    Fp2Point eval3Iso(BigInteger prime, Fp2Point q, Fp2Point p3);
+    Fp2Point eval3Iso(MontgomeryCurve curve, Fp2Point q, Fp2Point p3);
 
     /**
      * Evaluate a 4-isogeny at a point.
-     * @param prime Field prime.
+     * @param curve Current curve.
      * @param q Point to be evaluated.
      * @param p4 Generator point with order equal to 4 on current curve.
      * @return Evaluated point.
      */
-    Fp2Point eval4Iso(BigInteger prime, Fp2Point q, Fp2Point p4);
+    Fp2Point eval4Iso(MontgomeryCurve curve, Fp2Point q, Fp2Point p4);
 
     /**
-     * Compute a 2^EA-isogeny.
+     * Compute a 2^eA-isogeny and evaluate points p and q on this isogeny.
      * @param curve Current curve.
-     * @param s Generator point with order equal to 2^EA on current curve.
-     * @return Curve corresponding to a 2^EA-isogeny.
+     * @param s Generator point with order equal to 2^eA on current curve.
+     * @param points Points to be evaluated on computed isogeny (optional).
+     * @return Curve corresponding to a 2^eA-isogeny.
      */
-    EvaluatedCurve iso2e(MontgomeryCurve curve, Fp2Point s);
+    EvaluatedCurve iso2e(MontgomeryCurve curve, Fp2Point s, Fp2Point ... points);
 
     /**
-     * Compute a 2^EA-isogeny and evaluate points p and q on this isogeny.
+     * Compute a 3^eB-isogeny and evaluate points p and q on this isogeny.
      * @param curve Current curve.
-     * @param s Generator point with order equal to 2^EA on current curve.
-     * @param p Point P to be evaluated on computed isogeny.
-     * @param q Point Q to be evaluated on computed isogeny.
-     * @return Curve corresponding to a 2^EA-isogeny.
+     * @param s Generator point with order equal to 3^eB on current curve.
+     * @param points Points to be evaluated on computed isogeny (optional).
+     * @return Curve corresponding to a 3^eB-isogeny.
      */
-    EvaluatedCurve iso2e(MontgomeryCurve curve, Fp2Point s, Fp2Point p, Fp2Point q);
+    EvaluatedCurve iso3e(MontgomeryCurve curve, Fp2Point s, Fp2Point ... points);
 
     /**
-     * Compute a 3^EB-isogeny.
-     * @param curve Current curve.
-     * @param s Generator point with order equal to 3^EB on current curve.
-     * @return Curve corresponding to a 3^EB-isogeny.
+     * Derive a public key from a private key for Alice.
+     * @param curve Starting curve.
+     * @param privateKey Private key.
+     * @return Derived public key.
      */
-    EvaluatedCurve iso3e(MontgomeryCurve curve, Fp2Point s);
+    SidhPublicKey isoGen2(MontgomeryCurve curve, SidhPrivateKey privateKey);
 
     /**
-     * Compute a 3^EB-isogeny and evaluate points p and q on this isogeny.
-     * @param curve Current curve.
-     * @param s Generator point with order equal to 3^EB on current curve.
-     * @param p Point P to be evaluated on computed isogeny.
-     * @param q Point Q to be evaluated on computed isogeny.
-     * @return Curve corresponding to a 3^EB-isogeny.
+     * Derive a public key from a private key for Bob.
+     * @param curve Starting curve.
+     * @param privateKey Private key.
+     * @return Derived public key.
      */
-    EvaluatedCurve iso3e(MontgomeryCurve curve, Fp2Point s, Fp2Point p, Fp2Point q);
+    SidhPublicKey isoGen3(MontgomeryCurve curve, SidhPrivateKey privateKey);
 
     /**
      * Compute a shared secret isogeny j-invariant in the 2-torsion.
@@ -126,7 +125,7 @@ public interface Isogeny {
      * @param r2 The x coordinate of public point R.
      * @return Shared secret isogeny j-invariant.
      */
-    Fp2Element isoEx2(SikeParam sikeParam, FpElement sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2);
+    Fp2Element isoEx2(SikeParam sikeParam, BigInteger sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2);
 
     /**
      * Compute a shared secret isogeny j-invariant in the 3-torsion.
@@ -137,6 +136,6 @@ public interface Isogeny {
      * @param r3 The x coordinate of public point R.
      * @return Shared secret isogeny j-invariant.
      */
-    Fp2Element isoEx3(SikeParam sikeParam, FpElement sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3);
+    Fp2Element isoEx3(SikeParam sikeParam, BigInteger sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3);
 
 }

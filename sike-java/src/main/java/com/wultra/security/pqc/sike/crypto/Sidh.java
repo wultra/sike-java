@@ -22,8 +22,7 @@ import com.wultra.security.pqc.sike.model.SidhPrivateKey;
 import com.wultra.security.pqc.sike.model.SidhPublicKey;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 
 /**
  * SIDH key exchange.
@@ -48,22 +47,23 @@ public class Sidh {
      * @param privateKey Private key.
      * @param publicKey Public key.
      * @return Shared secret isogeny j-invariant.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    public Fp2Element generateSharedSecret(Party party, PrivateKey privateKey, PublicKey publicKey) {
+    public Fp2Element generateSharedSecret(Party party, PrivateKey privateKey, PublicKey publicKey) throws GeneralSecurityException {
         if (!(privateKey instanceof SidhPrivateKey)) {
-            throw new IllegalArgumentException("Invalid private key");
+            throw new InvalidKeyException("Invalid private key");
         }
         if (!(publicKey instanceof SidhPublicKey)) {
-            throw new IllegalArgumentException("Invalid public key");
+            throw new InvalidKeyException("Invalid public key");
         }
         SidhPrivateKey priv = (SidhPrivateKey) privateKey;
         SidhPublicKey pub = (SidhPublicKey) publicKey;
         if (party == Party.ALICE) {
-            return sikeParam.getIsogeny().isoEx2(sikeParam, priv.getKey(), pub.getPx(), pub.getQx(), pub.getRx());
+            return sikeParam.getIsogeny().isoEx2(sikeParam, priv.getKey().getX(), pub.getPx(), pub.getQx(), pub.getRx());
         }
         if (party == Party.BOB) {
-            return sikeParam.getIsogeny().isoEx3(sikeParam, priv.getKey(), pub.getPx(), pub.getQx(), pub.getRx());
+            return sikeParam.getIsogeny().isoEx3(sikeParam, priv.getKey().getX(), pub.getPx(), pub.getQx(), pub.getRx());
         }
-        throw new IllegalArgumentException("Invalid party");
+        throw new InvalidParameterException("Invalid party");
     }
 }

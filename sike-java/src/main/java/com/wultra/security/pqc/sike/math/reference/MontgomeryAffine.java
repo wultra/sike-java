@@ -33,25 +33,13 @@ import java.math.BigInteger;
 public class MontgomeryAffine implements Montgomery {
 
     @Override
-    public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int msb) {
-        BigInteger prime = curve.getSikeParam().getPrime();
-        Fp2Point q = Fp2PointAffine.infinity(prime);
-        for (int i = msb - 1; i >= 0; i--) {
-            q = xDbl(curve, q);
-            if (m.testBit(i)) {
-                q = xAdd(curve, q, p);
-            }
-        }
-        return q;
-    }
-
-    @Override
     public Fp2Point xDbl(MontgomeryCurve curve, Fp2Point p) {
         if (p.isInfinite()) {
             return p;
         }
 
         Fp2Element t0, t1, t2, x2p, y2p;
+        Fp2Element b = curve.getB();
 
         t0 = p.getX().square();
         t1 = t0.add(t0);
@@ -61,17 +49,17 @@ public class MontgomeryAffine implements Montgomery {
         t1 = t1.add(t1);
         t0 = t0.add(t1);
         t0 = t0.add(t2);
-        t1 = curve.getB().multiply(p.getY());
+        t1 = b.multiply(p.getY());
         t1 = t1.add(t1);
         t1 = t1.inverse();
         t0 = t0.multiply(t1);
         t1 = t0.square();
-        t2 = curve.getB().multiply(t1);
+        t2 = b.multiply(t1);
         t2 = t2.subtract(curve.getA());
         t2 = t2.subtract(p.getX());
         t2 = t2.subtract(p.getX());
         t1 = t0.multiply(t1);
-        t1 = curve.getB().multiply(t1);
+        t1 = b.multiply(t1);
         t1 = t1.add(p.getY());
         y2p = p.getX().add(p.getX());
         y2p = y2p.add(p.getX());
@@ -107,51 +95,6 @@ public class MontgomeryAffine implements Montgomery {
     }
 
     @Override
-    public Fp2Point xAdd(MontgomeryCurve curve, Fp2Point p, Fp2Point q) {
-        if (p.isInfinite()) {
-            return q;
-        }
-        if (q.isInfinite()) {
-            return p;
-        }
-        if (p.equals(q)) {
-            return xDbl(curve, p);
-        }
-        if (p.equals(q.negate())) {
-            BigInteger prime = curve.getSikeParam().getPrime();
-            return Fp2PointAffine.infinity(prime);
-        }
-
-        Fp2Element t0, t1, t2, xpq, ypq;
-
-        t0 = q.getY().subtract(p.getY());
-        t1 = q.getX().subtract(p.getX());
-        t1 = t1.inverse();
-        t0 = t0.multiply(t1);
-        t1 = t0.square();
-        t2 = p.getX().add(p.getX());
-        t2 = t2.add(q.getX());
-        t2 = t2.add(curve.getA());
-        t2 = t2.multiply(t0);
-        t0 = t0.multiply(t1);
-        t0 = curve.getB().multiply(t0);
-        t0 = t0.add(p.getY());
-        t0 = t2.subtract(t0);
-        t1 = curve.getB().multiply(t1);
-        t1 = t1.subtract(curve.getA());
-        t1 = t1.subtract(p.getX());
-        xpq = t1.subtract(q.getX());
-        ypq = t0;
-        return new Fp2PointAffine(xpq, ypq);
-    }
-
-    @Override
-    public Fp2Point getXr(MontgomeryCurve curve, Fp2Point p, Fp2Point q) {
-        Fp2Point qNeg = new Fp2PointAffine(q.getX(), q.getY().negate());
-        return xAdd(curve, p, qNeg);
-    }
-
-    @Override
     public Fp2Element jInv(MontgomeryCurve curve) {
         Fp2Element t0, t1, j;
         Fp2Element a = curve.getA();
@@ -176,14 +119,14 @@ public class MontgomeryAffine implements Montgomery {
     }
 
     @Override
-    public Fp2Element getA(SikeParam sileParam, Fp2Element px, Fp2Element qx, Fp2Element rx) {
+    public Fp2Element getA(SikeParam sikeParam, Fp2Element px, Fp2Element qx, Fp2Element rx) {
         Fp2Element t0, t1, a;
         t1 = px.add(qx);
         t0 = px.multiply(qx);
         a = rx.multiply(t1);
         a = a.add(t0);
         t0 = t0.multiply(rx);
-        a = a.subtract(Fp2Element.one(sileParam.getPrime()));
+        a = a.subtract(Fp2Element.one(sikeParam.getPrime()));
         t0 = t0.add(t0);
         t1 = t1.add(rx);
         t0 = t0.add(t0);
@@ -194,7 +137,92 @@ public class MontgomeryAffine implements Montgomery {
         return a;
     }
 
-    @Override
+    /**
+     * Double-and-add scalar multiplication.
+     * @param curve Current curve.
+     * @param m Scalar value.
+     * @param p Point on the curve.
+     * @param msb Most significant bit.
+     * @return Calculated new point.
+     */
+    public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int msb) {
+        BigInteger prime = curve.getSikeParam().getPrime();
+        Fp2Point q = Fp2PointAffine.infinity(prime);
+        for (int i = msb - 1; i >= 0; i--) {
+            q = xDbl(curve, q);
+            if (m.testBit(i)) {
+                q = xAdd(curve, q, p);
+            }
+        }
+        return q;
+    }
+
+    /**
+     * Adding of two points.
+     * @param curve Current curve.
+     * @param p First point on the curve.
+     * @param q Second point on the curve.
+     * @return Calculated new point.
+     */
+    public Fp2Point xAdd(MontgomeryCurve curve, Fp2Point p, Fp2Point q) {
+        if (p.isInfinite()) {
+            return q;
+        }
+        if (q.isInfinite()) {
+            return p;
+        }
+        if (p.equals(q)) {
+            return xDbl(curve, p);
+        }
+        if (p.equals(q.negate())) {
+            BigInteger prime = curve.getSikeParam().getPrime();
+            return Fp2PointAffine.infinity(prime);
+        }
+
+        Fp2Element t0, t1, t2, xpq, ypq;
+        Fp2Element b = curve.getB();
+
+        t0 = q.getY().subtract(p.getY());
+        t1 = q.getX().subtract(p.getX());
+        t1 = t1.inverse();
+        t0 = t0.multiply(t1);
+        t1 = t0.square();
+        t2 = p.getX().add(p.getX());
+        t2 = t2.add(q.getX());
+        t2 = t2.add(curve.getA());
+        t2 = t2.multiply(t0);
+        t0 = t0.multiply(t1);
+        t0 = b.multiply(t0);
+        t0 = t0.add(p.getY());
+        t0 = t2.subtract(t0);
+        t1 = b.multiply(t1);
+        t1 = t1.subtract(curve.getA());
+        t1 = t1.subtract(p.getX());
+        xpq = t1.subtract(q.getX());
+        ypq = t0;
+        return new Fp2PointAffine(xpq, ypq);
+    }
+
+    /**
+     * Recover the point R = P - Q.
+     * @param curve Current curve.
+     * @param p Point P.
+     * @param q Point Q.
+     * @return Calculated point R.
+     */
+    public Fp2Point getXr(MontgomeryCurve curve, Fp2Point p, Fp2Point q) {
+        Fp2Point qNeg = new Fp2PointAffine(q.getX(), q.getY().negate());
+        return xAdd(curve, p, qNeg);
+    }
+
+    /**
+     * Recover the curve and points P and Q.
+     * @param sikeParam SIKE parameters.
+     * @param px The x coordinate of point P.
+     * @param qx The x coordinate of point Q.
+     * @param rx The x coordinate of point R.
+     * @return A recovered curve and points P and Q.
+     */
     public EvaluatedCurve getYpYqAB(SikeParam sikeParam, Fp2Element px, Fp2Element qx, Fp2Element rx) {
         Fp2Element b, t1, t2, py, qy;
         Fp2Element a = getA(sikeParam, px, qx, rx);

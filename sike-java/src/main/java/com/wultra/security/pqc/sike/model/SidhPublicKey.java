@@ -49,8 +49,6 @@ public class SidhPublicKey implements PublicKey {
         this.rx = rx;
     }
 
-    // TODO add constructor with official octet format from SIKE specification
-
     /**
      * Get the x coordinate of public point P.
      * @return The x coordinate of public point P.

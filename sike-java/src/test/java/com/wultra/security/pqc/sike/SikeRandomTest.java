@@ -23,10 +23,12 @@ import com.wultra.security.pqc.sike.model.EncryptedMessage;
 import com.wultra.security.pqc.sike.model.ImplementationType;
 import com.wultra.security.pqc.sike.model.Party;
 import com.wultra.security.pqc.sike.param.SikeParam;
+import com.wultra.security.pqc.sike.param.SikeParamP434;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
 import org.junit.jupiter.api.Test;
 
+import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.Security;
 import java.util.Arrays;
@@ -47,8 +49,8 @@ public class SikeRandomTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public void initSike() {
-        SikeParam sikeParam = new SikeParam("SIKEp434", ImplementationType.REFERENCE);
+    public void initSike() throws GeneralSecurityException {
+        SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         KeyGenerator keyGenerator = new KeyGenerator(sikeParam);
         sike = new Sike(sikeParam);
         System.out.println("Prime: " + sikeParam.getPrime());
@@ -60,7 +62,7 @@ public class SikeRandomTest {
     }
 
     @Test
-    public void testSikeEncryption() {
+    public void testSikeEncryption() throws GeneralSecurityException {
         System.out.println("----------------------------------------");
         initSike();
         System.out.println("Testing SIKE encryption/decryption");
@@ -72,13 +74,11 @@ public class SikeRandomTest {
         System.out.println("Decrypted message: " + new String(decrypted));
         boolean match = Arrays.equals(message, decrypted);
         System.out.println("Messages match: " + match);
-        if (!match) {
-            throw new RuntimeException("Decryption failed");
-        }
+        assertTrue(match, "Messages do not match");
     }
 
     @Test
-    public void testSikeEncapsulation() {
+    public void testSikeEncapsulation() throws GeneralSecurityException {
         System.out.println("----------------------------------------");
         initSike();
         System.out.println("Testing SIKE encapsulation/decapsulation");

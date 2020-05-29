@@ -16,18 +16,15 @@
  */
 package com.wultra.security.pqc.sike.crypto;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
-import com.wultra.security.pqc.sike.math.api.Fp2Point;
-import com.wultra.security.pqc.sike.math.api.Isogeny;
-import com.wultra.security.pqc.sike.math.api.Montgomery;
-import com.wultra.security.pqc.sike.model.*;
+import com.wultra.security.pqc.sike.model.ImplementationType;
+import com.wultra.security.pqc.sike.model.MontgomeryCurve;
+import com.wultra.security.pqc.sike.model.Party;
+import com.wultra.security.pqc.sike.model.SidhPrivateKey;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
 
 import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 
 /**
  * SIDH and SIKE key generator.
@@ -36,10 +33,7 @@ import java.security.PublicKey;
  */
 public class KeyGenerator {
 
-    private final Montgomery montgomery;
-    private final Isogeny isogeny;
     private final SikeParam sikeParam;
-
     private final RandomGenerator randomGenerator;
 
     /**
@@ -48,8 +42,6 @@ public class KeyGenerator {
      */
     public KeyGenerator(SikeParam sikeParam) {
         this.sikeParam = sikeParam;
-        this.montgomery = sikeParam.getMontgomery();
-        this.isogeny = sikeParam.getIsogeny();
         this.randomGenerator = new RandomGenerator();
     }
 
@@ -60,8 +52,6 @@ public class KeyGenerator {
      */
     public KeyGenerator(SikeParam sikeParam, RandomGenerator randomGenerator) {
         this.sikeParam = sikeParam;
-        this.montgomery = sikeParam.getMontgomery();
-        this.isogeny = sikeParam.getIsogeny();
         this.randomGenerator = randomGenerator;
     }
 
@@ -69,8 +59,9 @@ public class KeyGenerator {
      * Generate a key pair.
      * @param party Alice or Bob.
      * @return Generated key pair.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    public KeyPair generateKeyPair(Party party) {
+    public KeyPair generateKeyPair(Party party) throws GeneralSecurityException {
         PrivateKey privateKey = generatePrivateKey(party);
         PublicKey publicKey = derivePublicKey(party, privateKey);
         return new KeyPair(publicKey, privateKey);
@@ -80,11 +71,12 @@ public class KeyGenerator {
      * Generate a private key.
      * @param party Alice or Bob.
      * @return Generated key pair.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    public PrivateKey generatePrivateKey(Party party) {
-        byte[] s = randomGenerator.generateRandomBytes(16);
+    public PrivateKey generatePrivateKey(Party party) throws GeneralSecurityException {
+        byte[] s = randomGenerator.generateRandomBytes(sikeParam.getMessageBytes());
         BigInteger randomKey = generateRandomKey(sikeParam, party);
-        return new SidhPrivateKey(sikeParam, randomKey, s);
+        return new SidhPrivateKey(sikeParam, party, randomKey, s);
     }
 
     /**
@@ -92,55 +84,50 @@ public class KeyGenerator {
      * @param party Alice or Bob.
      * @param privateKey Private key.
      * @return Derived public key.
+     * @throws InvalidKeyException Thrown in case key derivation fails.
      */
-    public PublicKey derivePublicKey(Party party, PrivateKey privateKey) {
+    public PublicKey derivePublicKey(Party party, PrivateKey privateKey) throws InvalidKeyException {
         if (!(privateKey instanceof SidhPrivateKey)) {
-            throw new IllegalArgumentException("Invalid private key");
+            throw new InvalidKeyException("Invalid private key");
         }
         SidhPrivateKey priv = (SidhPrivateKey) privateKey;
-        MontgomeryCurve curve = new MontgomeryCurve(sikeParam, sikeParam.getA(), sikeParam.getB());
-        EvaluatedCurve evaluatedCurve;
-        if (party == Party.ALICE) {
-            Fp2Point s = montgomery.doubleAndAdd(curve, priv.getKey().getX(), sikeParam.getQA(), sikeParam.getMsbA());
-            s = montgomery.xAdd(curve, sikeParam.getPA(), s);
-            evaluatedCurve = isogeny.iso2e(curve, s, sikeParam.getPB(), sikeParam.getQB());
-        } else if (party == Party.BOB) {
-            Fp2Point s = montgomery.doubleAndAdd(curve, priv.getKey().getX(), sikeParam.getQB(), sikeParam.getMsbB() - 1);
-            s = montgomery.xAdd(curve, sikeParam.getPB(), s);
-            evaluatedCurve = isogeny.iso3e(curve, s, sikeParam.getPA(), sikeParam.getQA());
+        MontgomeryCurve curve;
+        if (sikeParam.getImplementationType() == ImplementationType.REFERENCE) {
+            curve = new MontgomeryCurve(sikeParam, sikeParam.getA(), sikeParam.getB());
+        } else if (sikeParam.getImplementationType() == ImplementationType.OPTIMIZED) {
+            curve = new MontgomeryCurve(sikeParam, sikeParam.getA());
         } else {
-            throw new IllegalArgumentException("Invalid party");
+            throw new InvalidParameterException("Unsupported implementation type");
         }
-        Fp2Point p = evaluatedCurve.getP();
-        Fp2Point q = evaluatedCurve.getQ();
-        Fp2Point r = montgomery.getXr(evaluatedCurve.getCurve(), p, q);
-
-        Fp2Element px = new Fp2Element(sikeParam.getPrime(), p.getX().getX0(), p.getX().getX1());
-        Fp2Element qx = new Fp2Element(sikeParam.getPrime(), q.getX().getX0(), q.getX().getX1());
-        Fp2Element rx = new Fp2Element(sikeParam.getPrime(), r.getX().getX0(), r.getX().getX1());
-        return new SidhPublicKey(sikeParam, px, qx, rx);
+        if (party == Party.ALICE) {
+            return sikeParam.getIsogeny().isoGen2(curve, priv);
+        } else if (party == Party.BOB) {
+            return sikeParam.getIsogeny().isoGen3(curve, priv);
+        }
+        throw new InvalidParameterException("Invalid party");
     }
 
     /**
      * Generate a random key.
      * @param sikeParam SIKE parameters.
      * @return Random BigInteger usable as a private key.
+     * @throws GeneralSecurityException Thrown in case cryptography fails.
      */
-    private BigInteger generateRandomKey(SikeParam sikeParam, Party party) {
+    private BigInteger generateRandomKey(SikeParam sikeParam, Party party) throws GeneralSecurityException {
         if (party == Party.ALICE) {
-            // random value in [0, 2^EA - 1]
+            // random value in [0, 2^eA - 1]
             int length = (sikeParam.getMsbA() + 7) / 8;
             byte[] randomBytes = randomGenerator.generateRandomBytes(length);
-            return ByteEncoding.fromByteArray(randomBytes);
+            return ByteEncoding.fromByteArray(randomBytes).mod(sikeParam.getOrdA());
         }
         if (party == Party.BOB) {
-            // random value in [0, 2^Floor(Log(2,3^EB)) - 1]
+            // random value in [0, 2^Floor(Log(2,3^eB)) - 1]
             int length = (sikeParam.getMsbB() - 1 + 7) / 8;
             byte[] randomBytes = randomGenerator.generateRandomBytes(length);
             BigInteger modulo = new BigInteger("2").pow(sikeParam.getMsbB() - 1);
             return ByteEncoding.fromByteArray(randomBytes).mod(modulo);
         }
-        throw new IllegalArgumentException("Invalid party");
+        throw new InvalidParameterException("Invalid party");
     }
 
 }

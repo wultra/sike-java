@@ -74,8 +74,6 @@ public class KatTester {
             assertEquals(kat.getSk(), priv.toOctetString() + pub.toOctetString());
             assertEquals(kat.getPk(), pub.toOctetString());
 
-            System.out.println("pk3: " + pub.toOctetString());
-
             Sike sike = new Sike(sikeParam, drbgRandom);
             EncapsulationResult encapsulationResult = sike.encapsulate(keyPair.getPublic());
             EncryptedMessage encrypted = encapsulationResult.getEncryptedMessage();

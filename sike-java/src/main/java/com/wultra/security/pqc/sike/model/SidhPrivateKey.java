@@ -22,8 +22,10 @@ import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 import java.security.PrivateKey;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -45,25 +47,11 @@ public class SidhPrivateKey implements PrivateKey {
      * @param secret Secret value of the private key.
      */
     public SidhPrivateKey(SikeParam sikeParam, Party party, BigInteger secret) {
-        if (secret.compareTo(BigInteger.ZERO) <= 0) {
-            throw new InvalidParameterException("Invalid secret");
-        }
-        if (party == Party.ALICE) {
-            if (secret.compareTo(sikeParam.getOrdA()) >= 0) {
-                System.out.println(secret);
-                System.out.println(sikeParam.getOrdA());
-                throw new InvalidParameterException("Invalid secret");
-            }
-        } else if (party == Party.BOB) {
-            if (secret.compareTo(sikeParam.getOrdB()) >= 0) {
-                throw new InvalidParameterException("Invalid secret");
-            }
-        } else {
-            throw new InvalidParameterException("Invalid party");
-        }
         this.sikeParam = sikeParam;
         this.party = party;
+        validatePrivateKey(secret);
         this.key = new FpElement(sikeParam.getPrime(), secret);
+        this.s = new byte[sikeParam.getMessageBytes()];
     }
 
     /**
@@ -73,7 +61,47 @@ public class SidhPrivateKey implements PrivateKey {
      * @param bytes Byte value of the private key.
      */
     public SidhPrivateKey(SikeParam sikeParam, Party party, byte[] bytes) {
-        this(sikeParam, party, ByteEncoding.fromByteArray(bytes));
+        this.sikeParam = sikeParam;
+        this.party = party;
+        int sLength = sikeParam.getMessageBytes();
+        int keyLength = (sikeParam.getPrime().bitLength() + 7) / 8;
+        if (bytes == null || bytes.length != sLength + keyLength) {
+            throw new InvalidParameterException("Invalid private key");
+        }
+        byte[] s = new byte[sLength];
+        byte[] key = new byte[keyLength];
+        System.arraycopy(bytes, 0, s, 0, sLength);
+        System.arraycopy(bytes, sLength, key, 0, keyLength);
+        BigInteger secret = ByteEncoding.fromByteArray(key);
+        validatePrivateKey(secret);
+        this.s = s;
+        this.key = new FpElement(sikeParam.getPrime(), secret);
+    }
+
+    /**
+     * Construct private key from octets.
+     * @param sikeParam SIKE parameters.
+     * @param party Alice or Bob.
+     * @param octets Octet value of the private key.
+     */
+    public SidhPrivateKey(SikeParam sikeParam, Party party, String octets) {
+        this.sikeParam = sikeParam;
+        this.party = party;
+        int sLength = sikeParam.getMessageBytes();
+        int keyLength = getKeyLength(party);
+        if (octets == null || octets.length() != (sLength + keyLength) * 2) {
+            throw new InvalidParameterException("Invalid private key");
+        }
+        byte[] bytes = octets.getBytes(StandardCharsets.UTF_8);
+        byte[] s = new byte[sLength * 2];
+        byte[] key = new byte[keyLength * 2];
+        System.arraycopy(bytes, 0, s, 0, sLength * 2);
+        System.arraycopy(bytes, sLength * 2, key, 0, keyLength * 2);
+        BigInteger sVal = OctetEncoding.fromOctetString(new String(s));
+        BigInteger secret = OctetEncoding.fromOctetString(new String(key));
+        validatePrivateKey(secret);
+        this.s = ByteEncoding.toByteArray(sVal, sLength);
+        this.key = new FpElement(sikeParam.getPrime(), secret);
     }
 
     /**
@@ -86,6 +114,42 @@ public class SidhPrivateKey implements PrivateKey {
     public SidhPrivateKey(SikeParam sikeParam, Party party, BigInteger key, byte[] s) {
         this(sikeParam, party, key);
         this.s = s;
+    }
+
+    /**
+     * Validate the BigInteger value representing the private key.
+     * @param secret BigInteger value representing the private key.
+     */
+    private void validatePrivateKey(BigInteger secret) {
+        if (secret.compareTo(BigInteger.ZERO) <= 0) {
+            throw new InvalidParameterException("Invalid secret");
+        }
+        if (party == Party.ALICE) {
+            if (secret.compareTo(sikeParam.getOrdA()) >= 0) {
+                throw new InvalidParameterException("Invalid secret");
+            }
+        } else if (party == Party.BOB) {
+            if (secret.compareTo(sikeParam.getOrdB()) >= 0) {
+                throw new InvalidParameterException("Invalid secret");
+            }
+        } else {
+            throw new InvalidParameterException("Invalid party");
+        }
+    }
+
+    /**
+     * Get the private key length.
+     * @param party Alice or Bob.
+     * @return Private key length.
+     */
+    private int getKeyLength(Party party) {
+        if (party == Party.ALICE) {
+            return (sikeParam.getMsbA() + 7) / 8;
+        } else if (party == Party.BOB){
+            return (sikeParam.getMsbB() - 1 + 7) / 8;
+        } else {
+            throw new InvalidParameterException("Invalid party");
+        }
     }
 
     /**
@@ -128,7 +192,11 @@ public class SidhPrivateKey implements PrivateKey {
      * @return Private key encoded as bytes.
      */
     public byte[] getEncoded() {
-        return key.getEncoded();
+        byte[] encoded = key.getEncoded();
+        byte[] output = new byte[s.length + encoded.length];
+        System.arraycopy(s, 0, output, 0, s.length);
+        System.arraycopy(encoded, 0, output, s.length, encoded.length);
+        return output;
     }
 
     /**
@@ -136,18 +204,8 @@ public class SidhPrivateKey implements PrivateKey {
      * @return Octet string.
      */
     public String toOctetString() {
-        String prefix = "";
-        if (s != null) {
-            prefix = OctetEncoding.toOctetString(s, sikeParam.getMessageBytes());
-        }
-        int length;
-        if (party == Party.ALICE) {
-            length = (sikeParam.getMsbA() + 7) / 8;
-        } else if (party == Party.BOB){
-            length = (sikeParam.getMsbB() - 1 + 7) / 8 ;
-        } else {
-            throw new InvalidParameterException("Invalid party");
-        }
+        String prefix = OctetEncoding.toOctetString(s, sikeParam.getMessageBytes());
+        int length = getKeyLength(party);
         return prefix + OctetEncoding.toOctetString(key.getX(), length);
     }
 
@@ -161,8 +219,9 @@ public class SidhPrivateKey implements PrivateKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SidhPrivateKey that = (SidhPrivateKey) o;
-        return sikeParam.equals(that.sikeParam) &&
-                key.equals(that.key);
+        return sikeParam.equals(that.sikeParam)
+                && Arrays.equals(s, that.s)
+                && key.equals(that.key);
     }
 
     @Override

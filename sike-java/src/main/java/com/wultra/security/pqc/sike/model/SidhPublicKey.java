@@ -18,7 +18,11 @@ package com.wultra.security.pqc.sike.model;
 
 import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.param.SikeParam;
+import com.wultra.security.pqc.sike.util.ByteEncoding;
+import com.wultra.security.pqc.sike.util.OctetEncoding;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.util.Objects;
 
@@ -36,7 +40,7 @@ public class SidhPublicKey implements PublicKey {
     private final Fp2Element rx;
 
     /**
-     * Public key constructor.
+     * Public key constructor from F(p^2) Elements.
      * @param sikeParam SIKE parameters.
      * @param px The x coordinate of public point P.
      * @param qx The x coordinate of public point Q.
@@ -47,6 +51,53 @@ public class SidhPublicKey implements PublicKey {
         this.px = px;
         this.qx = qx;
         this.rx = rx;
+    }
+
+    /**
+     * Public key constructor from byte array representation.
+     * @param sikeParam SIKE parameters.
+     * @param bytes The x coordinates of public points P, Q and R.
+     */
+    public SidhPublicKey(SikeParam sikeParam, byte[] bytes) {
+        this.sikeParam = sikeParam;
+        BigInteger prime = sikeParam.getPrime();
+        int primeSize = (prime.bitLength() + 7) / 8;
+        if (bytes == null || bytes.length != 6 * primeSize) {
+            throw new IllegalStateException("Invalid public key");
+        }
+        BigInteger[] keyParts = new BigInteger[6];
+        for (int i = 0; i < 6; i++) {
+            byte[] keyBytes = new byte[primeSize];
+            System.arraycopy(bytes, i * primeSize, keyBytes, 0, keyBytes.length);
+            keyParts[i] = ByteEncoding.fromByteArray(keyBytes);
+        }
+        this.px = new Fp2Element(prime, keyParts[0], keyParts[1]);
+        this.qx = new Fp2Element(prime, keyParts[2], keyParts[3]);
+        this.rx = new Fp2Element(prime, keyParts[4], keyParts[5]);
+    }
+
+    /**
+     * Construct public key from octets.
+     * @param sikeParam SIKE parameters.
+     * @param octets Octet value of the private key.
+     */
+    public SidhPublicKey(SikeParam sikeParam, String octets) {
+        this.sikeParam = sikeParam;
+        BigInteger prime = sikeParam.getPrime();
+        int primeSize = (prime.bitLength() + 7) / 8;
+        if (octets == null || octets.length() != 12 * primeSize) {
+            throw new IllegalStateException("Invalid public key");
+        }
+        byte[] octetBytes = octets.getBytes(StandardCharsets.UTF_8);
+        BigInteger[] keyParts = new BigInteger[6];
+        for (int i = 0; i < 6; i++) {
+            byte[] keyBytes = new byte[primeSize * 2];
+            System.arraycopy(octetBytes, i * primeSize * 2, keyBytes, 0, keyBytes.length);
+            keyParts[i] = OctetEncoding.fromOctetString(new String(keyBytes));
+        }
+        this.px = new Fp2Element(prime, keyParts[0], keyParts[1]);
+        this.qx = new Fp2Element(prime, keyParts[2], keyParts[3]);
+        this.rx = new Fp2Element(prime, keyParts[4], keyParts[5]);
     }
 
     /**
@@ -117,9 +168,10 @@ public class SidhPublicKey implements PublicKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SidhPublicKey publicKey = (SidhPublicKey) o;
-        return px.equals(publicKey.px) &&
-                qx.equals(publicKey.qx) &&
-                rx.equals(publicKey.rx);
+        return sikeParam.equals(publicKey.sikeParam)
+                && px.equals(publicKey.px)
+                && qx.equals(publicKey.qx)
+                && rx.equals(publicKey.rx);
     }
 
     @Override

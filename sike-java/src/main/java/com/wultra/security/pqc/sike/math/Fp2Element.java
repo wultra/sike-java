@@ -44,6 +44,18 @@ public class Fp2Element {
     }
 
     /**
+     * The F(p^2) field element constructor for given BigInteger values.
+     * @param prime Field prime.
+     * @param x0b The x0 real F(p) element.
+     * @param x1b The x1 imaginary F(p) element.
+     */
+    public Fp2Element(BigInteger prime, BigInteger x0b, BigInteger x1b) {
+        this.prime = prime;
+        this.x0 = new FpElement(prime, x0b);
+        this.x1 = new FpElement(prime, x1b);
+    }
+
+    /**
      * The F(p^2) field element constructor for given integer values.
      * @param prime Field prime.
      * @param x0i The x0 real integer value.

@@ -363,7 +363,7 @@ public class IsogenyProjective implements Isogeny {
     }
 
     /**
-     * Inverse three Fp^2 elements simultaneously.
+     * Inverse three F(p^2) elements simultaneously.
      * @param z1 First element.
      * @param z2 Second element.
      * @param z3 Third element.

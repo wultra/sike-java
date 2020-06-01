@@ -79,6 +79,7 @@ public class SidhPrivateKey implements PrivateKey {
     /**
      * Construct private key from bytes with specified parameter s for SIKE decapsulation.
      * @param sikeParam SIKE parameters.
+     * @param party Alice or Bob.
      * @param key Byte value of the private key.
      * @param s Parameter s for SIKE decapsulation.
      */

@@ -5,7 +5,7 @@ This documentation describes usage of SIKE Java.
 If you are new to SIDH or SIKE, please check out the official resources which provide many educational materials:
 - Official SIKE documentation is available at: https://sike.org
 - SIKE specification from round 2 NIST submission is available at: https://sike.org/files/SIDH-spec.pdf
-- The main concepts are explained nicely in SIKE for beginners: https://eprint.iacr.org/2019/132
+- The main concepts are explained nicely in SIKE for beginners: https://eprint.iacr.org/2019/1321.pdf
 
 ## Features
 
@@ -26,16 +26,16 @@ The port currently does not support compressed keys. The field mathematics is ba
 and the math performance will be further improved in the future by switching to an alternative implementation.
 
 The private and public keys can be exported into:
-- Octet representation as defined in SIKE specification.
-- Byte array representation for a more optimal encoding.
+- octet representation as defined in SIKE specification
+- byte array representation for a more optimal encoding
 
 The keys can be imported from their byte array representation.
 
-The port includes KAT vector tests for all supported SIKE variants.
+The port includes KAT test vectors for all supported SIKE variants.
 
 Note that the aim of this port was not to create a 100% identical port with the C code because the original syntax 
 is not object oriented. We also discovered minor issues during the port and reported them to the SIKE developers.
-There are minor differences between the C and Java implementations, however given the passing KAT vector tests the
+There are minor differences between the C and Java implementations, however given the passing KAT test vectors the
 implementations should be 100% compatible.  
 
 ## Usage
@@ -65,7 +65,7 @@ Two implementations are available:
  - `REFERENCE` - slow implementation with focus on readability of code 
  - `OPTIMIZED` - fast implementation with focus on performance and security
 
-The selected SIKE parameters need to be created like this: 
+The selected SIKE parameters need to be created using: 
 ```java 
 SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
 ```
@@ -92,7 +92,7 @@ To generate a key pair for `BOB`, use:
 KeyPair keyPairB = keyGenerator.generateKeyPair(Party.BOB);
 ``` 
 
-You can obtain the keys from the key pair like this:
+You can obtain the keys from the key pair using:
 
 ```java
 PrivateKey priv = keyPair.getPrivate();
@@ -130,7 +130,7 @@ BigInteger secret = new BigInteger(secretNumber);
 PrivateKey priv = new SidhPrivateKey(sikeParam, Party.ALICE, secret);
 ```
 
-Once you have a private key, you can derive the public key like this:
+Once you have a private key, you can derive the public key using:
 ```java
 PublicKey pub = keyGenerator.derivePublicKey(Party.ALICE);
 ```

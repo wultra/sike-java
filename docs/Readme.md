@@ -189,7 +189,7 @@ The encrypted message `encryptedMessage` is transported to `BOB` who uses the pu
 in the message for the decapsulation phase of KEM:
 
 ```java
-byte[] secretB = sike.decapsulate(keyPair.getPrivate(), keyPair.getPublic(), encryptedMessage);
+byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);
 ```
 
 Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared 

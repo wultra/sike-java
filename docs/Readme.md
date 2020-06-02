@@ -29,7 +29,7 @@ The private and public keys can be exported into:
 - octet representation as defined in SIKE specification
 - byte array representation for a more optimal encoding
 
-The keys can be imported from their byte array representation.
+The private and public keys can be imported from either of these serialization formats.
 
 The port includes KAT test vectors for all supported SIKE variants.
 
@@ -116,14 +116,21 @@ You can obtain the BigInteger representations of the keys using:
 
 Obtaining BigInteger representations of x coordinates of phi(Qx) and phi(Rx) is analogous to phi(Px).
 
-You can construct private keys using their byte array representation:
+You can import private keys from their byte array representation:
 ```java
 SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
 byte[] secret = secretBytes;
 PrivateKey priv = new SidhPrivateKey(sikeParam, Party.ALICE, secret);
 ```
 
-You can also construct private keys using their BigInteger representation:
+You can also import private keys from their octet string representation:
+```java
+SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
+String secret = secretOctets;
+PrivateKey priv = new SidhPrivateKey(sikeParam, Party.ALICE, secret);
+```
+
+Finally, you can import private keys from their BigInteger representation:
 ```java
 SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
 BigInteger secret = new BigInteger(secretNumber);
@@ -134,6 +141,8 @@ Once you have a private key, you can derive the public key using:
 ```java
 PublicKey pub = keyGenerator.derivePublicKey(Party.ALICE);
 ```
+
+Public keys can also be imported from various serialization formats using the `SidhPublicKey` class constructors.
 
 ### SIDH Key Agreement
 

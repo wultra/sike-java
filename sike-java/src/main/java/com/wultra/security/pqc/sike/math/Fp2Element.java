@@ -329,6 +329,6 @@ public class Fp2Element {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x0, x1);
+        return Objects.hash(prime, x0, x1);
     }
 }

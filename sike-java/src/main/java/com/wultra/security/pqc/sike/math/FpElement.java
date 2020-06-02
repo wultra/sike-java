@@ -170,6 +170,6 @@ public class FpElement {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x);
+        return Objects.hash(prime, x);
     }
 }

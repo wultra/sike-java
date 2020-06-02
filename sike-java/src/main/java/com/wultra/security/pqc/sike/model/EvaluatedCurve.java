@@ -101,13 +101,14 @@ public class EvaluatedCurve {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EvaluatedCurve that = (EvaluatedCurve) o;
-        return curve.equals(that.curve) &&
-                Objects.equals(p, that.p) &&
-                Objects.equals(q, that.q);
+        return curve.equals(that.curve)
+                && Objects.equals(p, that.p)
+                && Objects.equals(q, that.q)
+                && Objects.equals(r, that.r);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(curve, p, q);
+        return Objects.hash(curve, p, q, r);
     }
 }

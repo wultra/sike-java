@@ -36,7 +36,7 @@ public class Fp2PointProjective implements Fp2Point {
     /**
      * Projective point constructor.
      * @param x The x element.
-     * @param z The y element.
+     * @param z The z element.
      */
     public Fp2PointProjective(Fp2Element x, Fp2Element z) {
         this.x = x;

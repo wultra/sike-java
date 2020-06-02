@@ -156,7 +156,7 @@ match the `Fp2Element` sizes in chosen SIKE variant, which is 1/3 of the size of
 shorter shared secret sizes and eliminating any risks related to using BigInteger represenation of the j-invariant,
 using a hashing function on the shared secret values is advised.
 
-Note that SIDH provides lower security than SIKE, it is an ind-CPA scheme and should be only use with ephemeral keys.
+Note that SIDH provides lower security than SIKE, it is an ind-CPA scheme and should be only used with ephemeral keys.
 
 ### SIKE Key Encapsulation
 

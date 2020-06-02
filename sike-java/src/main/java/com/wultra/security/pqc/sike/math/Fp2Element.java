@@ -322,8 +322,9 @@ public class Fp2Element {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fp2Element that = (Fp2Element) o;
-        return x0.equals(that.x0) &&
-                x1.equals(that.x1);
+        return prime.equals(that.prime)
+                && x0.equals(that.x0)
+                && x1.equals(that.x1);
     }
 
     @Override

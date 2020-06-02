@@ -21,6 +21,7 @@ import com.wultra.security.pqc.sike.model.optimized.MontgomeryConstants;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
 import java.security.InvalidParameterException;
+import java.util.Objects;
 
 /**
  * Montgomery curve parameters.
@@ -128,4 +129,19 @@ public class MontgomeryCurve {
         return "a = " + a + ", b = " + b;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MontgomeryCurve that = (MontgomeryCurve) o;
+        return sikeParam.equals(that.sikeParam) &&
+                a.equals(that.a) &&
+                Objects.equals(b, that.b) &&
+                Objects.equals(optimizedConstants, that.optimizedConstants);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sikeParam, a, b, optimizedConstants);
+    }
 }

@@ -191,6 +191,7 @@ public class SidhPrivateKey implements PrivateKey {
      * Get the private key encoded as bytes.
      * @return Private key encoded as bytes.
      */
+    @Override
     public byte[] getEncoded() {
         byte[] encoded = key.getEncoded();
         byte[] output = new byte[s.length + encoded.length];
@@ -226,6 +227,6 @@ public class SidhPrivateKey implements PrivateKey {
 
     @Override
     public int hashCode() {
-        return Objects.hash(sikeParam, key);
+        return Objects.hash(sikeParam, s, key);
     }
 }

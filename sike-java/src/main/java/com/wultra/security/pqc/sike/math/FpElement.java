@@ -164,7 +164,8 @@ public class FpElement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FpElement fpElement = (FpElement) o;
-        return x.equals(fpElement.x);
+        return prime.equals(fpElement.prime)
+                && x.equals(fpElement.x);
     }
 
     @Override

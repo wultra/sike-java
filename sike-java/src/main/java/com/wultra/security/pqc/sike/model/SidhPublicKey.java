@@ -139,6 +139,7 @@ public class SidhPublicKey implements PublicKey {
      * Get the public key encoded as bytes.
      * @return Public key encoded as bytes.
      */
+    @Override
     public byte[] getEncoded() {
         byte[] pxEncoded = px.getEncoded();
         byte[] qxEncoded = qx.getEncoded();
@@ -176,6 +177,6 @@ public class SidhPublicKey implements PublicKey {
 
     @Override
     public int hashCode() {
-        return Objects.hash(px, qx, rx);
+        return Objects.hash(sikeParam, px, qx, rx);
     }
 }

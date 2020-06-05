@@ -34,7 +34,6 @@ public class MontgomeryProjective implements Montgomery {
 
     @Override
     public Fp2Point xDbl(MontgomeryCurve curve, Fp2Point p) {
-        // TODO - missing point at infinity check in specification, reported to SIKE team
         MontgomeryConstants constants = curve.getOptimizedConstants();
         Fp2Element a24plus = constants.getA24plus();
         Fp2Element c24 = constants.getC24();
@@ -54,7 +53,6 @@ public class MontgomeryProjective implements Montgomery {
 
     @Override
     public Fp2Point xTpl(MontgomeryCurve curve, Fp2Point p) {
-        // TODO - missing point at infinity check in specification, reported to SIKE team
         MontgomeryConstants constants = curve.getOptimizedConstants();
         Fp2Element a24plus = constants.getA24plus();
         Fp2Element a24minus = constants.getA24minus();

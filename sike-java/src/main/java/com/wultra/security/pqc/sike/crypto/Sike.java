@@ -70,7 +70,6 @@ public class Sike {
         if (!(pk3 instanceof SidhPublicKey)) {
             throw new InvalidKeyException("Invalid public key");
         }
-        // TODO - missing public key validation in specification, reported to SIKE team
         byte[] m = randomGenerator.generateRandomBytes(sikeParam.getMessageBytes());
         byte[] r = generateR(m, pk3.getEncoded());
         EncryptedMessage encrypted = encrypt(pk3, m, r);
@@ -148,7 +147,6 @@ public class Sike {
         if (m == null || m.length != sikeParam.getMessageBytes()) {
             throw new InvalidParameterException("Invalid message");
         }
-        // TODO - missing public key validation in specification, reported to SIKE team
         PrivateKey sk2;
         if (r == null) {
             // Generate ephemeral private key

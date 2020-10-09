@@ -18,6 +18,7 @@ package com.wultra.security.pqc.sike.math.optimized.fp;
 
 /**
  * Mathematical functions for the 64-bit unsigned integer type.
+ * All methods are constant time to prevent side channel attacks.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
@@ -44,9 +45,9 @@ public class UnsignedLong {
      * @return Unsigned long subtraction result.
      */
     public static long[] sub(long x, long y, long borrow) {
-        // TODO - constant time implementation
-        long diff = x - y - borrow;
-        long borrowOut = ((~x & y) | (~(x ^ y) & diff)) >>> 63;
+        long sub = x - y;
+        long borrowOut = (borrow & (1 ^ ((sub | -sub) >>> 63))) | (x ^ ((x ^ y) | ((x - y) ^ y))) >>> 63;
+        long diff = sub - borrow;
         return new long[]{diff, borrowOut};
     }
 

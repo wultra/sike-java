@@ -159,7 +159,7 @@ public class MontgomeryProjective implements Montgomery {
         t2 = q.getX().subtract(q.getZ());
         pqx = q.getX().add(q.getZ());
         t0 = t0.multiply(t2);
-        p2z = t1.multiply(t1);
+        p2z = t1.square();
         t1 = t1.multiply(pqx);
         t2 = p2x.subtract(p2z);
         p2x = p2x.multiply(p2z);

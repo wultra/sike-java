@@ -16,14 +16,14 @@
  */
 package com.wultra.security.pqc.sike.math.optimized;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.math.api.Montgomery;
+import com.wultra.security.pqc.sike.math.optimized.fp.FpElementOpti;
+import com.wultra.security.pqc.sike.math.optimized.fp.FpMath;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.model.optimized.MontgomeryConstants;
 import com.wultra.security.pqc.sike.param.SikeParam;
-
-import java.math.BigInteger;
 
 /**
  * Optimized elliptic curve mathematics on Montgomery curves with projective coordinates.
@@ -133,7 +133,7 @@ public class MontgomeryProjective implements Montgomery {
         ap = rx.multiply(t1);
         ap = ap.add(t0);
         t0 = t0.multiply(rx);
-        ap = ap.subtract(Fp2Element.one(sikeParam.getPrime()));
+        ap = ap.subtract(sikeParam.getFp2ElementFactory().one());
         t0 = t0.add(t0);
         t1 = t1.add(rx);
         t0 = t0.add(t0);
@@ -159,7 +159,7 @@ public class MontgomeryProjective implements Montgomery {
         t2 = q.getX().subtract(q.getZ());
         pqx = q.getX().add(q.getZ());
         t0 = t0.multiply(t2);
-        p2z = t1.square();
+        p2z = t1.multiply(t1);
         t1 = t1.multiply(pqx);
         t2 = p2x.subtract(p2z);
         p2x = p2x.multiply(p2z);
@@ -187,28 +187,41 @@ public class MontgomeryProjective implements Montgomery {
      * @param msb Most significant bit.
      * @return Calculated new point.
      */
-    public Fp2Point ladder3Pt(MontgomeryCurve curve, BigInteger m, Fp2Element px, Fp2Element qx, Fp2Element rx, int msb) {
-        BigInteger prime = curve.getSikeParam().getPrime();
+    public Fp2Point ladder3Pt(MontgomeryCurve curve, byte[] m, Fp2Element px, Fp2Element qx, Fp2Element rx, int msb) {
+        SikeParam sikeParam = curve.getSikeParam();
         Fp2Element a = curve.getA();
-        Fp2Point p0, p1, p2;
-        Fp2Element a24plus;
-        p0 = new Fp2PointProjective(qx, Fp2Element.one(prime));
-        p1 = new Fp2PointProjective(px, Fp2Element.one(prime));
-        p2 = new Fp2PointProjective(rx, Fp2Element.one(prime));
-        a24plus = a.add(Fp2Element.generate(prime, 2));
-        a24plus = a24plus.multiply(Fp2Element.generate(prime, 4).inverse());
+        Fp2Point r0 = new Fp2PointProjective(qx.copy(), sikeParam.getFp2ElementFactory().one());
+        Fp2Point r1 = new Fp2PointProjective(px.copy(), sikeParam.getFp2ElementFactory().one());
+        Fp2Point r2 = new Fp2PointProjective(rx.copy(), sikeParam.getFp2ElementFactory().one());
+
+        // Compute A + 2C / 4C
+        Fp2Element c = curve.getOptimizedConstants().getC();
+        Fp2Element c2 = c.add(c);
+        Fp2Element aPlus2c = a.add(c2);
+        Fp2Element c4 = c2.add(c2);
+        Fp2Element c4Inv = c4.inverse();
+        Fp2Element aPlus2cOver4c = aPlus2c.multiply(c4Inv);
+
+        byte prevBit = 0;
         for (int i = 0; i < msb; i++) {
-            if (m.testBit(i)) {
-                Fp2Point[] points = xDblAdd(p0, p1, p2, a24plus);
-                p0 = points[0];
-                p1 = points[1];
-            } else {
-                Fp2Point[] points = xDblAdd(p0, p2, p1, a24plus);
-                p0 = points[0];
-                p2 = points[1];
-            }
+            byte bit = (byte) (m[i >>> 3] >>> (i & 7) & 1);
+            byte swap = (byte) (prevBit ^ bit);
+            prevBit = bit;
+            condSwap(sikeParam, r1, r2, swap);
+            Fp2Point[] points = xDblAdd(r0, r2, r1, aPlus2cOver4c);
+            r0 = points[0].copy();
+            r2 = points[1].copy();
         }
-        return p1;
+        condSwap(sikeParam, r1, r2, prevBit);
+        return r1;
+    }
+
+    private void condSwap(SikeParam sikeParam, Fp2Point p, Fp2Point q, long choice) {
+        FpMath fpMath = new FpMath(sikeParam);
+        fpMath.fpSwapCond((FpElementOpti) p.getX().getX0(), (FpElementOpti) q.getX().getX0(), choice);
+        fpMath.fpSwapCond((FpElementOpti) p.getX().getX1(), (FpElementOpti) q.getX().getX1(), choice);
+        fpMath.fpSwapCond((FpElementOpti) p.getZ().getX0(), (FpElementOpti) q.getZ().getX0(), choice);
+        fpMath.fpSwapCond((FpElementOpti) p.getZ().getX1(), (FpElementOpti) q.getZ().getX1(), choice);
     }
 
 }

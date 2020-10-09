@@ -16,8 +16,6 @@
  */
 package com.wultra.security.pqc.sike.math.api;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
-
 /**
  * Point in F(p^2) with unspecified coordinate system.
  *

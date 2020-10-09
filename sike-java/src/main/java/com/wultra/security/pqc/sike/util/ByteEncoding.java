@@ -64,7 +64,7 @@ public class ByteEncoding {
      */
     private static byte[] reverse(byte[] data) {
         byte[] out = new byte[data.length];
-        for(int i = 0;  i < data.length; i++) {
+        for(int i = 0; i < data.length; i++) {
             out[i] = data[data.length - i - 1];
         }
         return out;

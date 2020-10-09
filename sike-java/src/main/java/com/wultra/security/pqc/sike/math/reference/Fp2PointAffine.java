@@ -16,10 +16,10 @@
  */
 package com.wultra.security.pqc.sike.math.reference;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
+import com.wultra.security.pqc.sike.param.SikeParam;
 
-import java.math.BigInteger;
 import java.security.InvalidParameterException;
 import java.util.Objects;
 
@@ -45,11 +45,12 @@ public class Fp2PointAffine implements Fp2Point {
 
     /**
      * Construct point at infinity.
-     * @param prime Field prime.
+     * @param sikeParam SIKE parameters.
      * @return Point at infinity.
      */
-    public static Fp2Point infinity(BigInteger prime) {
-        return new Fp2PointAffine(Fp2Element.zero(prime), Fp2Element.zero(prime));
+    public static Fp2Point infinity(SikeParam sikeParam) {
+        Fp2Element zero = sikeParam.getFp2ElementFactory().zero();
+        return new Fp2PointAffine(zero, zero);
     }
 
     @Override

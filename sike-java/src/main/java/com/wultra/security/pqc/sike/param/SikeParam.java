@@ -16,10 +16,8 @@
  */
 package com.wultra.security.pqc.sike.param;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
-import com.wultra.security.pqc.sike.math.api.Fp2Point;
-import com.wultra.security.pqc.sike.math.api.Isogeny;
-import com.wultra.security.pqc.sike.math.api.Montgomery;
+import com.wultra.security.pqc.sike.math.api.*;
+import com.wultra.security.pqc.sike.math.optimized.fp.FpElementOpti;
 import com.wultra.security.pqc.sike.model.ImplementationType;
 
 import java.math.BigInteger;
@@ -36,6 +34,8 @@ public interface SikeParam {
      * @return Implementation type.
      */
     ImplementationType getImplementationType();
+
+    Fp2ElementFactory getFp2ElementFactory();
 
     /**
      * Get Montgomery curve math algorithms.
@@ -192,5 +192,23 @@ public interface SikeParam {
      * @return Optimization strategy for tree computations in the 3-isogeny graph.
      */
     int[] getStrategyB();
+
+    int getFpWords();
+
+    int getZeroWords();
+
+    FpElementOpti getP();
+
+    FpElementOpti getP1();
+
+    FpElementOpti getPx2();
+
+    FpElementOpti getPR2();
+
+    int[] getPowStrategy();
+
+    int[] getMulStrategy();
+
+    int getInitialMul();
 
 }

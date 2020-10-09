@@ -28,12 +28,13 @@ public class OctetEncoding {
 
     /**
      * Convert a BigInteger into octet string.
-     * @param n A non-negative number to convert.
+     *
+     * @param n      A non-negative number to convert.
      * @param length Length of generated octet string specified as number of octets.
      * @return Converted octet string.
      */
     public static String toOctetString(BigInteger n, int length) {
-        if (n.signum() == - 1) {
+        if (n.signum() == -1) {
             throw new InvalidParameterException("Number is negative");
         }
         String hex = n.toString(16).toUpperCase();
@@ -43,7 +44,7 @@ public class OctetEncoding {
         char[] chars = hex.toCharArray();
         int expectedLength = length * 2;
         if (chars.length > expectedLength) {
-            throw new InvalidParameterException("Number is too large, " + chars.length + ", " + expectedLength);
+            throw new InvalidParameterException("Number is too large, length: " + chars.length + ", expected: " + expectedLength);
         }
         StringBuilder sb = new StringBuilder();
         for (int i = hex.length() - 1; i >= 0; i -= 2) {
@@ -58,7 +59,8 @@ public class OctetEncoding {
 
     /**
      * Convert a byte array representing a number into an octet string.
-     * @param data Byte array representing a number.
+     *
+     * @param data   Byte array representing a number.
      * @param length Length of generated octet string specified as number of octets.
      * @return Converted octet string.
      */
@@ -69,6 +71,7 @@ public class OctetEncoding {
 
     /**
      * Convert an octet string into BigInteger.
+     *
      * @param str Octet string.
      * @return Converted BigInteger value.
      */
@@ -85,4 +88,7 @@ public class OctetEncoding {
         return new BigInteger(sb.toString(), 16);
     }
 
+    public static byte[] fromOctetString(String str, int length) {
+        return ByteEncoding.toByteArray(fromOctetString(str), length);
+    }
 }

@@ -87,15 +87,15 @@ public class SidhReferenceTest {
         System.out.println("Secrets match (reference): " + matchRef);
         assertTrue(matchRef, "Secrets do not match");
 
-        boolean matchOpti = secretBRef.equals(secretBOpti);
+        boolean matchOpti = secretAOpti.equals(secretBOpti);
         System.out.println("Secrets match (optimized): " + matchOpti);
         assertTrue(matchOpti, "Secrets do not match");
 
-        boolean match1 = secretARef.equals(secretAOpti);
+        boolean match1 = secretARef.toOctetString().equals(secretAOpti.toOctetString());
         System.out.println("Secrets match (optimized): " + match1);
         assertTrue(match1, "Secrets do not match");
 
-        boolean match2 = secretBRef.equals(secretBOpti);
+        boolean match2 = secretBRef.toOctetString().equals(secretBOpti.toOctetString());
         System.out.println("Secrets match (optimized): " + match2);
         assertTrue(match2, "Secrets do not match");
     }

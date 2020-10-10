@@ -94,13 +94,15 @@ public class SidhPrivateKey implements PrivateKey {
         }
         byte[] bytes = octets.getBytes(StandardCharsets.UTF_8);
         byte[] s = new byte[sLength * 2];
-        key = new byte[keyLength * 2];
+        byte[] key = new byte[keyLength * 2];
         System.arraycopy(bytes, 0, s, 0, sLength * 2);
         System.arraycopy(bytes, sLength * 2, key, 0, keyLength * 2);
         BigInteger sVal = OctetEncoding.fromOctetString(new String(s));
         BigInteger secret = OctetEncoding.fromOctetString(new String(key));
         validatePrivateKey(secret);
         this.s = ByteEncoding.toByteArray(sVal, sLength);
+        int primeSize = (sikeParam.getPrime().bitLength() + 7) / 8;
+        this.key = ByteEncoding.toByteArray(secret, primeSize);
     }
 
     /**

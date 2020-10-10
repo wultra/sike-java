@@ -302,7 +302,7 @@ public class Fp2ElementOpti implements Fp2Element {
 
     @Override
     public String toString() {
-        return x1 + "i" + " + " + x0;
+        return x1.getX() + "i" + " + " + x0.getX();
     }
 
     @Override

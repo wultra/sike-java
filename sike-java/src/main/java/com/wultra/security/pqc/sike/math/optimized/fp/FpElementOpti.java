@@ -150,7 +150,7 @@ public class FpElementOpti implements FpElement {
             return false;
         }
         FpElementOpti other = (FpElementOpti) o;
-        return Arrays.equals(value, other.value);
+        return getX().equals(other.getX());
     }
 
     @Override

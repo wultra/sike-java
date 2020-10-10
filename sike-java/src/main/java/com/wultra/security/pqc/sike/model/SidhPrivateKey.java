@@ -227,9 +227,6 @@ public class SidhPrivateKey implements PrivateKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SidhPrivateKey that = (SidhPrivateKey) o;
-        System.out.println(sikeParam.equals(that.sikeParam));
-        System.out.println(Arrays.equals(s, that.s));
-        System.out.println(Arrays.equals(key, that.key));
         return sikeParam.equals(that.sikeParam)
                 && Arrays.equals(s, that.s)
                 && Arrays.equals(key, that.key);

@@ -35,6 +35,10 @@ public interface SikeParam {
      */
     ImplementationType getImplementationType();
 
+    /**
+     * Factory for Fp2Elements.
+     * @return Factory for Fp2Elements.
+     */
     Fp2ElementFactory getFp2ElementFactory();
 
     /**
@@ -193,22 +197,58 @@ public interface SikeParam {
      */
     int[] getStrategyB();
 
+    /**
+     * Get size of long array for optimized elements.
+     * @return Size of long array.
+     */
     int getFpWords();
 
+    /**
+     * Get number of 0 digits in the least significant part of p + 1.
+     * @return Number of 0 digits in the least significant part of p + 1.
+     */
     int getZeroWords();
 
+    /**
+     * Get optimized field prime p.
+     * @return Field prime p.
+     */
     FpElementOpti getP();
 
+    /**
+     * Get optimized value p + 1.
+     * @return Value p + 1.
+     */
     FpElementOpti getP1();
 
+    /**
+     * Get optimized value p * 2.
+     * @return Value p * 2.
+     */
     FpElementOpti getPx2();
 
+    /**
+     * Get optimized value pR2.
+     * @return Optimized value pR2.
+     */
     FpElementOpti getPR2();
 
+    /**
+     * Get the power strategy for the p34 algorithm.
+     * @return Power strategy.
+     */
     int[] getPowStrategy();
 
+    /**
+     * Get the multiplication strategy for the p34 algorithm.
+     * @return Multiplication strategy.
+     */
     int[] getMulStrategy();
 
+    /**
+     * Get initial multiplication value for the p34 algorithm.
+     * @return Initial multiplication value for the p34 algorithm
+     */
     int getInitialMul();
 
 }

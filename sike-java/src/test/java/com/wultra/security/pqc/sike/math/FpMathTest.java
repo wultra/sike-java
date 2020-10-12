@@ -18,7 +18,6 @@ package com.wultra.security.pqc.sike.math;
 
 import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.math.optimized.fp.FpElementOpti;
-import com.wultra.security.pqc.sike.math.optimized.fp.FpMath;
 import com.wultra.security.pqc.sike.model.ImplementationType;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.param.SikeParamP434;
@@ -34,65 +33,64 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FpMathTest {
 
     private final SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
-    private final FpMath fpMath = new FpMath(sikeParam);
 
     @Test
     public void testZeroAddRdc() {
-        FpElementOpti x = new FpElementOpti(sikeParam);
-        FpElementOpti result = fpMath.fpAddRdc(x, x);
+        FpElement x = new FpElementOpti(sikeParam);
+        FpElement result = x.add(x);
         assertEquals(x, result);
     }
 
     @Test
     public void testZeroAddOneRdc() {
-        FpElementOpti x = new FpElementOpti(sikeParam);
+        FpElement x = new FpElementOpti(sikeParam);
         FpElementOpti y = new FpElementOpti(sikeParam);
         y.getValue()[y.size() - 1] = 1L;
-        FpElementOpti result = fpMath.fpAddRdc(x, y);
+        FpElement result = x.add(y);
         assertEquals(y, result);
     }
 
     @Test
     public void testAddPZeroRdc() {
-        FpElementOpti x = sikeParam.getP();
-        FpElementOpti y = new FpElementOpti(sikeParam);
-        FpElementOpti result = fpMath.fpAddRdc(x, y);
+        FpElement x = sikeParam.getP();
+        FpElement y = new FpElementOpti(sikeParam);
+        FpElement result = x.add(y);
         // The result is x, modulo is not applied
         assertEquals(x, result);
     }
 
     @Test
     public void testAddPx2ZeroRdc() {
-        FpElementOpti x = sikeParam.getPx2();
-        FpElementOpti y = new FpElementOpti(sikeParam);
-        FpElementOpti result = fpMath.fpAddRdc(x, y);
+        FpElement x = sikeParam.getPx2();
+        FpElement y = new FpElementOpti(sikeParam);
+        FpElement result = x.add(y);
         // The result is 0, modulo is applied
         assertEquals(y, result);
     }
 
     @Test
     public void testAddPx2OneRdc() {
-        FpElementOpti x = sikeParam.getPx2();
+        FpElement x = sikeParam.getPx2();
         FpElementOpti y = new FpElementOpti(sikeParam);
         y.getValue()[y.size() - 1] = 1L;
-        FpElementOpti result = fpMath.fpAddRdc(x, y);
+        FpElement result = x.add(y);
         // The result is 1, modulo is applied
         assertEquals(y, result);
     }
 
     @Test
     public void testZeroSubRdc() {
-        FpElementOpti x = new FpElementOpti(sikeParam);
-        FpElementOpti result = fpMath.fpSubRdc(x, x);
+        FpElement x = new FpElementOpti(sikeParam);
+        FpElement result = x.subtract(x);
         assertEquals(x, result);
     }
 
     @Test
     public void testZeroSubOneRdc() {
-        FpElementOpti x = new FpElementOpti(sikeParam);
+        FpElement x = new FpElementOpti(sikeParam);
         FpElementOpti y = new FpElementOpti(sikeParam);
         y.getValue()[y.size() - 1] = 1L;
-        FpElementOpti result = fpMath.fpSubRdc(x, y);
+        FpElement result = x.subtract(y);
         FpElementOpti expected = sikeParam.getPx2();
         // Expected value is p*2 - 1
         expected.getValue()[expected.size() - 1] = expected.getValue()[expected.size() - 1] - 1L;
@@ -102,16 +100,16 @@ public class FpMathTest {
     @Test
     public void testZeroRdcP() {
         FpElementOpti x = new FpElementOpti(sikeParam);
-        fpMath.fpRdcP(x);
-        FpElementOpti expected = new FpElementOpti(sikeParam);
+        x.reduce();
+        FpElement expected = new FpElementOpti(sikeParam);
         assertEquals(expected, x);
     }
 
     @Test
     public void testPRdcP() {
         FpElementOpti x = sikeParam.getP();
-        fpMath.fpRdcP(x);
-        FpElementOpti expected = new FpElementOpti(sikeParam);
+        x.reduce();
+        FpElement expected = new FpElementOpti(sikeParam);
         assertEquals(expected, x);
     }
 
@@ -137,7 +135,7 @@ public class FpMathTest {
         });
         FpElement xCopy = x.copy();
         FpElement yCopy = y.copy();
-        fpMath.fpSwapCond(x, y, 1L);
+        FpElementOpti.conditionalSwap(sikeParam, x, y, 1L);
         assertEquals(yCopy, x);
         assertEquals(xCopy, y);
     }
@@ -164,16 +162,16 @@ public class FpMathTest {
         });
         FpElement xCopy = x.copy();
         FpElement yCopy = y.copy();
-        fpMath.fpSwapCond(x, y, 0L);
+        FpElementOpti.conditionalSwap(sikeParam, x, y, 0L);
         assertEquals(xCopy, x);
         assertEquals(yCopy, y);
     }
 
     @Test
     public void testFpMulZero() {
-        FpElementOpti x = new FpElementOpti(sikeParam);
-        FpElementOpti y = new FpElementOpti(sikeParam);
-        FpElementOpti result = fpMath.fpMul(x, y);
+        FpElement x = new FpElementOpti(sikeParam);
+        FpElement y = new FpElementOpti(sikeParam);
+        FpElement result = x.multiply(y);
         long[] value = new long[sikeParam.getFpWords() * 2];
         for (int i = 0; i < sikeParam.getFpWords() * 2; i++) {
             value[i] = 0L;
@@ -187,7 +185,7 @@ public class FpMathTest {
         x.getValue()[x.size() - 1] = 1L;
         FpElementOpti y = new FpElementOpti(sikeParam);
         y.getValue()[y.size() - 1] = 1L;
-        FpElementOpti result = fpMath.fpMul(x, y);
+        FpElementOpti result = (FpElementOpti) x.multiply(y);
         long[] value = new long[sikeParam.getFpWords() * 2];
         for (int i = 0; i < sikeParam.getFpWords() * 2; i++) {
             value[i] = 0L;
@@ -203,7 +201,7 @@ public class FpMathTest {
         x.getValue()[x.size() - 1] = 1L;
         FpElementOpti y = new FpElementOpti(sikeParam);
         y.getValue()[y.size() - 1] = 2L;
-        FpElementOpti result = fpMath.fpMul(x, y);
+        FpElementOpti result = (FpElementOpti) x.multiply(y);
         long[] value = new long[sikeParam.getFpWords() * 2];
         for (int i = 0; i < sikeParam.getFpWords() * 2; i++) {
             value[i] = 0L;
@@ -249,7 +247,7 @@ public class FpMathTest {
                 Long.parseUnsignedLong("A46937B9CCE8C76", 16),
                 Long.parseUnsignedLong("11A53B12", 16)
         });
-        assertEquals(expected, fpMath.fpMul(x, y));
+        assertEquals(expected, x.multiply(y));
     }
 
     @Test
@@ -280,8 +278,61 @@ public class FpMathTest {
                 Long.parseUnsignedLong("1049466795586567251"),
                 Long.parseUnsignedLong("1077930275256508")
         });
-        FpMath fpMath = new FpMath(sikeParam);
-        assertEquals(expected, fpMath.fpMontRdc(value));
+        assertEquals(expected, value.reduceMontgomery());
+    }
+
+    @Test
+    public void testFp2Add() {
+        SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
+        FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
+                Long.parseUnsignedLong("9946470042253566784"),
+                Long.parseUnsignedLong("6968516007027963214"),
+                Long.parseUnsignedLong("2128177586330530955"),
+                Long.parseUnsignedLong("16251097341384919753"),
+                Long.parseUnsignedLong("12925631599570302063"),
+                Long.parseUnsignedLong("8354813917732335336"),
+                Long.parseUnsignedLong("499800934484970290"),
+                Long.parseUnsignedLong("5414877442744294042"),
+                Long.parseUnsignedLong("7629771832741187826"),
+                Long.parseUnsignedLong("13470030206359139296"),
+                Long.parseUnsignedLong("291637596215934808"),
+                Long.parseUnsignedLong("7663770749615867752"),
+                Long.parseUnsignedLong("3971009142509319027"),
+                Long.parseUnsignedLong("6463362918")
+        });
+        FpElementOpti y = new FpElementOpti(sikeParam, new long[]{
+                Long.parseUnsignedLong("9946470042253566784"),
+                Long.parseUnsignedLong("6968516007027963214"),
+                Long.parseUnsignedLong("2128177586330530955"),
+                Long.parseUnsignedLong("16251097341384919753"),
+                Long.parseUnsignedLong("12925631599570302063"),
+                Long.parseUnsignedLong("8354813917732335336"),
+                Long.parseUnsignedLong("499800934484970290"),
+                Long.parseUnsignedLong("5414877442744294042"),
+                Long.parseUnsignedLong("7629771832741187826"),
+                Long.parseUnsignedLong("13470030206359139296"),
+                Long.parseUnsignedLong("291637596215934808"),
+                Long.parseUnsignedLong("7663770749615867752"),
+                Long.parseUnsignedLong("3971009142509319027"),
+                Long.parseUnsignedLong("6463362918")
+        });
+        FpElementOpti expected = new FpElementOpti(sikeParam, new long[]{
+                Long.parseUnsignedLong("1446196010797581953"),
+                Long.parseUnsignedLong("13937032014055926429"),
+                Long.parseUnsignedLong("4256355172661061910"),
+                Long.parseUnsignedLong("14217168450502399378"),
+                Long.parseUnsignedLong("16932345415793031739"),
+                Long.parseUnsignedLong("8856370610332548474"),
+                Long.parseUnsignedLong("998981610612040480"),
+                Long.parseUnsignedLong("10829754885488588084"),
+                Long.parseUnsignedLong("15259543665482375652"),
+                Long.parseUnsignedLong("8493316339008726976"),
+                Long.parseUnsignedLong("583275192431869617"),
+                Long.parseUnsignedLong("15327541499231735504"),
+                Long.parseUnsignedLong("7942018285018638054"),
+                Long.parseUnsignedLong("12926725836")
+        });
+        assertEquals(expected, x.addNoReduction(y));
     }
 
     @Test
@@ -335,12 +386,54 @@ public class FpMathTest {
                 Long.parseUnsignedLong("15171687671753763656"),
                 Long.parseUnsignedLong("620243965526688")
         });
-        FpMath fpMath = new FpMath(sikeParam);
-        assertEquals(expected, fpMath.fp2Sub(x, y));
+        assertEquals(expected, x.subtractNoReduction(y));
     }
 
-    // TODO - implement tests:
-    // - fp2Add
-    // - fpMulRdc
+    @Test
+    public void testFp2Mul() {
+        SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
+        FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
+                Long.parseUnsignedLong("9946470042253566784"),
+                Long.parseUnsignedLong("6968516007027963214"),
+                Long.parseUnsignedLong("2128177586330530955"),
+                Long.parseUnsignedLong("16251097341384919753"),
+                Long.parseUnsignedLong("12925631599570302063"),
+                Long.parseUnsignedLong("8354813917732335336"),
+                Long.parseUnsignedLong("499800934484970290"),
+                Long.parseUnsignedLong("5414877442744294042"),
+                Long.parseUnsignedLong("7629771832741187826"),
+                Long.parseUnsignedLong("13470030206359139296"),
+                Long.parseUnsignedLong("291637596215934808"),
+                Long.parseUnsignedLong("7663770749615867752"),
+                Long.parseUnsignedLong("3971009142509319027"),
+                Long.parseUnsignedLong("6463362918")
+        });
+        FpElementOpti y = new FpElementOpti(sikeParam, new long[]{
+                Long.parseUnsignedLong("9946470042253566784"),
+                Long.parseUnsignedLong("6968516007027963214"),
+                Long.parseUnsignedLong("2128177586330530955"),
+                Long.parseUnsignedLong("16251097341384919753"),
+                Long.parseUnsignedLong("12925631599570302063"),
+                Long.parseUnsignedLong("8354813917732335336"),
+                Long.parseUnsignedLong("499800934484970290"),
+                Long.parseUnsignedLong("5414877442744294042"),
+                Long.parseUnsignedLong("7629771832741187826"),
+                Long.parseUnsignedLong("13470030206359139296"),
+                Long.parseUnsignedLong("291637596215934808"),
+                Long.parseUnsignedLong("7663770749615867752"),
+                Long.parseUnsignedLong("3971009142509319027"),
+                Long.parseUnsignedLong("6463362918")
+        });
+        FpElementOpti expected = new FpElementOpti(sikeParam, new long[]{
+                Long.parseUnsignedLong("3693910771094042898"),
+                Long.parseUnsignedLong("6561768684296013932"),
+                Long.parseUnsignedLong("16005393517255078506"),
+                Long.parseUnsignedLong("541452381533483909"),
+                Long.parseUnsignedLong("2168446216260979938"),
+                Long.parseUnsignedLong("2402808501902662834"),
+                Long.parseUnsignedLong("13091538426802256")
+        });
+        assertEquals(expected, x.multiplyMontgomery(y));
+    }
 
 }

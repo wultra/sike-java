@@ -34,7 +34,6 @@ public class Fp2ElementOpti implements Fp2Element {
     private final FpElement x1;
 
     private final SikeParam sikeParam;
-    private final FpMath fpMath;
 
     /**
      * The F(p^2) field element constructor for given F(p) elements.
@@ -44,7 +43,6 @@ public class Fp2ElementOpti implements Fp2Element {
      */
     public Fp2ElementOpti(SikeParam sikeParam, FpElement x0, FpElement x1) {
         this.sikeParam = sikeParam;
-        this.fpMath = new FpMath(sikeParam);
         this.x0 = x0.copy();
         this.x1 = x1.copy();
     }
@@ -57,7 +55,6 @@ public class Fp2ElementOpti implements Fp2Element {
      */
     public Fp2ElementOpti(SikeParam sikeParam, BigInteger x0b, BigInteger x1b) {
         this.sikeParam = sikeParam;
-        this.fpMath = new FpMath(sikeParam);
         this.x0 = new FpElementOpti(sikeParam, x0b);
         this.x1 = new FpElementOpti(sikeParam, x1b);
     }
@@ -113,10 +110,10 @@ public class Fp2ElementOpti implements Fp2Element {
      */
     public Fp2Element add(Fp2Element y) {
         // y = (x0 + i*x1) + (y0 + i*y1) = x0 + y0 + i*(x1 + y1)
-        FpElementOpti r, i;
+        FpElement r, i;
 
-        r = fpMath.fpAddRdc((FpElementOpti) x0, (FpElementOpti) y.getX0());
-        i = fpMath.fpAddRdc((FpElementOpti) x1, (FpElementOpti) y.getX1());
+        r = x0.add(y.getX0());
+        i = x1.add(y.getX1());
         return new Fp2ElementOpti(sikeParam, r, i);
     }
 
@@ -127,10 +124,10 @@ public class Fp2ElementOpti implements Fp2Element {
      */
     public Fp2Element subtract(Fp2Element y) {
         // y = (x0 + i*x1) - (y0 + i*y1) = x0 - y0 + i*(x1 - y1)
-        FpElementOpti r, i;
+        FpElement r, i;
 
-        r = fpMath.fpSubRdc((FpElementOpti) x0, (FpElementOpti) y.getX0());
-        i = fpMath.fpSubRdc((FpElementOpti) x1, (FpElementOpti) y.getX1());
+        r = x0.subtract(y.getX0());
+        i = x1.subtract(y.getX1());
         return new Fp2ElementOpti(sikeParam, r, i);
     }
 
@@ -140,28 +137,28 @@ public class Fp2ElementOpti implements Fp2Element {
      * @return Calculation result.
      */
     public Fp2Element multiply(Fp2Element y) {
-        FpElementOpti a = (FpElementOpti) x0;
-        FpElementOpti b = (FpElementOpti) x1;
-        FpElementOpti c = (FpElementOpti) y.getX0();
-        FpElementOpti d = (FpElementOpti) y.getX1();
+        FpElement a = x0;
+        FpElement b = x1;
+        FpElement c = y.getX0();
+        FpElement d = y.getX1();
 
         // (a + bi) * (c + di) = (a * c - b * d) + (a * d + b * c)i
 
-        FpElementOpti ac = fpMath.fpMul(a, c);
-        FpElementOpti bd = fpMath.fpMul(b, d);
+        FpElement ac = a.multiply(c);
+        FpElement bd = b.multiply(d);
 
-        FpElementOpti bMinusA = fpMath.fpSubRdc(b, a);
-        FpElementOpti cMinusD = fpMath.fpSubRdc(c, d);
+        FpElement bMinusA = b.subtract(a);
+        FpElement cMinusD = c.subtract(d);
 
-        FpElementOpti adPlusBC = fpMath.fpMul(bMinusA, cMinusD);
-        adPlusBC = fpMath.fp2Add(adPlusBC, ac);
-        adPlusBC = fpMath.fp2Add(adPlusBC, bd);
+        FpElementOpti adPlusBC = (FpElementOpti) bMinusA.multiply(cMinusD);
+        adPlusBC = (FpElementOpti) adPlusBC.addNoReduction(ac);
+        adPlusBC = (FpElementOpti) adPlusBC.addNoReduction(bd);
 
         // x1 = (a * d + b * c) * R mod p
-        FpElementOpti x1o = fpMath.fpMontRdc(adPlusBC);
+        FpElementOpti x1o = adPlusBC.reduceMontgomery();
 
-        FpElementOpti acMinusBd = fpMath.fp2Sub(ac, bd);
-        FpElementOpti x0o = fpMath.fpMontRdc(acMinusBd);
+        FpElementOpti acMinusBd = ((FpElementOpti) ac).subtractNoReduction(bd);
+        FpElementOpti x0o = acMinusBd.reduceMontgomery();
 
         // x0 = (a * c - b * d) * R mod p
         return new Fp2ElementOpti(sikeParam, x0o, x1o);
@@ -177,21 +174,21 @@ public class Fp2ElementOpti implements Fp2Element {
      * @return Calculation result.
      */
     public Fp2ElementOpti square() {
-        FpElementOpti a = (FpElementOpti) x0;
-        FpElementOpti b = (FpElementOpti) x1;
+        FpElement a = x0;
+        FpElement b = x1;
 
         // (a + bi) * (a + bi) = (a^2 - b^2) + (2ab)i.
-        FpElementOpti a2 = fpMath.fpAddRdc(a, a);
-        FpElementOpti aPlusB = fpMath.fpAddRdc(a, b);
-        FpElementOpti aMinusB = fpMath.fpSubRdc(a, b);
-        FpElementOpti a2MinB2 = fpMath.fpMul(aPlusB, aMinusB);
-        FpElementOpti ab2 = fpMath.fpMul(a2, b);
+        FpElement a2 = a.add(a);
+        FpElement aPlusB = a.add(b);
+        FpElement aMinusB = a.subtract(b);
+        FpElement a2MinB2 = aPlusB.multiply(aMinusB);
+        FpElement ab2 = a2.multiply(b);
 
         // (a^2 - b^2) * R mod p
-        FpElementOpti x0o = fpMath.fpMontRdc(a2MinB2);
+        FpElementOpti x0o = ((FpElementOpti) a2MinB2).reduceMontgomery();
 
         // 2 * a * b * R mod p
-        FpElementOpti x1o = fpMath.fpMontRdc(ab2);
+        FpElementOpti x1o = ((FpElementOpti) ab2).reduceMontgomery();
 
         return new Fp2ElementOpti(sikeParam, x0o, x1o);
     }
@@ -214,23 +211,23 @@ public class Fp2ElementOpti implements Fp2Element {
      * @return Calculation result.
      */
     public Fp2ElementOpti inverse() {
-        FpElementOpti e1 = fpMath.fpMul((FpElementOpti) x0, (FpElementOpti) x0);
-        FpElementOpti e2 = fpMath.fpMul((FpElementOpti) x1, (FpElementOpti) x1);
-        e1 = fpMath.fp2Add(e1, e2);
+        FpElementOpti e1 = (FpElementOpti) x0.multiply(x0);
+        FpElementOpti e2 = (FpElementOpti) x1.multiply(x1);
+        e1 = (FpElementOpti) e1.addNoReduction(e2);
         // (a^2 + b^2) * R mod p
-        FpElementOpti f1 = fpMath.fpMontRdc(e1);
+        FpElementOpti f1 = e1.reduceMontgomery();
 
-        FpElementOpti f2 = fpMath.fpMulRdc(f1, f1);
+        FpElementOpti f2 = (FpElementOpti) f1.multiplyMontgomery(f1);
         f2 = p34(f2);
-        f2 = fpMath.fpMulRdc(f2, f2);
-        f2 = fpMath.fpMulRdc(f2, f1);
+        f2 = (FpElementOpti) f2.multiplyMontgomery(f2);
+        f2 = (FpElementOpti) f2.multiplyMontgomery(f1);
 
-        e1 = fpMath.fpMul((FpElementOpti) x0, f2);
-        FpElementOpti x0o = fpMath.fpMontRdc(e1);
+        e1 = (FpElementOpti) x0.multiply(f2);
+        FpElementOpti x0o = e1.reduceMontgomery();
 
-        f1 = fpMath.fpSubRdc(new FpElementOpti(sikeParam), (FpElementOpti) x1);
-        e1 = fpMath.fpMul(f1, f2);
-        FpElementOpti x1o = fpMath.fpMontRdc(e1);
+        f1 = (FpElementOpti) new FpElementOpti(sikeParam).subtract(x1);
+        e1 = (FpElementOpti) f1.multiply(f2);
+        FpElementOpti x1o = e1.reduceMontgomery();
 
         return new Fp2ElementOpti(sikeParam, x0o, x1o);
     }
@@ -250,18 +247,18 @@ public class Fp2ElementOpti implements Fp2Element {
         int[] powStrategy = sikeParam.getPowStrategy();
         int[] mulStrategy = sikeParam.getMulStrategy();
         int initialMul = sikeParam.getInitialMul();
-        FpElementOpti xx = fpMath.fpMulRdc(x, x);
+        FpElementOpti xSquare = (FpElementOpti) x.multiplyMontgomery(x);
         lookup[0] = x.copy();
         for (int i = 1; i < 16; i++) {
-            lookup[i] = fpMath.fpMulRdc(lookup[i - 1], xx);
+            lookup[i] = (FpElementOpti) lookup[i - 1].multiplyMontgomery(xSquare);
         }
         FpElementOpti dest = lookup[initialMul];
         for (int i = 0; i < powStrategy.length; i++) {
-            dest = fpMath.fpMulRdc(dest, dest);
+            dest = (FpElementOpti) dest.multiplyMontgomery(dest);
             for (int j = 1; j < powStrategy[i]; j++) {
-                dest = fpMath.fpMulRdc(dest, dest);
+                dest = (FpElementOpti) dest.multiplyMontgomery(dest);
             }
-            dest = fpMath.fpMulRdc(dest, lookup[mulStrategy[i]]);
+            dest = (FpElementOpti) dest.multiplyMontgomery(lookup[mulStrategy[i]]);
         }
         return dest;
     }

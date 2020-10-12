@@ -17,6 +17,7 @@
 package com.wultra.security.pqc.sike.math;
 
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.math.optimized.fp.Fp2ElementOpti;
 import com.wultra.security.pqc.sike.math.optimized.fp.FpElementOpti;
 import com.wultra.security.pqc.sike.model.ImplementationType;
@@ -27,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Test of FP2Element mathematics.
+ * Test of Fp2Element mathematics.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
@@ -37,7 +38,7 @@ public class Fp2MathTest {
 
     @Test
     public void testAddZero() {
-        FpElementOpti x = new FpElementOpti(sikeParam);
+        FpElement x = new FpElementOpti(sikeParam);
         Fp2Element x2 = new Fp2ElementOpti(sikeParam, x, x);
         Fp2Element result = x2.add(x2);
         assertEquals(x2, result);
@@ -51,17 +52,17 @@ public class Fp2MathTest {
         Fp2Element result = x2.add(x2);
         FpElementOpti expected = new FpElementOpti(sikeParam);
         expected.getValue()[expected.size() - 1] = 2L;
-        Fp2ElementOpti expected2 = new Fp2ElementOpti(sikeParam, expected, expected);
+        Fp2Element expected2 = new Fp2ElementOpti(sikeParam, expected, expected);
         assertEquals(expected2, result);
     }
 
     @Test
     public void testSubZero() {
-        FpElementOpti x = new FpElementOpti(sikeParam);
-        Fp2ElementOpti x2 = new Fp2ElementOpti(sikeParam, x, x);
+        FpElement x = new FpElementOpti(sikeParam);
+        Fp2Element x2 = new Fp2ElementOpti(sikeParam, x, x);
         Fp2Element result = x2.subtract(x2);
         assertEquals(x2, result);
     }
 
-    // TODO
+    // TODO more Fp2Element math tests
 }

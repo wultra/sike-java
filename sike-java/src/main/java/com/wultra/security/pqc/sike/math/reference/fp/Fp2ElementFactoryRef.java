@@ -31,6 +31,10 @@ public class Fp2ElementFactoryRef implements Fp2ElementFactory {
 
     private final SikeParam sikeParam;
 
+    /**
+     * Fp2Element factory constructor for reference elements.
+     * @param sikeParam SIKE parameters.
+     */
     public Fp2ElementFactoryRef(SikeParam sikeParam) {
         this.sikeParam = sikeParam;
     }

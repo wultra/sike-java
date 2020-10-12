@@ -31,6 +31,10 @@ public class Fp2ElementFactoryOpti implements Fp2ElementFactory {
 
     private final SikeParam sikeParam;
 
+    /**
+     * Fp2Element factory constructor for optimized elements.
+     * @param sikeParam SIKE parameters.
+     */
     public Fp2ElementFactoryOpti(SikeParam sikeParam) {
         this.sikeParam = sikeParam;
     }

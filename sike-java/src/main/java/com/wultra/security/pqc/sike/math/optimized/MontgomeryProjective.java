@@ -20,7 +20,6 @@ import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.math.api.Montgomery;
 import com.wultra.security.pqc.sike.math.optimized.fp.FpElementOpti;
-import com.wultra.security.pqc.sike.math.optimized.fp.FpMath;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.model.optimized.MontgomeryConstants;
 import com.wultra.security.pqc.sike.param.SikeParam;
@@ -216,12 +215,18 @@ public class MontgomeryProjective implements Montgomery {
         return r1;
     }
 
-    private void condSwap(SikeParam sikeParam, Fp2Point p, Fp2Point q, long choice) {
-        FpMath fpMath = new FpMath(sikeParam);
-        fpMath.fpSwapCond((FpElementOpti) p.getX().getX0(), (FpElementOpti) q.getX().getX0(), choice);
-        fpMath.fpSwapCond((FpElementOpti) p.getX().getX1(), (FpElementOpti) q.getX().getX1(), choice);
-        fpMath.fpSwapCond((FpElementOpti) p.getZ().getX0(), (FpElementOpti) q.getZ().getX0(), choice);
-        fpMath.fpSwapCond((FpElementOpti) p.getZ().getX1(), (FpElementOpti) q.getZ().getX1(), choice);
+    /**
+     * Swap two points conditionally.
+     * @param sikeParam SIKE parameters.
+     * @param p Point p.
+     * @param q Point q.
+     * @param mask Swap condition, if zero swap is not performed.
+     */
+    private void condSwap(SikeParam sikeParam, Fp2Point p, Fp2Point q, long mask) {
+        FpElementOpti.conditionalSwap(sikeParam, (FpElementOpti) p.getX().getX0(), (FpElementOpti) q.getX().getX0(), mask);
+        FpElementOpti.conditionalSwap(sikeParam, (FpElementOpti) p.getX().getX1(), (FpElementOpti) q.getX().getX1(), mask);
+        FpElementOpti.conditionalSwap(sikeParam, (FpElementOpti) p.getZ().getX0(), (FpElementOpti) q.getZ().getX0(), mask);
+        FpElementOpti.conditionalSwap(sikeParam, (FpElementOpti) p.getZ().getX1(), (FpElementOpti) q.getZ().getX1(), mask);
     }
 
 }

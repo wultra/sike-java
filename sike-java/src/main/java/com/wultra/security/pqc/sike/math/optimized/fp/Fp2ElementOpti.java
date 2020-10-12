@@ -60,34 +60,6 @@ public class Fp2ElementOpti implements Fp2Element {
     }
 
     /**
-     * Construct the zero element 0 + 0*i.
-     * @param sikeParam SIKE parameters.
-     * @return Zero element.
-     */
-    public static Fp2ElementOpti zero(SikeParam sikeParam) {
-        return new Fp2ElementOpti(sikeParam, BigInteger.ZERO, BigInteger.ZERO);
-    }
-
-    /**
-     * Construct the one element 1 + 0*i.
-     * @param sikeParam SIKE parameters.
-     * @return One element.
-     */
-    public static Fp2ElementOpti one(SikeParam sikeParam) {
-        return new Fp2ElementOpti(sikeParam, BigInteger.ONE, BigInteger.ZERO);
-    }
-
-    /**
-     * Generate an element with value x0i + 0*i.
-     * @param sikeParam SIKE parameters.
-     * @param x0i Integer value for the real part of element.
-     * @return Generated element.
-     */
-    public static Fp2ElementOpti generate(SikeParam sikeParam, BigInteger x0i) {
-        return new Fp2ElementOpti(sikeParam, x0i, BigInteger.ZERO);
-    }
-
-    /**
      * Get the real part of element.
      * @return Real part of element.
      */

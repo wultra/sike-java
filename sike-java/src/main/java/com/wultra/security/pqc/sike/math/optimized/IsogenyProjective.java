@@ -313,9 +313,9 @@ public class IsogenyProjective implements Isogeny {
         Fp2Point p = evaluatedCurve.getP();
         Fp2Point q = evaluatedCurve.getQ();
         Fp2Point r = evaluatedCurve.getR();
-        Fp2ElementOpti px = new Fp2ElementOpti(sikeParam, p.getX().getX0(), p.getX().getX1());
-        Fp2ElementOpti qx = new Fp2ElementOpti(sikeParam, q.getX().getX0(), q.getX().getX1());
-        Fp2ElementOpti rx = new Fp2ElementOpti(sikeParam, r.getX().getX0(), r.getX().getX1());
+        Fp2Element px = new Fp2ElementOpti(sikeParam, p.getX().getX0(), p.getX().getX1());
+        Fp2Element qx = new Fp2ElementOpti(sikeParam, q.getX().getX0(), q.getX().getX1());
+        Fp2Element rx = new Fp2ElementOpti(sikeParam, r.getX().getX0(), r.getX().getX1());
         return new SidhPublicKey(sikeParam, px, qx, rx);
     }
 

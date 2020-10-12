@@ -297,9 +297,9 @@ public class IsogenyAffine implements Isogeny {
         Fp2Point q = evaluatedCurve.getQ();
         Fp2Point r = montgomery.getXr(evaluatedCurve.getCurve(), p, q);
 
-        Fp2ElementRef px = new Fp2ElementRef(sikeParam, p.getX().getX0(), p.getX().getX1());
-        Fp2ElementRef qx = new Fp2ElementRef(sikeParam, q.getX().getX0(), q.getX().getX1());
-        Fp2ElementRef rx = new Fp2ElementRef(sikeParam, r.getX().getX0(), r.getX().getX1());
+        Fp2Element px = new Fp2ElementRef(sikeParam, p.getX().getX0(), p.getX().getX1());
+        Fp2Element qx = new Fp2ElementRef(sikeParam, q.getX().getX0(), q.getX().getX1());
+        Fp2Element rx = new Fp2ElementRef(sikeParam, r.getX().getX0(), r.getX().getX1());
         return new SidhPublicKey(sikeParam, px, qx, rx);
     }
 

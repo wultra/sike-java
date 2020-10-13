@@ -367,6 +367,7 @@ public class FpElementOpti implements FpElement {
 
     /**
      * Swap field elements conditionally, in constant time.
+     * @param sikeParam SIKE parameters.
      * @param x First element.
      * @param y Second element.
      * @param mask Swap condition, if zero swap is not performed.

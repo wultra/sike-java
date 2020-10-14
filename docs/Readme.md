@@ -108,7 +108,7 @@ To export the keys, cast them to `SidhPrivateKey` or `SidhPublicKey`, and call e
 - `getEncoded()` - returns the byte array representation of the key
 - `toOctetString()` - converts the key to an octet string as defined in SIKE specification
 
-You can also obtain the numeric representation of keys using:
+Obtain the numeric representation of keys using:
 
 - `priv.getKey()` - returns the FpElement representing the private key
 - `pub.getPx()` - returns the Fp2Element representing the public key element phi(Px)
@@ -121,7 +121,7 @@ Obtain the BigInteger representations of the keys using:
 - `pub.getPx().getX0().getX()` - returns the BigInteger representing the real part of public key x coordinate phi(Px)
 - `pub.getPx().getX1().getX()` - returns the BigInteger representing the imaginary part of public key x coordinate phi(Px)
 
-Obtaining BigInteger representations of x coordinates of phi(Qx) and phi(Rx) is analogous to phi(Px).
+Obtaining BigInteger representations of `x` coordinates of `phi(Qx)` and `phi(Rx)` is analogous to `phi(Px)`.
 
 Import private keys from their byte array representation:
 

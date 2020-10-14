@@ -2,11 +2,11 @@
 
 This documentation describes the usage of SIKE Java.
 
-If you are new to SIDH or SIKE, please check out the official resources, which provide many educational materials:
+We advise the readers who are new to SIDH or SIKE to check the official resources, which provide many educational materials.
 
-- Official SIKE documentation is available at: https://sike.org
-- SIKE specification from round 2 NIST submission is available at: https://sike.org/files/SIDH-spec.pdf
-- The main concepts are explained nicely in SIKE for beginners: https://eprint.iacr.org/2019/1321.pdf
+- Official SIKE documentation: https://sike.org
+- SIKE specification from round 2 NIST submission: https://sike.org/files/SIDH-spec.pdf
+- The main concepts are explained in ["Supersingular isogeny key exchange for beginners"](https://eprint.iacr.org/2019/1321.pdf).
 
 ## Features
 
@@ -24,7 +24,7 @@ Following SIKE variants are supported:
 - SIKEp610
 - SIKEp751
 
-Both reference and optimized implementations have been ported, and it is possible to switch the implementation type. The port currently does not support compressed keys. The field mathematics is based on Java BigInteger, and the math performance will be further improved in the future by switching to an alternative implementation.
+The project provides implementation ports for both reference and optimized implementations, and it is possible to switch the implementation type. The port currently does not support compressed keys. The field arithmetics is based on Java BigInteger in the reference implementation. The optimized implementation uses an unsigned long array representation of field elements, and the field arithmetics does not use any native code.
 
 The private and public keys can be exported into:
 
@@ -44,14 +44,15 @@ SIKE Java provides an easy to use interface for generating keys and computing sh
 
 ### Initialization
 
-As the first step, you need to initialize the Bouncy Castle provider:
+As the first step, initialize the Bouncy Castle provider:
+
 ```java
 Security.addProvider(new BouncyCastleProvider());
 ```
 
 The Bouncy Castle initialization should be done at the application start before any of the SIKE Java functionality is used.
 
-Before generating keys, you should choose the variant you want to use. The table below summarizes the available variants:
+Before generating keys, choose one of the available variants:
 
 | SIKE Variant Name | NIST Security Level | Private Key Size | Public Key Size | Shared Secret Size |
 | :---------------: | :-----------------: | :--------------: | :-------------: | :----------------: | 
@@ -73,13 +74,13 @@ SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
 
 ### Generating Keys
 
-You can generate key pairs using the `KeyGenerator` class: 
+Generate key pairs using the `KeyGenerator` class: 
  
 ```java
 KeyGenerator keyGenerator = new KeyGenerator(sikeParam);
 ```
 
-Before generating a key pair, you need to decide whether the party is `ALICE` or `BOB`. 
+Before generating a key pair, decide whether the party is `ALICE` or `BOB`. 
 
 For SIKE, `ALICE` is the server, and `BOB` is the client that initiates the communication.
 
@@ -90,18 +91,19 @@ KeyPair keyPairA = keyGenerator.generateKeyPair(Party.ALICE);
 ``` 
 
 To generate a key pair for `BOB`, use:
+
 ```java
 KeyPair keyPairB = keyGenerator.generateKeyPair(Party.BOB);
 ``` 
 
-You can obtain the keys from the key pair using:
+Obtain the keys from the key pair using:
 
 ```java
 PrivateKey priv = keyPair.getPrivate();
 PrivateKey pub = keyPair.getPrivate();
 ```
 
-In case you need to export the keys, cast them to `SidhPrivateKey` or `SidhPublicKey`, and call either of these methods:
+To export the keys, cast them to `SidhPrivateKey` or `SidhPublicKey`, and call either of these methods:
 
 - `getEncoded()` - returns the byte array representation of the key
 - `toOctetString()` - converts the key to an octet string as defined in SIKE specification
@@ -113,7 +115,7 @@ You can also obtain the numeric representation of keys using:
 - `pub.getQx()` - returns the Fp2Element representing the public key element phi(Qx)
 - `pub.getRx()` - returns the Fp2Element representing the public key element phi(Rx)
 
-You can obtain the BigInteger representations of the keys using:
+Obtain the BigInteger representations of the keys using:
 
 - `priv.getM()` - returns the BigInteger representing the private key
 - `pub.getPx().getX0().getX()` - returns the BigInteger representing the real part of public key x coordinate phi(Px)
@@ -121,7 +123,7 @@ You can obtain the BigInteger representations of the keys using:
 
 Obtaining BigInteger representations of x coordinates of phi(Qx) and phi(Rx) is analogous to phi(Px).
 
-You can import private keys from their byte array representation:
+Import private keys from their byte array representation:
 
 ```java
 SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
@@ -129,7 +131,7 @@ byte[] secret = secretBytes;
 PrivateKey priv = new SidhPrivateKey(sikeParam, Party.ALICE, secret);
 ```
 
-You can also import private keys from their octet string representation:
+It is also possible to import private keys from their octet string representation:
 
 ```java
 SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
@@ -137,7 +139,7 @@ String secret = secretOctets;
 PrivateKey priv = new SidhPrivateKey(sikeParam, Party.ALICE, secret);
 ```
 
-Finally, you can import private keys from their BigInteger representation:
+Finally, it is also possible to import private keys from their BigInteger representation:
 
 ```java
 SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
@@ -145,7 +147,7 @@ BigInteger secret = new BigInteger(secretNumber);
 PrivateKey priv = new SidhPrivateKey(sikeParam, Party.ALICE, secret);
 ```
 
-Once you have a private key, you can derive the public key using:
+Once having a private key, derive the public key using:
 
 ```java
 PublicKey pub = keyGenerator.derivePublicKey(Party.ALICE);
@@ -155,7 +157,7 @@ Public keys can also be imported from various serialization formats using the `S
 
 ### SIDH Key Agreement
 
-Once you initialized the keys for both parties, it is easy to compute the shared secret using SIDH. The process is the same for both parties. Similarly to `DH` or `ECDH`, opposite public and private keys are used:
+After initializing the keys for both parties, it is easy to compute the shared secret using SIDH. The process is the same for both parties. Similarly to `DH` or `ECDH`, SIDH uses the opposite public and private keys:
 
 ```java
 Sidh sidh = new Sidh(sikeParam);
@@ -163,7 +165,7 @@ Fp2Element secretA = sidh.generateSharedSecret(Party.ALICE, keyPairA.getPrivate(
 Fp2Element secretB = sidh.generateSharedSecret(Party.BOB, keyPairB.getPrivate(), keyPairA.getPublic());
 ```
 
-You can obtain the byte array representing secret j-invariants of both sides using:
+Obtain the byte array representing secret j-invariants of both sides using:
 
 ```java
 byte[] encoded = secret.getEncoded();
@@ -171,7 +173,7 @@ byte[] encoded = secret.getEncoded();
 
 Both secrets `secretA` and `secretB` are equal in case the key agreement succeeded. The shared secret sizes match the Fp2Element sizes in the chosen SIKE variant, which is 1/3 of the public key size. Using a hashing function on the shared secret values is advised to obtain shorter shared secret sizes and eliminate any risks related to using BigInteger representation of the j-invariant.
 
-Note that SIDH provides lower security than SIKE, it is an ind-CPA scheme and should only be used with ephemeral keys.
+Note that SIDH provides lower security than SIKE. It is an ind-CPA scheme and should only be used with ephemeral keys.
 
 ### SIKE Key Encapsulation
 
@@ -183,7 +185,7 @@ KeyGenerator keyGenerator = new KeyGenerator(sikeParam);
 KeyPair keyPairB = keyGenerator.generateKeyPair(Party.BOB);
 ```
 
-Bob's public key `keyPairB` is transported to `ALICE`, who uses the public key for the encapsulation phase of the KEM:
+Bob transports his public key `keyPairB` to `ALICE`, who uses the public key for the encapsulation phase of the KEM:
 
 ```java
 EncapsulationResult encapsulationResult = sike.encapsulate(keyPairB.getPublic());
@@ -191,14 +193,12 @@ EncryptedMessage encryptedMessage = encapsulationResult.getEncryptedMessage();
 byte[] secretA = encapsulationResult.getSecret();
 ```
 
-The encrypted message `encryptedMessage` is transported to `BOB` who uses the public key and cipher text included
-in the message for the decapsulation phase of KEM:
+The encrypted message `encryptedMessage` is transported to `BOB` who uses the public key and cipher text included in the message for the decapsulation phase of KEM:
 
 ```java
 byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);
 ```
 
-Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared 
-secret sizes are listed in the table presented in the [Initialization chapter](./Readme.md#Initialization).
+Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared  secret sizes are listed in the table presented in the [Initialization chapter](./Readme.md#Initialization).
 
-Note that SIKE provides higher security than SIDH, it is an ind-CCA2 scheme and can be used with long term keys.
+Note that SIKE provides higher security than SIDH. It is an ind-CCA2 scheme and can be used with long term keys.

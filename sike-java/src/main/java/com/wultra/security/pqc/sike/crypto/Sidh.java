@@ -16,7 +16,7 @@
  */
 package com.wultra.security.pqc.sike.crypto;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.model.Party;
 import com.wultra.security.pqc.sike.model.SidhPrivateKey;
 import com.wultra.security.pqc.sike.model.SidhPublicKey;
@@ -59,10 +59,10 @@ public class Sidh {
         SidhPrivateKey priv = (SidhPrivateKey) privateKey;
         SidhPublicKey pub = (SidhPublicKey) publicKey;
         if (party == Party.ALICE) {
-            return sikeParam.getIsogeny().isoEx2(sikeParam, priv.getKey().getX(), pub.getPx(), pub.getQx(), pub.getRx());
+            return sikeParam.getIsogeny().isoEx2(sikeParam, priv.getKey(), pub.getPx(), pub.getQx(), pub.getRx());
         }
         if (party == Party.BOB) {
-            return sikeParam.getIsogeny().isoEx3(sikeParam, priv.getKey().getX(), pub.getPx(), pub.getQx(), pub.getRx());
+            return sikeParam.getIsogeny().isoEx3(sikeParam, priv.getKey(), pub.getPx(), pub.getQx(), pub.getRx());
         }
         throw new InvalidParameterException("Invalid party");
     }

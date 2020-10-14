@@ -16,14 +16,11 @@
  */
 package com.wultra.security.pqc.sike.math.api;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.model.EvaluatedCurve;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.model.SidhPrivateKey;
 import com.wultra.security.pqc.sike.model.SidhPublicKey;
 import com.wultra.security.pqc.sike.param.SikeParam;
-
-import java.math.BigInteger;
 
 /**
  * Elliptic curve isogeny operations on Montgomery curves.
@@ -125,7 +122,7 @@ public interface Isogeny {
      * @param r2 The x coordinate of public point R.
      * @return Shared secret isogeny j-invariant.
      */
-    Fp2Element isoEx2(SikeParam sikeParam, BigInteger sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2);
+    Fp2Element isoEx2(SikeParam sikeParam, byte[] sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2);
 
     /**
      * Compute a shared secret isogeny j-invariant in the 3-torsion.
@@ -136,6 +133,6 @@ public interface Isogeny {
      * @param r3 The x coordinate of public point R.
      * @return Shared secret isogeny j-invariant.
      */
-    Fp2Element isoEx3(SikeParam sikeParam, BigInteger sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3);
+    Fp2Element isoEx3(SikeParam sikeParam, byte[] sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3);
 
 }

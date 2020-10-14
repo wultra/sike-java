@@ -16,7 +16,6 @@
  */
 package com.wultra.security.pqc.sike.math.api;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.param.SikeParam;
 

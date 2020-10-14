@@ -14,7 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.pqc.sike.math;
+package com.wultra.security.pqc.sike.math.reference.fp;
+
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.FpElement;
+import com.wultra.security.pqc.sike.param.SikeParam;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -24,75 +28,35 @@ import java.util.Objects;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-public class Fp2Element {
+public class Fp2ElementRef implements Fp2Element {
 
     private final FpElement x0;
     private final FpElement x1;
 
-    private final BigInteger prime;
+    private final SikeParam sikeParam;
 
     /**
      * The F(p^2) field element constructor for given F(p) elements.
-     * @param prime Field prime.
+     * @param sikeParam SIKE parameters.
      * @param x0 The x0 real F(p) element.
      * @param x1 The x1 imaginary F(p) element.
      */
-    public Fp2Element(BigInteger prime, FpElement x0, FpElement x1) {
-        this.prime = prime;
+    public Fp2ElementRef(SikeParam sikeParam, FpElement x0, FpElement x1) {
+        this.sikeParam = sikeParam;
         this.x0 = x0.copy();
         this.x1 = x1.copy();
     }
 
     /**
      * The F(p^2) field element constructor for given BigInteger values.
-     * @param prime Field prime.
+     * @param sikeParam SIKE parameters.
      * @param x0b The x0 real F(p) element.
      * @param x1b The x1 imaginary F(p) element.
      */
-    public Fp2Element(BigInteger prime, BigInteger x0b, BigInteger x1b) {
-        this.prime = prime;
-        this.x0 = new FpElement(prime, x0b);
-        this.x1 = new FpElement(prime, x1b);
-    }
-
-    /**
-     * The F(p^2) field element constructor for given integer values.
-     * @param prime Field prime.
-     * @param x0i The x0 real integer value.
-     * @param x1i The x1 imaginary integer value.
-     */
-    public Fp2Element(BigInteger prime, int x0i, int x1i) {
-        this.prime = prime;
-        this.x0 = new FpElement(prime, x0i);
-        this.x1 = new FpElement(prime, x1i);
-    }
-
-    /**
-     * Construct the zero element 0 + 0*i.
-     * @param prime Field prime.
-     * @return Zero element.
-     */
-    public static Fp2Element zero(BigInteger prime) {
-        return new Fp2Element(prime, 0, 0);
-    }
-
-    /**
-     * Construct the one element 1 + 0*i.
-     * @param prime Field prime.
-     * @return One element.
-     */
-    public static Fp2Element one(BigInteger prime) {
-        return new Fp2Element(prime, 1, 0);
-    }
-
-    /**
-     * Generate an element with value x0i + 0*i.
-     * @param prime Field prime.
-     * @param x0i Integer value for the real part of element.
-     * @return Generated element.
-     */
-    public static Fp2Element generate(BigInteger prime, int x0i) {
-        return new Fp2Element(prime, x0i, 0);
+    public Fp2ElementRef(SikeParam sikeParam, BigInteger x0b, BigInteger x1b) {
+        this.sikeParam = sikeParam;
+        this.x0 = new FpElementRef(sikeParam, x0b);
+        this.x1 = new FpElementRef(sikeParam, x1b);
     }
 
     /**
@@ -122,7 +86,7 @@ public class Fp2Element {
 
         r = x0.add(y.getX0());
         i = x1.add(y.getX1());
-        return new Fp2Element(prime, r, i);
+        return new Fp2ElementRef(sikeParam, r, i);
     }
 
     /**
@@ -136,7 +100,7 @@ public class Fp2Element {
 
         r = x0.subtract(y.getX0());
         i = x1.subtract(y.getX1());
-        return new Fp2Element(prime, r, i);
+        return new Fp2ElementRef(sikeParam, r, i);
     }
 
     /**
@@ -156,7 +120,7 @@ public class Fp2Element {
         i2 = x1.multiply(y.getX0());
         i = i1.add(i2);
 
-        return new Fp2Element(prime, r, i);
+        return new Fp2ElementRef(sikeParam, r, i);
     }
 
     /**
@@ -164,7 +128,7 @@ public class Fp2Element {
      * @return Calculation result.
      */
     public Fp2Element multiplyByI() {
-        return new Fp2Element(prime, x1.negate(), x0.copy());
+        return new Fp2ElementRef(sikeParam, x1.negate(), x0.copy());
     }
 
     /**
@@ -185,14 +149,14 @@ public class Fp2Element {
             throw new ArithmeticException("Negative exponent");
         }
         if (n.compareTo(BigInteger.ZERO) == 0) {
-            return Fp2Element.one(prime);
+            return sikeParam.getFp2ElementFactory().one();
         }
         if (n.compareTo(BigInteger.ONE) == 0) {
             return copy();
         }
         BigInteger e = n;
         Fp2Element base = copy();
-        Fp2Element result = Fp2Element.one(prime);
+        Fp2Element result = sikeParam.getFp2ElementFactory().one();
         while (e.compareTo(BigInteger.ZERO) > 0) {
             if (e.testBit(0)) {
                 result = result.multiply(base);
@@ -210,16 +174,17 @@ public class Fp2Element {
     public Fp2Element sqrt() {
         // TODO - compare performance with reference C implementation, consider replacing algorithm
         if (isZero()) {
-            return Fp2Element.zero(prime);
+            return sikeParam.getFp2ElementFactory().zero();
         }
         if (!isQuadraticResidue()) {
             throw new ArithmeticException("The square root of a quadratic non-residue cannot be computed");
         }
+        BigInteger prime = sikeParam.getPrime();
         if (prime.mod(new BigInteger("4")).compareTo(new BigInteger("3")) != 0) {
             throw new ArithmeticException("Field prime mod 4 is not 3");
         }
         Fp2Element a1, a2;
-        Fp2Element neg1 = Fp2Element.one(prime);
+        Fp2Element neg1 = sikeParam.getFp2ElementFactory().one();
         BigInteger p = prime;
         p = p.shiftRight(2);
         a1 = copy();
@@ -232,7 +197,7 @@ public class Fp2Element {
         }
         p = prime;
         p = p.shiftRight(1);
-        a1 = a1.add(Fp2Element.one(prime));
+        a1 = a1.add(sikeParam.getFp2ElementFactory().one());
         a1 = a1.pow(p);
         return a1.multiply(a2);
     }
@@ -243,19 +208,19 @@ public class Fp2Element {
      */
     public boolean isQuadraticResidue() {
         Fp2Element base = copy();
-        BigInteger p = prime;
+        BigInteger p = sikeParam.getPrime();
         p = p.multiply(p);
         p = p.subtract(BigInteger.ONE);
         p = p.shiftRight(1);
         base = base.pow(p);
-        return base.equals(Fp2Element.one(prime));
+        return base.equals(sikeParam.getFp2ElementFactory().one());
     }
 
     /**
      * Invert the element.
      * @return Calculation result.
      */
-    public Fp2Element inverse() {
+    public Fp2ElementRef inverse() {
         FpElement t0, t1, o0, o1;
         t0 = x0.square();
         t1 = x1.square();
@@ -264,7 +229,7 @@ public class Fp2Element {
         o1 = x1.negate();
         o0 = x0.multiply(t0);
         o1 = o1.multiply(t0);
-        return new Fp2Element(prime, o0, o1);
+        return new Fp2ElementRef(sikeParam, o0, o1);
     }
 
     /**
@@ -272,7 +237,7 @@ public class Fp2Element {
      * @return Calculation result.
      */
     public Fp2Element negate() {
-        return new Fp2Element(prime, x0.negate(), x1.negate());
+        return new Fp2ElementRef(sikeParam, x0.negate(), x1.negate());
     }
 
     /**
@@ -288,7 +253,7 @@ public class Fp2Element {
      * @return Element copy.
      */
     public Fp2Element copy() {
-        return new Fp2Element(prime, new FpElement(prime, x0.getX()), new FpElement(prime, x1.getX()));
+        return new Fp2ElementRef(sikeParam, new FpElementRef(sikeParam, x0.getX()), new FpElementRef(sikeParam, x1.getX()));
     }
 
     /**
@@ -321,14 +286,14 @@ public class Fp2Element {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Fp2Element that = (Fp2Element) o;
-        return prime.equals(that.prime)
+        Fp2ElementRef that = (Fp2ElementRef) o;
+        return sikeParam.getPrime().equals(that.sikeParam.getPrime())
                 && x0.equals(that.x0)
                 && x1.equals(that.x1);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(prime, x0, x1);
+        return Objects.hash(sikeParam, x0, x1);
     }
 }

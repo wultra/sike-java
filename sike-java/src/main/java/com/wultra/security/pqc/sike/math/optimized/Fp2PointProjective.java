@@ -16,10 +16,9 @@
  */
 package com.wultra.security.pqc.sike.math.optimized;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 
-import java.math.BigInteger;
 import java.security.InvalidParameterException;
 import java.util.Objects;
 
@@ -41,15 +40,6 @@ public class Fp2PointProjective implements Fp2Point {
     public Fp2PointProjective(Fp2Element x, Fp2Element z) {
         this.x = x;
         this.z = z;
-    }
-
-    /**
-     * Construct the point at infinity.
-     * @param prime Field prime.
-     * @return Point at infinity.
-     */
-    public static Fp2Point infinity(BigInteger prime) {
-        return new Fp2PointProjective(Fp2Element.zero(prime), Fp2Element.zero(prime));
     }
 
     @Override

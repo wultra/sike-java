@@ -16,7 +16,7 @@
  */
 package com.wultra.security.pqc.sike.math.reference;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.math.api.Montgomery;
 import com.wultra.security.pqc.sike.model.EvaluatedCurve;
@@ -40,10 +40,11 @@ public class MontgomeryAffine implements Montgomery {
 
         Fp2Element t0, t1, t2, x2p, y2p;
         Fp2Element b = curve.getB();
+        SikeParam sikeParam = curve.getSikeParam();
 
         t0 = p.getX().square();
         t1 = t0.add(t0);
-        t2 = Fp2Element.one(curve.getSikeParam().getPrime());
+        t2 = sikeParam.getFp2ElementFactory().one();
         t0 = t0.add(t1);
         t1 = curve.getA().multiply(p.getX());
         t1 = t1.add(t1);
@@ -98,8 +99,9 @@ public class MontgomeryAffine implements Montgomery {
     public Fp2Element jInv(MontgomeryCurve curve) {
         Fp2Element t0, t1, j;
         Fp2Element a = curve.getA();
+        SikeParam sikeParam = curve.getSikeParam();
         t0 = a.square();
-        j = Fp2Element.generate(curve.getSikeParam().getPrime(), 3);
+        j = sikeParam.getFp2ElementFactory().generate(new BigInteger("3"));
         j = t0.subtract(j);
         t1 = j.square();
         j = j.multiply(t1);
@@ -111,7 +113,7 @@ public class MontgomeryAffine implements Montgomery {
         j = j.add(j);
         j = j.add(j);
         j = j.add(j);
-        t1 = Fp2Element.generate(curve.getSikeParam().getPrime(), 4);
+        t1 = sikeParam.getFp2ElementFactory().generate(new BigInteger("4"));
         t0 = t0.subtract(t1);
         t0 = t0.inverse();
         j = j.multiply(t0);
@@ -126,7 +128,7 @@ public class MontgomeryAffine implements Montgomery {
         a = rx.multiply(t1);
         a = a.add(t0);
         t0 = t0.multiply(rx);
-        a = a.subtract(Fp2Element.one(sikeParam.getPrime()));
+        a = a.subtract(sikeParam.getFp2ElementFactory().one());
         t0 = t0.add(t0);
         t1 = t1.add(rx);
         t0 = t0.add(t0);
@@ -146,8 +148,8 @@ public class MontgomeryAffine implements Montgomery {
      * @return Calculated new point.
      */
     public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int msb) {
-        BigInteger prime = curve.getSikeParam().getPrime();
-        Fp2Point q = Fp2PointAffine.infinity(prime);
+        SikeParam sikeParam = curve.getSikeParam();
+        Fp2Point q = Fp2PointAffine.infinity(sikeParam);
         for (int i = msb - 1; i >= 0; i--) {
             q = xDbl(curve, q);
             if (m.testBit(i)) {
@@ -175,8 +177,8 @@ public class MontgomeryAffine implements Montgomery {
             return xDbl(curve, p);
         }
         if (p.equals(q.negate())) {
-            BigInteger prime = curve.getSikeParam().getPrime();
-            return Fp2PointAffine.infinity(prime);
+            SikeParam sikeParam = curve.getSikeParam();
+            return Fp2PointAffine.infinity(sikeParam);
         }
 
         Fp2Element t0, t1, t2, xpq, ypq;
@@ -226,7 +228,7 @@ public class MontgomeryAffine implements Montgomery {
     public EvaluatedCurve getYpYqAB(SikeParam sikeParam, Fp2Element px, Fp2Element qx, Fp2Element rx) {
         Fp2Element b, t1, t2, py, qy;
         Fp2Element a = getA(sikeParam, px, qx, rx);
-        b = Fp2Element.one(sikeParam.getPrime());
+        b = sikeParam.getFp2ElementFactory().one();
         MontgomeryCurve curve = new MontgomeryCurve(sikeParam, a, b);
         t1 = px.square();
         t2 = px.multiply(t1);

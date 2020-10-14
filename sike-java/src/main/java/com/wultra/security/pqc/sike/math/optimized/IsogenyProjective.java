@@ -16,10 +16,11 @@
  */
 package com.wultra.security.pqc.sike.math.optimized;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.math.api.Isogeny;
 import com.wultra.security.pqc.sike.math.api.Montgomery;
+import com.wultra.security.pqc.sike.math.optimized.fp.Fp2ElementOpti;
 import com.wultra.security.pqc.sike.model.EvaluatedCurve;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.model.SidhPrivateKey;
@@ -285,12 +286,11 @@ public class IsogenyProjective implements Isogeny {
     @Override
     public SidhPublicKey isoGen2(MontgomeryCurve curve, SidhPrivateKey privateKey) {
         SikeParam sikeParam = curve.getSikeParam();
-        BigInteger prime = sikeParam.getPrime();
         MontgomeryProjective montgomery = (MontgomeryProjective) sikeParam.getMontgomery();
-        Fp2Point p1 = new Fp2PointProjective(sikeParam.getPB().getX(), Fp2Element.one(prime));
-        Fp2Point p2 = new Fp2PointProjective(sikeParam.getQB().getX(), Fp2Element.one(prime));
-        Fp2Point p3 = new Fp2PointProjective(sikeParam.getRB().getX(), Fp2Element.one(prime));
-        Fp2Point s = montgomery.ladder3Pt(curve, privateKey.getM(), sikeParam.getPA().getX(), sikeParam.getQA().getX(),
+        Fp2Point p1 = new Fp2PointProjective(sikeParam.getPB().getX(), sikeParam.getFp2ElementFactory().one());
+        Fp2Point p2 = new Fp2PointProjective(sikeParam.getQB().getX(), sikeParam.getFp2ElementFactory().one());
+        Fp2Point p3 = new Fp2PointProjective(sikeParam.getRB().getX(), sikeParam.getFp2ElementFactory().one());
+        Fp2Point s = montgomery.ladder3Pt(curve, privateKey.getKey(), sikeParam.getPA().getX(), sikeParam.getQA().getX(),
                 sikeParam.getRA().getX(), sikeParam.getMsbA());
         EvaluatedCurve evaluatedCurve = iso2e(curve, s, p1, p2, p3);
         return createPublicKey(sikeParam, evaluatedCurve);
@@ -299,12 +299,11 @@ public class IsogenyProjective implements Isogeny {
     @Override
     public SidhPublicKey isoGen3(MontgomeryCurve curve, SidhPrivateKey privateKey) {
         SikeParam sikeParam = curve.getSikeParam();
-        BigInteger prime = sikeParam.getPrime();
         MontgomeryProjective montgomery = (MontgomeryProjective) sikeParam.getMontgomery();
-        Fp2Point p1 = new Fp2PointProjective(sikeParam.getPA().getX(), Fp2Element.one(prime));
-        Fp2Point p2 = new Fp2PointProjective(sikeParam.getQA().getX(), Fp2Element.one(prime));
-        Fp2Point p3 = new Fp2PointProjective(sikeParam.getRA().getX(), Fp2Element.one(prime));
-        Fp2Point s = montgomery.ladder3Pt(curve, privateKey.getM(), sikeParam.getPB().getX(), sikeParam.getQB().getX(),
+        Fp2Point p1 = new Fp2PointProjective(sikeParam.getPA().getX(), sikeParam.getFp2ElementFactory().one());
+        Fp2Point p2 = new Fp2PointProjective(sikeParam.getQA().getX(), sikeParam.getFp2ElementFactory().one());
+        Fp2Point p3 = new Fp2PointProjective(sikeParam.getRA().getX(), sikeParam.getFp2ElementFactory().one());
+        Fp2Point s = montgomery.ladder3Pt(curve, privateKey.getKey(), sikeParam.getPB().getX(), sikeParam.getQB().getX(),
                 sikeParam.getRB().getX(), sikeParam.getMsbB() - 1);
         EvaluatedCurve evaluatedCurve = iso3e(curve, s, p1, p2, p3);
         return createPublicKey(sikeParam, evaluatedCurve);
@@ -314,20 +313,20 @@ public class IsogenyProjective implements Isogeny {
         Fp2Point p = evaluatedCurve.getP();
         Fp2Point q = evaluatedCurve.getQ();
         Fp2Point r = evaluatedCurve.getR();
-        Fp2Element px = new Fp2Element(sikeParam.getPrime(), p.getX().getX0(), p.getX().getX1());
-        Fp2Element qx = new Fp2Element(sikeParam.getPrime(), q.getX().getX0(), q.getX().getX1());
-        Fp2Element rx = new Fp2Element(sikeParam.getPrime(), r.getX().getX0(), r.getX().getX1());
+        Fp2Element px = new Fp2ElementOpti(sikeParam, p.getX().getX0(), p.getX().getX1());
+        Fp2Element qx = new Fp2ElementOpti(sikeParam, q.getX().getX0(), q.getX().getX1());
+        Fp2Element rx = new Fp2ElementOpti(sikeParam, r.getX().getX0(), r.getX().getX1());
         return new SidhPublicKey(sikeParam, px, qx, rx);
     }
 
     @Override
-    public Fp2Element isoEx2(SikeParam sikeParam, BigInteger sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2) {
+    public Fp2Element isoEx2(SikeParam sikeParam, byte[] sk2, Fp2Element p2, Fp2Element q2, Fp2Element r2) {
         MontgomeryProjective montgomery = (MontgomeryProjective) sikeParam.getMontgomery();
         Fp2Element a = montgomery.getA(sikeParam, p2, q2, r2);
         MontgomeryCurve curve = new MontgomeryCurve(sikeParam, a);
         Fp2Point s = montgomery.ladder3Pt(curve, sk2, p2, q2, r2, sikeParam.getMsbA());
-        Fp2Element two = Fp2Element.generate(sikeParam.getPrime(), 2);
-        Fp2Element four = Fp2Element.generate(sikeParam.getPrime(), 4);
+        Fp2Element two = sikeParam.getFp2ElementFactory().generate(new BigInteger("2"));
+        Fp2Element four = sikeParam.getFp2ElementFactory().generate(new BigInteger("4"));
         curve.getOptimizedConstants().setA24minus(curve.getA().add(two));
         curve.getOptimizedConstants().setC24(four);
         EvaluatedCurve iso2 = iso2e(curve, s);
@@ -342,12 +341,12 @@ public class IsogenyProjective implements Isogeny {
     }
 
     @Override
-    public Fp2Element isoEx3(SikeParam sikeParam, BigInteger sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3) {
+    public Fp2Element isoEx3(SikeParam sikeParam, byte[] sk3, Fp2Element p3, Fp2Element q3, Fp2Element r3) {
         MontgomeryProjective montgomery = (MontgomeryProjective) sikeParam.getMontgomery();
         Fp2Element a = montgomery.getA(sikeParam, p3, q3, r3);
         MontgomeryCurve curve = new MontgomeryCurve(sikeParam, a);
         Fp2Point s = montgomery.ladder3Pt(curve, sk3, p3, q3, r3, sikeParam.getMsbB() - 1);
-        Fp2Element two = Fp2Element.generate(sikeParam.getPrime(), 2);
+        Fp2Element two = sikeParam.getFp2ElementFactory().generate(new BigInteger("2"));
         curve.getOptimizedConstants().setA24minus(curve.getA().add(two));
         curve.getOptimizedConstants().setA24minus(curve.getA().subtract(two));
         EvaluatedCurve iso3 = iso3e(curve, s);

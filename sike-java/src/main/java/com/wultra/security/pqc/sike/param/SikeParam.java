@@ -16,10 +16,8 @@
  */
 package com.wultra.security.pqc.sike.param;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
-import com.wultra.security.pqc.sike.math.api.Fp2Point;
-import com.wultra.security.pqc.sike.math.api.Isogeny;
-import com.wultra.security.pqc.sike.math.api.Montgomery;
+import com.wultra.security.pqc.sike.math.api.*;
+import com.wultra.security.pqc.sike.math.optimized.fp.FpElementOpti;
 import com.wultra.security.pqc.sike.model.ImplementationType;
 
 import java.math.BigInteger;
@@ -36,6 +34,12 @@ public interface SikeParam {
      * @return Implementation type.
      */
     ImplementationType getImplementationType();
+
+    /**
+     * Factory for Fp2Elements.
+     * @return Factory for Fp2Elements.
+     */
+    Fp2ElementFactory getFp2ElementFactory();
 
     /**
      * Get Montgomery curve math algorithms.
@@ -192,5 +196,59 @@ public interface SikeParam {
      * @return Optimization strategy for tree computations in the 3-isogeny graph.
      */
     int[] getStrategyB();
+
+    /**
+     * Get size of long array for optimized elements.
+     * @return Size of long array.
+     */
+    int getFpWords();
+
+    /**
+     * Get number of 0 digits in the least significant part of p + 1.
+     * @return Number of 0 digits in the least significant part of p + 1.
+     */
+    int getZeroWords();
+
+    /**
+     * Get optimized field prime p.
+     * @return Field prime p.
+     */
+    FpElementOpti getP();
+
+    /**
+     * Get optimized value p + 1.
+     * @return Value p + 1.
+     */
+    FpElementOpti getP1();
+
+    /**
+     * Get optimized value p * 2.
+     * @return Value p * 2.
+     */
+    FpElementOpti getPx2();
+
+    /**
+     * Get optimized value pR2.
+     * @return Optimized value pR2.
+     */
+    FpElementOpti getPR2();
+
+    /**
+     * Get the power strategy for the p34 algorithm.
+     * @return Power strategy.
+     */
+    int[] getPowStrategy();
+
+    /**
+     * Get the multiplication strategy for the p34 algorithm.
+     * @return Multiplication strategy.
+     */
+    int[] getMulStrategy();
+
+    /**
+     * Get initial multiplication value for the p34 algorithm.
+     * @return Initial multiplication value for the p34 algorithm
+     */
+    int getInitialMul();
 
 }

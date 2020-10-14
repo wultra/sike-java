@@ -16,7 +16,7 @@
  */
 package com.wultra.security.pqc.sike.model;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
@@ -71,9 +71,9 @@ public class SidhPublicKey implements PublicKey {
             System.arraycopy(bytes, i * primeSize, keyBytes, 0, keyBytes.length);
             keyParts[i] = ByteEncoding.fromByteArray(keyBytes);
         }
-        this.px = new Fp2Element(prime, keyParts[0], keyParts[1]);
-        this.qx = new Fp2Element(prime, keyParts[2], keyParts[3]);
-        this.rx = new Fp2Element(prime, keyParts[4], keyParts[5]);
+        this.px = sikeParam.getFp2ElementFactory().generate(keyParts[0], keyParts[1]);
+        this.qx = sikeParam.getFp2ElementFactory().generate(keyParts[2], keyParts[3]);
+        this.rx = sikeParam.getFp2ElementFactory().generate(keyParts[4], keyParts[5]);
     }
 
     /**
@@ -95,9 +95,9 @@ public class SidhPublicKey implements PublicKey {
             System.arraycopy(octetBytes, i * primeSize * 2, keyBytes, 0, keyBytes.length);
             keyParts[i] = OctetEncoding.fromOctetString(new String(keyBytes));
         }
-        this.px = new Fp2Element(prime, keyParts[0], keyParts[1]);
-        this.qx = new Fp2Element(prime, keyParts[2], keyParts[3]);
-        this.rx = new Fp2Element(prime, keyParts[4], keyParts[5]);
+        this.px = sikeParam.getFp2ElementFactory().generate(keyParts[0], keyParts[1]);
+        this.qx = sikeParam.getFp2ElementFactory().generate(keyParts[2], keyParts[3]);
+        this.rx = sikeParam.getFp2ElementFactory().generate(keyParts[4], keyParts[5]);
     }
 
     /**

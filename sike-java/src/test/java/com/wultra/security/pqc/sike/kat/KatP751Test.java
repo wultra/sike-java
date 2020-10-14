@@ -29,7 +29,7 @@ import java.security.Security;
 /**
  * Test of KAT responses for SIKEp710.
  */
-public class KatP710Test {
+public class KatP751Test {
 
     static {
         Security.addProvider(new BouncyCastleProvider());

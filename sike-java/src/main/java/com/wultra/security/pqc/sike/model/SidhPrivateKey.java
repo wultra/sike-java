@@ -16,7 +16,7 @@
  */
 package com.wultra.security.pqc.sike.model;
 
-import com.wultra.security.pqc.sike.math.FpElement;
+import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
@@ -37,7 +37,7 @@ public class SidhPrivateKey implements PrivateKey {
 
     private final SikeParam sikeParam;
     private final Party party;
-    private final FpElement key;
+    private final byte[] key;
     private byte[] s;
 
     /**
@@ -50,7 +50,8 @@ public class SidhPrivateKey implements PrivateKey {
         this.sikeParam = sikeParam;
         this.party = party;
         validatePrivateKey(secret);
-        this.key = new FpElement(sikeParam.getPrime(), secret);
+        int keyLength = (sikeParam.getPrime().bitLength() + 7) / 8;
+        this.key = ByteEncoding.toByteArray(secret, keyLength);
         this.s = new byte[sikeParam.getMessageBytes()];
     }
 
@@ -69,13 +70,12 @@ public class SidhPrivateKey implements PrivateKey {
             throw new InvalidParameterException("Invalid private key");
         }
         byte[] s = new byte[sLength];
-        byte[] key = new byte[keyLength];
+        key = new byte[keyLength];
         System.arraycopy(bytes, 0, s, 0, sLength);
         System.arraycopy(bytes, sLength, key, 0, keyLength);
         BigInteger secret = ByteEncoding.fromByteArray(key);
         validatePrivateKey(secret);
         this.s = s;
-        this.key = new FpElement(sikeParam.getPrime(), secret);
     }
 
     /**
@@ -101,7 +101,8 @@ public class SidhPrivateKey implements PrivateKey {
         BigInteger secret = OctetEncoding.fromOctetString(new String(key));
         validatePrivateKey(secret);
         this.s = ByteEncoding.toByteArray(sVal, sLength);
-        this.key = new FpElement(sikeParam.getPrime(), secret);
+        int primeSize = (sikeParam.getPrime().bitLength() + 7) / 8;
+        this.key = ByteEncoding.toByteArray(secret, primeSize);
     }
 
     /**
@@ -153,11 +154,20 @@ public class SidhPrivateKey implements PrivateKey {
     }
 
     /**
+     * Get the private key as byte array.
+     * @return Private key as byte array.
+     */
+    public byte[] getKey() {
+        return key;
+    }
+
+    /**
      * Get the private key as an F(p) element.
      * @return Private key as an F(p) element.
      */
-    public FpElement getKey() {
-        return key;
+    public FpElement getFpElement() {
+        BigInteger secret = ByteEncoding.fromByteArray(key);
+        return sikeParam.getFp2ElementFactory().generate(secret).getX0();
     }
 
     /**
@@ -165,7 +175,7 @@ public class SidhPrivateKey implements PrivateKey {
      * @return Private key as a number.
      */
     public BigInteger getM() {
-        return key.getX();
+        return ByteEncoding.fromByteArray(key);
     }
 
     /**
@@ -193,10 +203,9 @@ public class SidhPrivateKey implements PrivateKey {
      */
     @Override
     public byte[] getEncoded() {
-        byte[] encoded = key.getEncoded();
-        byte[] output = new byte[s.length + encoded.length];
+        byte[] output = new byte[s.length + key.length];
         System.arraycopy(s, 0, output, 0, s.length);
-        System.arraycopy(encoded, 0, output, s.length, encoded.length);
+        System.arraycopy(key, 0, output, s.length, key.length);
         return output;
     }
 
@@ -207,12 +216,12 @@ public class SidhPrivateKey implements PrivateKey {
     public String toOctetString() {
         String prefix = OctetEncoding.toOctetString(s, sikeParam.getMessageBytes());
         int length = getKeyLength(party);
-        return prefix + OctetEncoding.toOctetString(key.getX(), length);
+        return prefix + OctetEncoding.toOctetString(key, length);
     }
 
     @Override
     public String toString() {
-        return key.toString();
+        return getM().toString();
     }
 
     @Override
@@ -222,7 +231,7 @@ public class SidhPrivateKey implements PrivateKey {
         SidhPrivateKey that = (SidhPrivateKey) o;
         return sikeParam.equals(that.sikeParam)
                 && Arrays.equals(s, that.s)
-                && key.equals(that.key);
+                && Arrays.equals(key, that.key);
     }
 
     @Override

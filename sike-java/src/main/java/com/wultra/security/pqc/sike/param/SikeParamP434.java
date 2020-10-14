@@ -16,16 +16,19 @@
  */
 package com.wultra.security.pqc.sike.param;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
-import com.wultra.security.pqc.sike.math.FpElement;
-import com.wultra.security.pqc.sike.math.api.Fp2Point;
-import com.wultra.security.pqc.sike.math.api.Isogeny;
-import com.wultra.security.pqc.sike.math.api.Montgomery;
+import com.wultra.security.pqc.sike.math.api.*;
+import com.wultra.security.pqc.sike.math.optimized.Fp2PointProjective;
 import com.wultra.security.pqc.sike.math.optimized.IsogenyProjective;
 import com.wultra.security.pqc.sike.math.optimized.MontgomeryProjective;
+import com.wultra.security.pqc.sike.math.optimized.fp.Fp2ElementFactoryOpti;
+import com.wultra.security.pqc.sike.math.optimized.fp.Fp2ElementOpti;
+import com.wultra.security.pqc.sike.math.optimized.fp.FpElementOpti;
 import com.wultra.security.pqc.sike.math.reference.Fp2PointAffine;
 import com.wultra.security.pqc.sike.math.reference.IsogenyAffine;
 import com.wultra.security.pqc.sike.math.reference.MontgomeryAffine;
+import com.wultra.security.pqc.sike.math.reference.fp.Fp2ElementFactoryRef;
+import com.wultra.security.pqc.sike.math.reference.fp.Fp2ElementRef;
+import com.wultra.security.pqc.sike.math.reference.fp.FpElementRef;
 import com.wultra.security.pqc.sike.model.ImplementationType;
 
 import java.math.BigInteger;
@@ -40,6 +43,7 @@ import java.util.Objects;
 public class SikeParamP434 implements SikeParam {
 
     private final ImplementationType implementationType;
+    private final Fp2ElementFactory fp2ElementFactory;
     private final Montgomery montgomery;
     private final Isogeny isogeny;
 
@@ -83,9 +87,11 @@ public class SikeParamP434 implements SikeParam {
     public SikeParamP434(ImplementationType implementationType) {
         this.implementationType = implementationType;
         if (implementationType == ImplementationType.REFERENCE) {
+            fp2ElementFactory = new Fp2ElementFactoryRef(this);
             montgomery = new MontgomeryAffine();
             isogeny = new IsogenyAffine();
         } else if (implementationType == ImplementationType.OPTIMIZED) {
+            fp2ElementFactory = new Fp2ElementFactoryOpti(this);
             montgomery = new MontgomeryProjective();
             isogeny = new IsogenyProjective();
         } else {
@@ -97,6 +103,11 @@ public class SikeParamP434 implements SikeParam {
     @Override
     public ImplementationType getImplementationType() {
         return implementationType;
+    }
+
+    @Override
+    public Fp2ElementFactory getFp2ElementFactory() {
+        return fp2ElementFactory;
     }
 
     @Override
@@ -229,6 +240,88 @@ public class SikeParamP434 implements SikeParam {
         return strategyB;
     }
 
+    @Override
+    public int getFpWords() {
+        return 7;
+    }
+
+    @Override
+    public int getZeroWords() {
+        return 3;
+    }
+
+    private final FpElementOpti p = new FpElementOpti(this, new long[]{
+            Long.parseUnsignedLong("FFFFFFFFFFFFFFFF", 16),
+            Long.parseUnsignedLong("FFFFFFFFFFFFFFFF", 16),
+            Long.parseUnsignedLong("FFFFFFFFFFFFFFFF", 16),
+            Long.parseUnsignedLong("FDC1767AE2FFFFFF", 16),
+            Long.parseUnsignedLong("7BC65C783158AEA3", 16),
+            Long.parseUnsignedLong("6CFC5FD681C52056", 16),
+            Long.parseUnsignedLong("0002341F27177344", 16)
+    });
+
+    @Override
+    public FpElementOpti getP() {
+        return p;
+    }
+
+    private final FpElementOpti p1 = new FpElementOpti(this, new long[]{
+            Long.parseUnsignedLong("0000000000000000", 16),
+            Long.parseUnsignedLong("0000000000000000", 16),
+            Long.parseUnsignedLong("0000000000000000", 16),
+            Long.parseUnsignedLong("FDC1767AE3000000", 16),
+            Long.parseUnsignedLong("7BC65C783158AEA3", 16),
+            Long.parseUnsignedLong("6CFC5FD681C52056", 16),
+            Long.parseUnsignedLong("0002341F27177344", 16)
+    });
+
+    @Override
+    public FpElementOpti getP1() {
+        return p1;
+    }
+
+    private final FpElementOpti px2 = new FpElementOpti(this, new long[]{
+            Long.parseUnsignedLong("FFFFFFFFFFFFFFFE", 16),
+            Long.parseUnsignedLong("FFFFFFFFFFFFFFFF", 16),
+            Long.parseUnsignedLong("FFFFFFFFFFFFFFFF", 16),
+            Long.parseUnsignedLong("FB82ECF5C5FFFFFF", 16),
+            Long.parseUnsignedLong("F78CB8F062B15D47", 16),
+            Long.parseUnsignedLong("D9F8BFAD038A40AC", 16),
+            Long.parseUnsignedLong("0004683E4E2EE688", 16)
+    });
+
+    @Override
+    public FpElementOpti getPx2() {
+        return px2;
+    }
+
+    private final FpElementOpti pr2 = new FpElementOpti(this, new long[]{
+            Long.parseUnsignedLong("28E55B65DCD69B30", 16),
+            Long.parseUnsignedLong("ACEC7367768798C2", 16),
+            Long.parseUnsignedLong("AB27973F8311688D", 16),
+            Long.parseUnsignedLong("175CC6AF8D6C7C0B", 16),
+            Long.parseUnsignedLong("ABCD92BF2DDE347E", 16),
+            Long.parseUnsignedLong("69E16A61C7686D9A", 16),
+            Long.parseUnsignedLong("000025A89BCDD12A", 16)
+    });
+
+    @Override
+    public FpElementOpti getPR2() {
+        return pr2;
+    }
+
+    public int[] getPowStrategy() {
+        return new int[]{3, 10, 7, 5, 6, 5, 3, 8, 4, 7, 5, 6, 4, 5, 9, 6, 3, 11, 5, 5, 2, 8, 4, 7, 7, 8, 5, 6, 4, 8, 5, 2, 10, 6, 5, 4, 8, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1};
+    }
+
+    public int[] getMulStrategy() {
+        return new int[]{2, 15, 9, 8, 14, 12, 2, 8, 5, 15, 8, 15, 6, 6, 3, 2, 0, 10, 9, 13, 1, 12, 3, 7, 1, 10, 8, 11, 2, 15, 14, 1, 11, 12, 14, 3, 11, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 0};
+    }
+
+    public int getInitialMul() {
+        return 8;
+    }
+
     /**
      * Initialize variant SIKEp434.
      */
@@ -236,47 +329,167 @@ public class SikeParamP434 implements SikeParam {
         // EA = 216, EB = 137
         int FIELD_PRIME_PARAM_EA = 216;
         int FIELD_PRIME_PARAM_EB = 137;
-        BigInteger FIELD_PRIME = new BigInteger("2341F271773446CFC5FD681C520567BC65C783158AEA3FDC1767AE2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
+        this.prime = new BigInteger("2341F271773446CFC5FD681C520567BC65C783158AEA3FDC1767AE2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
 
         // A = 6, B = 1
-        Fp2Element PUBLIC_PARAM_ELEMENT_A = Fp2Element.generate(FIELD_PRIME, 6);
-        Fp2Element PUBLIC_PARAM_ELEMENT_B = Fp2Element.one(FIELD_PRIME);
+        Fp2Element PUBLIC_PARAM_ELEMENT_A = fp2ElementFactory.generate(new BigInteger("6"));
+        Fp2Element PUBLIC_PARAM_ELEMENT_B = fp2ElementFactory.one();
 
-        // Public points PA and QA
-        FpElement PUBLIC_POINT_PA_X0 = new FpElement(FIELD_PRIME, new BigInteger("3CCFC5E1F050030363E6920A0F7A4C6C71E63DE63A0E6475AF621995705F7C84500CB2BB61E950E19EAB8661D25C4A50ED279646CB48", 16));
-        FpElement PUBLIC_POINT_PA_X1 = new FpElement(FIELD_PRIME, new BigInteger("1AD1C1CAE7840EDDA6D8A924520F60E573D3B9DFAC6D189941CB22326D284A8816CC4249410FE80D68047D823C97D705246F869E3EA50", 16));
-        FpElement PUBLIC_POINT_PA_Y0 = new FpElement(FIELD_PRIME, new BigInteger("1AB066B84949582E3F66688452B9255E72A017C45B148D719D9A63CDB7BE6F48C812E33B68161D5AB3A0A36906F04A6A6957E6F4FB2E0", 16));
-        FpElement PUBLIC_POINT_PA_Y1 = new FpElement(FIELD_PRIME, new BigInteger("FD87F67EA576CE97FF65BF9F4F7688C4C752DCE9F8BD2B36AD66E04249AAF8337C01E6E4E1A844267BA1A1887B433729E1DD90C7DD2F", 16));
-        FpElement PUBLIC_POINT_QA_X0 = new FpElement(FIELD_PRIME, new BigInteger("C7461738340EFCF09CE388F666EB38F7F3AFD42DC0B664D9F461F31AA2EDC6B4AB71BD42F4D7C058E13F64B237EF7DDD2ABC0DEB0C6C", 16));
-        FpElement PUBLIC_POINT_QA_X1 = new FpElement(FIELD_PRIME, new BigInteger("25DE37157F50D75D320DD0682AB4A67E471586FBC2D31AA32E6957FA2B2614C4CD40A1E27283EAAF4272AE517847197432E2D61C85F5", 16));
-        FpElement PUBLIC_POINT_QA_Y0 = new FpElement(FIELD_PRIME, new BigInteger("1D407B70B01E4AEE172EDF491F4EF32144F03F5E054CEF9FDE5A35EFA3642A11817905ED0D4F193F31124264924A5F64EFE14B6EC97E5", 16));
-        FpElement PUBLIC_POINT_QA_Y1 = new FpElement(FIELD_PRIME, new BigInteger("E7DEC8C32F50A4E735A839DCDB89FE0763A184C525F7B7D0EBC0E84E9D83E9AC53A572A25D19E1464B509D97272AE761657B4765B3D6", 16));
-        FpElement PUBLIC_POINT_RA_X0 = new FpElement(FIELD_PRIME, new BigInteger("F37AB34BA0CEAD94F43CDC50DE06AD19C67CE4928346E829CB92580DA84D7C36506A2516696BBE3AEB523AD7172A6D239513C5FD2516", 16));
-        FpElement PUBLIC_POINT_RA_X1 = new FpElement(FIELD_PRIME, new BigInteger("196CA2ED06A657E90A73543F3902C208F410895B49CF84CD89BE9ED6E4EE7E8DF90B05F3FDB8BDFE489D1B3558E987013F9806036C5AC", 16));
-        // The Y points are not defined for R point, only x coordinates are used in optimized version
-        FpElement PUBLIC_POINT_RA_Y0 = new FpElement(FIELD_PRIME, new BigInteger("0", 16));
-        FpElement PUBLIC_POINT_RA_Y1 = new FpElement(FIELD_PRIME, new BigInteger("0", 16));
-        Fp2Point PUBLIC_POINT_PA = new Fp2PointAffine(new Fp2Element(FIELD_PRIME, PUBLIC_POINT_PA_X0, PUBLIC_POINT_PA_X1), new Fp2Element(FIELD_PRIME, PUBLIC_POINT_PA_Y0, PUBLIC_POINT_PA_Y1));
-        Fp2Point PUBLIC_POINT_QA = new Fp2PointAffine(new Fp2Element(FIELD_PRIME, PUBLIC_POINT_QA_X0, PUBLIC_POINT_QA_X1), new Fp2Element(FIELD_PRIME, PUBLIC_POINT_QA_Y0, PUBLIC_POINT_QA_Y1));
-        Fp2Point PUBLIC_POINT_RA = new Fp2PointAffine(new Fp2Element(FIELD_PRIME, PUBLIC_POINT_RA_X0, PUBLIC_POINT_RA_X1), new Fp2Element(FIELD_PRIME, PUBLIC_POINT_RA_Y0, PUBLIC_POINT_RA_Y1));
+        Fp2Point PUBLIC_POINT_PA, PUBLIC_POINT_QA, PUBLIC_POINT_RA;
+        Fp2Point PUBLIC_POINT_PB, PUBLIC_POINT_QB, PUBLIC_POINT_RB;
 
-        // Public points PB, QB and RB
-        FpElement PUBLIC_POINT_PB_X0 = new FpElement(FIELD_PRIME, new BigInteger("8664865EA7D816F03B31E223C26D406A2C6CD0C3D667466056AAE85895EC37368BFC009DFAFCB3D97E639F65E9E45F46573B0637B7A9", 16));
-        FpElement PUBLIC_POINT_PB_X1 = new FpElement(FIELD_PRIME, new BigInteger("0", 16));
-        FpElement PUBLIC_POINT_PB_Y0 = new FpElement(FIELD_PRIME, new BigInteger("6AE515593E73976091978DFBD70BDA0DD6BCAEEBFDD4FB1E748DDD9ED3FDCF679726C67A3B2CC12B39805B32B612E058A4280764443B", 16));
-        FpElement PUBLIC_POINT_PB_Y1 = new FpElement(FIELD_PRIME, new BigInteger("0", 16));
-        FpElement PUBLIC_POINT_QB_X0 = new FpElement(FIELD_PRIME, new BigInteger("12E84D7652558E694BF84C1FBDAAF99B83B4266C32EC65B10457BCAF94C63EB063681E8B1E7398C0B241C19B9665FDB9E1406DA3D3846", 16));
-        FpElement PUBLIC_POINT_QB_X1 = new FpElement(FIELD_PRIME, new BigInteger("0", 16));
-        FpElement PUBLIC_POINT_QB_Y0 = new FpElement(FIELD_PRIME, new BigInteger("0", 16));
-        FpElement PUBLIC_POINT_QB_Y1 = new FpElement(FIELD_PRIME, new BigInteger("EBAAA6C731271673BEECE467FD5ED9CC29AB564BDED7BDEAA86DD1E0FDDF399EDCC9B49C829EF53C7D7A35C3A0745D73C424FB4A5FD2", 16));
-        FpElement PUBLIC_POINT_RB_X0 = new FpElement(FIELD_PRIME, new BigInteger("1CD28597256D4FFE7E002E87870752A8F8A64A1CC78B5A2122074783F51B4FDE90E89C48ED91A8F4A0CCBACBFA7F51A89CE518A52B76C", 16));
-        FpElement PUBLIC_POINT_RB_X1 = new FpElement(FIELD_PRIME, new BigInteger("147073290D78DD0CC8420B1188187D1A49DBFA24F26AAD46B2D9BB547DBB6F63A760ECB0C2B20BE52FB77BD2776C3D14BCBC404736AE4", 16));
-        // The Y points are not defined for R point, only x coordinates are used in optimized version
-        FpElement PUBLIC_POINT_RB_Y0 = new FpElement(FIELD_PRIME, new BigInteger("0", 16));
-        FpElement PUBLIC_POINT_RB_Y1 = new FpElement(FIELD_PRIME, new BigInteger("0", 16));
-        Fp2Point PUBLIC_POINT_PB = new Fp2PointAffine(new Fp2Element(FIELD_PRIME, PUBLIC_POINT_PB_X0, PUBLIC_POINT_PB_X1), new Fp2Element(FIELD_PRIME, PUBLIC_POINT_PB_Y0, PUBLIC_POINT_PB_Y1));
-        Fp2Point PUBLIC_POINT_QB = new Fp2PointAffine(new Fp2Element(FIELD_PRIME, PUBLIC_POINT_QB_X0, PUBLIC_POINT_QB_X1), new Fp2Element(FIELD_PRIME, PUBLIC_POINT_QB_Y0, PUBLIC_POINT_QB_Y1));
-        Fp2Point PUBLIC_POINT_RB = new Fp2PointAffine(new Fp2Element(FIELD_PRIME, PUBLIC_POINT_RB_X0, PUBLIC_POINT_RB_X1), new Fp2Element(FIELD_PRIME, PUBLIC_POINT_RB_Y0, PUBLIC_POINT_RB_Y1));
+        if (implementationType == ImplementationType.REFERENCE) {
+            // Public points PA and QA
+            FpElement PUBLIC_POINT_PA_X0 = new FpElementRef(this, new BigInteger("3CCFC5E1F050030363E6920A0F7A4C6C71E63DE63A0E6475AF621995705F7C84500CB2BB61E950E19EAB8661D25C4A50ED279646CB48", 16));
+            FpElement PUBLIC_POINT_PA_X1 = new FpElementRef(this, new BigInteger("1AD1C1CAE7840EDDA6D8A924520F60E573D3B9DFAC6D189941CB22326D284A8816CC4249410FE80D68047D823C97D705246F869E3EA50", 16));
+            FpElement PUBLIC_POINT_PA_Y0 = new FpElementRef(this, new BigInteger("1AB066B84949582E3F66688452B9255E72A017C45B148D719D9A63CDB7BE6F48C812E33B68161D5AB3A0A36906F04A6A6957E6F4FB2E0", 16));
+            FpElement PUBLIC_POINT_PA_Y1 = new FpElementRef(this, new BigInteger("FD87F67EA576CE97FF65BF9F4F7688C4C752DCE9F8BD2B36AD66E04249AAF8337C01E6E4E1A844267BA1A1887B433729E1DD90C7DD2F", 16));
+            FpElement PUBLIC_POINT_QA_X0 = new FpElementRef(this, new BigInteger("C7461738340EFCF09CE388F666EB38F7F3AFD42DC0B664D9F461F31AA2EDC6B4AB71BD42F4D7C058E13F64B237EF7DDD2ABC0DEB0C6C", 16));
+            FpElement PUBLIC_POINT_QA_X1 = new FpElementRef(this, new BigInteger("25DE37157F50D75D320DD0682AB4A67E471586FBC2D31AA32E6957FA2B2614C4CD40A1E27283EAAF4272AE517847197432E2D61C85F5", 16));
+            FpElement PUBLIC_POINT_QA_Y0 = new FpElementRef(this, new BigInteger("1D407B70B01E4AEE172EDF491F4EF32144F03F5E054CEF9FDE5A35EFA3642A11817905ED0D4F193F31124264924A5F64EFE14B6EC97E5", 16));
+            FpElement PUBLIC_POINT_QA_Y1 = new FpElementRef(this, new BigInteger("E7DEC8C32F50A4E735A839DCDB89FE0763A184C525F7B7D0EBC0E84E9D83E9AC53A572A25D19E1464B509D97272AE761657B4765B3D6", 16));
+            FpElement PUBLIC_POINT_RA_X0 = new FpElementRef(this, new BigInteger("F37AB34BA0CEAD94F43CDC50DE06AD19C67CE4928346E829CB92580DA84D7C36506A2516696BBE3AEB523AD7172A6D239513C5FD2516", 16));
+            FpElement PUBLIC_POINT_RA_X1 = new FpElementRef(this, new BigInteger("196CA2ED06A657E90A73543F3902C208F410895B49CF84CD89BE9ED6E4EE7E8DF90B05F3FDB8BDFE489D1B3558E987013F9806036C5AC", 16));
+            // The Y points are not defined for R point, only x coordinates are used in optimized version
+            FpElement PUBLIC_POINT_RA_Y0 = new FpElementRef(this, new BigInteger("0", 16));
+            FpElement PUBLIC_POINT_RA_Y1 = new FpElementRef(this, new BigInteger("0", 16));
+            PUBLIC_POINT_PA = new Fp2PointAffine(new Fp2ElementRef(this, PUBLIC_POINT_PA_X0, PUBLIC_POINT_PA_X1), new Fp2ElementRef(this, PUBLIC_POINT_PA_Y0, PUBLIC_POINT_PA_Y1));
+            PUBLIC_POINT_QA = new Fp2PointAffine(new Fp2ElementRef(this, PUBLIC_POINT_QA_X0, PUBLIC_POINT_QA_X1), new Fp2ElementRef(this, PUBLIC_POINT_QA_Y0, PUBLIC_POINT_QA_Y1));
+            PUBLIC_POINT_RA = new Fp2PointAffine(new Fp2ElementRef(this, PUBLIC_POINT_RA_X0, PUBLIC_POINT_RA_X1), new Fp2ElementRef(this, PUBLIC_POINT_RA_Y0, PUBLIC_POINT_RA_Y1));
+
+            // Public points PB, QB and RB
+            FpElement PUBLIC_POINT_PB_X0 = new FpElementRef(this, new BigInteger("8664865EA7D816F03B31E223C26D406A2C6CD0C3D667466056AAE85895EC37368BFC009DFAFCB3D97E639F65E9E45F46573B0637B7A9", 16));
+            FpElement PUBLIC_POINT_PB_X1 = new FpElementRef(this, new BigInteger("0", 16));
+            FpElement PUBLIC_POINT_PB_Y0 = new FpElementRef(this, new BigInteger("6AE515593E73976091978DFBD70BDA0DD6BCAEEBFDD4FB1E748DDD9ED3FDCF679726C67A3B2CC12B39805B32B612E058A4280764443B", 16));
+            FpElement PUBLIC_POINT_PB_Y1 = new FpElementRef(this, new BigInteger("0", 16));
+            FpElement PUBLIC_POINT_QB_X0 = new FpElementRef(this, new BigInteger("12E84D7652558E694BF84C1FBDAAF99B83B4266C32EC65B10457BCAF94C63EB063681E8B1E7398C0B241C19B9665FDB9E1406DA3D3846", 16));
+            FpElement PUBLIC_POINT_QB_X1 = new FpElementRef(this, new BigInteger("0", 16));
+            FpElement PUBLIC_POINT_QB_Y0 = new FpElementRef(this, new BigInteger("0", 16));
+            FpElement PUBLIC_POINT_QB_Y1 = new FpElementRef(this, new BigInteger("EBAAA6C731271673BEECE467FD5ED9CC29AB564BDED7BDEAA86DD1E0FDDF399EDCC9B49C829EF53C7D7A35C3A0745D73C424FB4A5FD2", 16));
+            FpElement PUBLIC_POINT_RB_X0 = new FpElementRef(this, new BigInteger("1CD28597256D4FFE7E002E87870752A8F8A64A1CC78B5A2122074783F51B4FDE90E89C48ED91A8F4A0CCBACBFA7F51A89CE518A52B76C", 16));
+            FpElement PUBLIC_POINT_RB_X1 = new FpElementRef(this, new BigInteger("147073290D78DD0CC8420B1188187D1A49DBFA24F26AAD46B2D9BB547DBB6F63A760ECB0C2B20BE52FB77BD2776C3D14BCBC404736AE4", 16));
+            // The Y points are not defined for R point, only x coordinates are used in optimized version
+            FpElement PUBLIC_POINT_RB_Y0 = new FpElementRef(this, new BigInteger("0", 16));
+            FpElement PUBLIC_POINT_RB_Y1 = new FpElementRef(this, new BigInteger("0", 16));
+            PUBLIC_POINT_PB = new Fp2PointAffine(new Fp2ElementRef(this, PUBLIC_POINT_PB_X0, PUBLIC_POINT_PB_X1), new Fp2ElementRef(this, PUBLIC_POINT_PB_Y0, PUBLIC_POINT_PB_Y1));
+            PUBLIC_POINT_QB = new Fp2PointAffine(new Fp2ElementRef(this, PUBLIC_POINT_QB_X0, PUBLIC_POINT_QB_X1), new Fp2ElementRef(this, PUBLIC_POINT_QB_Y0, PUBLIC_POINT_QB_Y1));
+            PUBLIC_POINT_RB = new Fp2PointAffine(new Fp2ElementRef(this, PUBLIC_POINT_RB_X0, PUBLIC_POINT_RB_X1), new Fp2ElementRef(this, PUBLIC_POINT_RB_Y0, PUBLIC_POINT_RB_Y1));
+        } else {
+            FpElement PUBLIC_POINT_PA_X0 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("05ADF455C5C345BF", 16),
+                    Long.parseUnsignedLong("91935C5CC767AC2B", 16),
+                    Long.parseUnsignedLong("AFE4E879951F0257", 16),
+                    Long.parseUnsignedLong("70E792DC89FA27B1", 16),
+                    Long.parseUnsignedLong("F797F526BB48C8CD", 16),
+                    Long.parseUnsignedLong("2181DB6131AF621F", 16),
+                    Long.parseUnsignedLong("00000A1C08B1ECC4", 16)
+            });
+            FpElement PUBLIC_POINT_PA_X1 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("74840EB87CDA7788", 16),
+                    Long.parseUnsignedLong("2971AA0ECF9F9D0B", 16),
+                    Long.parseUnsignedLong("CB5732BDF41715D5", 16),
+                    Long.parseUnsignedLong("8CD8E51F7AACFFAA", 16),
+                    Long.parseUnsignedLong("A7F424730D7E419F", 16),
+                    Long.parseUnsignedLong("D671EB919A179E8C", 16),
+                    Long.parseUnsignedLong("0000FFA26C5A924A", 16)
+            });
+            FpElement PUBLIC_POINT_QA_X0 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("FEC6E64588B7273B", 16),
+                    Long.parseUnsignedLong("D2A626D74CBBF1C6", 16),
+                    Long.parseUnsignedLong("F8F58F07A78098C7", 16),
+                    Long.parseUnsignedLong("E23941F470841B03", 16),
+                    Long.parseUnsignedLong("1B63EDA2045538DD", 16),
+                    Long.parseUnsignedLong("735CFEB0FFD49215", 16),
+                    Long.parseUnsignedLong("0001C4CB77542876", 16)
+            });
+            FpElement PUBLIC_POINT_QA_X1 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("ADB0F733C17FFDD6", 16),
+                    Long.parseUnsignedLong("6AFFBD037DA0A050", 16),
+                    Long.parseUnsignedLong("680EC43DB144E02F", 16),
+                    Long.parseUnsignedLong("1E2E5D5FF524E374", 16),
+                    Long.parseUnsignedLong("E2DDA115260E2995", 16),
+                    Long.parseUnsignedLong("A6E4B552E2EDE508", 16),
+                    Long.parseUnsignedLong("00018ECCDDF4B53E", 16)
+            });
+            FpElement PUBLIC_POINT_RA_X0 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("01BA4DB518CD6C7D", 16),
+                    Long.parseUnsignedLong("2CB0251FE3CC0611", 16),
+                    Long.parseUnsignedLong("259B0C6949A9121B", 16),
+                    Long.parseUnsignedLong("60E17AC16D2F82AD", 16),
+                    Long.parseUnsignedLong("3AA41F1CE175D92D", 16),
+                    Long.parseUnsignedLong("413FBE6A9B9BC4F3", 16),
+                    Long.parseUnsignedLong("00022A81D8D55643", 16)
+            });
+            FpElement PUBLIC_POINT_RA_X1 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("B8ADBC70FC82E54A", 16),
+                    Long.parseUnsignedLong("EF9CDDB0D5FADDED", 16),
+                    Long.parseUnsignedLong("5820C734C80096A0", 16),
+                    Long.parseUnsignedLong("7799994BAA96E0E4", 16),
+                    Long.parseUnsignedLong("044961599E379AF8", 16),
+                    Long.parseUnsignedLong("DB2B94FBF09F27E2", 16),
+                    Long.parseUnsignedLong("0000B87FC716C0C6", 16)
+            });
+            PUBLIC_POINT_PA = new Fp2PointProjective(new Fp2ElementOpti(this, PUBLIC_POINT_PA_X0, PUBLIC_POINT_PA_X1), fp2ElementFactory.one());
+            PUBLIC_POINT_QA = new Fp2PointProjective(new Fp2ElementOpti(this, PUBLIC_POINT_QA_X0, PUBLIC_POINT_QA_X1), fp2ElementFactory.one());
+            PUBLIC_POINT_RA = new Fp2PointProjective(new Fp2ElementOpti(this, PUBLIC_POINT_RA_X0, PUBLIC_POINT_RA_X1), fp2ElementFactory.one());
+            FpElement PUBLIC_POINT_PB_X0 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("6E5497556EDD48A3", 16),
+                    Long.parseUnsignedLong("2A61B501546F1C05", 16),
+                    Long.parseUnsignedLong("EB919446D049887D", 16),
+                    Long.parseUnsignedLong("5864A4A69D450C4F", 16),
+                    Long.parseUnsignedLong("B883F276A6490D2B", 16),
+                    Long.parseUnsignedLong("22CC287022D5F5B9", 16),
+                    Long.parseUnsignedLong("0001BED4772E551F", 16)
+            });
+            FpElement PUBLIC_POINT_PB_X1 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16)
+            });
+            FpElement PUBLIC_POINT_QB_X0 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("FAE2A3F93D8B6B8E", 16),
+                    Long.parseUnsignedLong("494871F51700FE1C", 16),
+                    Long.parseUnsignedLong("EF1A94228413C27C", 16),
+                    Long.parseUnsignedLong("498FF4A4AF60BD62", 16),
+                    Long.parseUnsignedLong("B00AD2A708267E8A", 16),
+                    Long.parseUnsignedLong("F4328294E017837F", 16),
+                    Long.parseUnsignedLong("000034080181D8AE", 16)
+            });
+            FpElement PUBLIC_POINT_QB_X1 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16),
+                    Long.parseUnsignedLong("0000000000000000", 16)
+            });
+            FpElement PUBLIC_POINT_RB_X0 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("283B34FAFEFDC8E4", 16),
+                    Long.parseUnsignedLong("9208F44977C3E647", 16),
+                    Long.parseUnsignedLong("7DEAE962816F4E9A", 16),
+                    Long.parseUnsignedLong("68A2BA8AA262EC9D", 16),
+                    Long.parseUnsignedLong("8176F112EA43F45B", 16),
+                    Long.parseUnsignedLong("02106D022634F504", 16),
+                    Long.parseUnsignedLong("00007E8A50F02E37", 16)
+            });
+            FpElement PUBLIC_POINT_RB_X1 = new FpElementOpti(this,  new long[]{
+                    Long.parseUnsignedLong("B378B7C1DA22CCB1", 16),
+                    Long.parseUnsignedLong("6D089C99AD1D9230", 16),
+                    Long.parseUnsignedLong("EBE15711813E2369", 16),
+                    Long.parseUnsignedLong("2B35A68239D48A53", 16),
+                    Long.parseUnsignedLong("445F6FD138407C93", 16),
+                    Long.parseUnsignedLong("BEF93B29A3F6B54B", 16),
+                    Long.parseUnsignedLong("000173FA910377D3", 16)
+            });
+            PUBLIC_POINT_PB = new Fp2PointProjective(new Fp2ElementOpti(this, PUBLIC_POINT_PB_X0, PUBLIC_POINT_PB_X1), fp2ElementFactory.one());
+            PUBLIC_POINT_QB = new Fp2PointProjective(new Fp2ElementOpti(this, PUBLIC_POINT_QB_X0, PUBLIC_POINT_QB_X1), fp2ElementFactory.one());
+            PUBLIC_POINT_RB = new Fp2PointProjective(new Fp2ElementOpti(this, PUBLIC_POINT_RB_X0, PUBLIC_POINT_RB_X1), fp2ElementFactory.one());
+        }
 
         this.name = "SIKEp434";
         this.a = PUBLIC_PARAM_ELEMENT_A;
@@ -287,7 +500,6 @@ public class SikeParamP434 implements SikeParam {
         this.ordB = new BigInteger("232066203043628532565045340531182604896544238770765380550355483363");
         this.msbA = 217;
         this.msbB = 218;
-        this.prime = FIELD_PRIME;
         this.pA = PUBLIC_POINT_PA;
         this.qA = PUBLIC_POINT_QA;
         this.rA = PUBLIC_POINT_RA;

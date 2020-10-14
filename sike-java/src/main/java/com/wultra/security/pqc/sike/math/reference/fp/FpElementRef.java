@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.pqc.sike.math;
+package com.wultra.security.pqc.sike.math.reference.fp;
 
+import com.wultra.security.pqc.sike.math.api.FpElement;
+import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
 
@@ -27,30 +29,30 @@ import java.util.Objects;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-public class FpElement {
+public class FpElementRef implements FpElement {
 
     private final BigInteger x;
 
-    private final BigInteger prime;
+    private final SikeParam sikeParam;
 
     /**
      * The F(p^) field element constructor for given integer value.
-     * @param prime Field prime.
+     * @param sikeParam SIKE parameters.
      * @param i Integer value.
      */
-    public FpElement(BigInteger prime, int i) {
-        this.prime = prime;
-        this.x = new BigInteger(String.valueOf(i)).mod(prime);
+    public FpElementRef(SikeParam sikeParam, int i) {
+        this.sikeParam = sikeParam;
+        this.x = new BigInteger(String.valueOf(i)).mod(sikeParam.getPrime());
     }
 
     /**
      * The F(p^) field element constructor for given BigInteger value.
-     * @param prime Field prime.
+     * @param sikeParam Field prime.
      * @param x BigInteger value.
      */
-    public FpElement(BigInteger prime, BigInteger x) {
-        this.prime = prime;
-        this.x = x.mod(prime);
+    public FpElementRef(SikeParam sikeParam, BigInteger x) {
+        this.sikeParam = sikeParam;
+        this.x = x.mod(sikeParam.getPrime());
     }
 
     /**
@@ -66,7 +68,7 @@ public class FpElement {
      * @return Field prime.
      */
     public BigInteger getPrime() {
-        return prime;
+        return sikeParam.getPrime();
     }
 
     /**
@@ -75,7 +77,7 @@ public class FpElement {
      * @return Calculation result.
      */
     public FpElement add(FpElement o) {
-        return new FpElement(prime, x.add(o.x).mod(prime));
+        return new FpElementRef(sikeParam, x.add(o.getX()).mod(getPrime()));
     }
 
     /**
@@ -84,7 +86,7 @@ public class FpElement {
      * @return Calculation result.
      */
     public FpElement subtract(FpElement o) {
-        return new FpElement(prime, x.subtract(o.x).mod(prime));
+        return new FpElementRef(sikeParam, x.subtract(o.getX()).mod(getPrime()));
     }
 
     /**
@@ -93,7 +95,7 @@ public class FpElement {
      * @return Calculation result.
      */
     public FpElement multiply(FpElement o) {
-        return new FpElement(prime, x.multiply(o.x).mod(prime));
+        return new FpElementRef(sikeParam, x.multiply(o.getX()).mod(getPrime()));
     }
 
     /**
@@ -109,7 +111,7 @@ public class FpElement {
      * @return Calculation result.
      */
     public FpElement inverse() {
-        return new FpElement(prime, x.modInverse(prime));
+        return new FpElementRef(sikeParam, x.modInverse(getPrime()));
     }
 
     /**
@@ -117,7 +119,7 @@ public class FpElement {
      * @return Calculation result.
      */
     public FpElement negate() {
-        return new FpElement(prime, prime.subtract(x));
+        return new FpElementRef(sikeParam, getPrime().subtract(x));
     }
 
     /**
@@ -133,7 +135,7 @@ public class FpElement {
      * @return Element copy.
      */
     public FpElement copy() {
-        return new FpElement(prime, x);
+        return new FpElementRef(sikeParam, x);
     }
 
     /**
@@ -141,7 +143,7 @@ public class FpElement {
      * @return Encoded element in bytes.
      */
     public byte[] getEncoded() {
-        int primeSize = (prime.bitLength() + 7) / 8;
+        int primeSize = (sikeParam.getPrime().bitLength() + 7) / 8;
         return ByteEncoding.toByteArray(x, primeSize);
     }
 
@@ -150,7 +152,7 @@ public class FpElement {
      * @return Octet string.
      */
     public String toOctetString() {
-        int primeSize = (prime.bitLength() + 7) / 8;
+        int primeSize = (sikeParam.getPrime().bitLength() + 7) / 8;
         return OctetEncoding.toOctetString(x, primeSize);
     }
 
@@ -163,13 +165,13 @@ public class FpElement {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FpElement fpElement = (FpElement) o;
-        return prime.equals(fpElement.prime)
+        FpElementRef fpElement = (FpElementRef) o;
+        return getPrime().equals(fpElement.getPrime())
                 && x.equals(fpElement.x);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(prime, x);
+        return Objects.hash(getPrime(), x);
     }
 }

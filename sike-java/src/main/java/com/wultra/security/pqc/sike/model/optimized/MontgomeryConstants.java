@@ -16,7 +16,7 @@
  */
 package com.wultra.security.pqc.sike.model.optimized;
 
-import com.wultra.security.pqc.sike.math.Fp2Element;
+import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.param.SikeParam;
 
 /**
@@ -39,7 +39,7 @@ public class MontgomeryConstants {
      * @param sikeParam SIKE parameters.
      */
     public MontgomeryConstants(SikeParam sikeParam) {
-        c = Fp2Element.one(sikeParam.getPrime());
+        c = sikeParam.getFp2ElementFactory().one();
     }
 
     /**

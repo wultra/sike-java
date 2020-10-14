@@ -199,6 +199,6 @@ The encrypted message `encryptedMessage` is transported to `BOB` who uses the pu
 byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);
 ```
 
-Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared  secret sizes are listed in the table presented in the [Initialization chapter](./Readme.md#Initialization).
+Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./Readme.md#Initialization).
 
 Note that SIKE provides higher security than SIDH. It is an ind-CCA2 scheme and can be used with long term keys.

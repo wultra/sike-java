@@ -26,9 +26,9 @@ import com.wultra.security.pqc.sike.param.SikeParamP434;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.DatatypeConverter;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.Security;
@@ -55,7 +55,7 @@ public class SikeDeterministicTest {
         System.out.println("----------------------------------------");
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         System.out.println("Prime: " + sikeParam.getPrime());
-        byte[] seedBytes = DatatypeConverter.parseHexBinary(SEED);
+        byte[] seedBytes = Hex.decode(SEED);
         CrtDrbgRandom drbgRandom = new CrtDrbgRandom(seedBytes);
         KeyGenerator keyGenerator = new KeyGenerator(sikeParam, new RandomGenerator(drbgRandom));
         KeyPair keyPair = keyGenerator.generateKeyPair(Party.BOB);

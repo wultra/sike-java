@@ -25,8 +25,8 @@ import com.wultra.security.pqc.sike.kat.util.CrtDrbgRandom;
 import com.wultra.security.pqc.sike.model.*;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
+import org.bouncycastle.util.encoders.Hex;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -65,7 +65,7 @@ public class KatTester {
                 break;
             }
             System.out.println("Record: " + kat.getCount());
-            byte[] seedBytes = DatatypeConverter.parseHexBinary(kat.getSeed());
+            byte[] seedBytes = Hex.decode(kat.getSeed());
             CrtDrbgRandom drbgRandom = new CrtDrbgRandom(seedBytes);
             KeyGenerator keyGenerator = new KeyGenerator(sikeParam, new RandomGenerator(drbgRandom));
             KeyPair keyPair = keyGenerator.generateKeyPair(Party.BOB);

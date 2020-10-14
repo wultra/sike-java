@@ -38,7 +38,7 @@ public class SidhPrivateKey implements PrivateKey {
     private final SikeParam sikeParam;
     private final Party party;
     private final byte[] key;
-    private byte[] s;
+    private final byte[] s;
 
     /**
      * Construct private key from a number.
@@ -114,7 +114,7 @@ public class SidhPrivateKey implements PrivateKey {
      */
     public SidhPrivateKey(SikeParam sikeParam, Party party, BigInteger key, byte[] s) {
         this(sikeParam, party, key);
-        this.s = s;
+        System.arraycopy(s, 0, this.s, 0, s.length);
     }
 
     /**
@@ -158,7 +158,9 @@ public class SidhPrivateKey implements PrivateKey {
      * @return Private key as byte array.
      */
     public byte[] getKey() {
-        return key;
+        byte[] keyBytes = new byte[key.length];
+        System.arraycopy(key, 0, keyBytes, 0, key.length);
+        return keyBytes;
     }
 
     /**

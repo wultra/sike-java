@@ -65,7 +65,8 @@ public class MontgomeryProjective implements Montgomery {
         t1 = t4.square();
         t1 = t1.subtract(t3);
         t1 = t1.subtract(t2);
-        t5 = t3.multiply(a24plus);
+        // Multiplicands are swapped for faster computation as it is done in official C implementation.
+        t5 = a24plus.multiply(t3);
         t3 = t5.multiply(t3);
         t6 = t2.multiply(a24minus);
         t2 = t2.multiply(t6);

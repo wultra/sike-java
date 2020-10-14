@@ -57,6 +57,10 @@ public class IsogenyProjective implements Isogeny {
         t0 = k1.square();
         k2 = p3.getX().add(p3.getZ());
         t1 = k2.square();
+        // The optimized implementation deviates from the specification at this point, see:
+        // https://github.com/microsoft/PQCrypto-SIDH/commit/7218dce28a25f17c3860c227df5d8a7b2adf1d1b#diff-08daf821aec6f05034194147b25fb0d9726a4d4ede8f4634c6a66fdbb728047fR170
+        // The algorithm is defined as Alg. 15 in specification at https://sike.org/files/SIDH-spec.pdf
+        // This implementation will use the original algorithm until the change is propagated into the specification.
         t2 = t0.add(t1);
         t3 = k1.add(k2);
         t3 = t3.square();
@@ -147,7 +151,8 @@ public class IsogenyProjective implements Isogeny {
         qx = t0.multiply(k2);
         qz = t1.multiply(k3);
         t0 = t0.multiply(t1);
-        t0 = t0.multiply(k1);
+        // Multiplicands are swapped for faster computation as it is done in official C implementation.
+        t0 = k1.multiply(t0);
         t1 = qx.add(qz);
         qz = qx.subtract(qz);
         t1 = t1.square();

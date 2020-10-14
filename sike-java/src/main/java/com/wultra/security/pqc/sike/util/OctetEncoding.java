@@ -88,6 +88,12 @@ public class OctetEncoding {
         return new BigInteger(sb.toString(), 16);
     }
 
+    /**
+     * Convert an octet string to byte array.
+     * @param str Octet string.
+     * @param length Expected length of byte array.
+     * @return Converted byte array value.
+     */
     public static byte[] fromOctetString(String str, int length) {
         return ByteEncoding.toByteArray(fromOctetString(str), length);
     }

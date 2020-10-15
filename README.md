@@ -47,6 +47,33 @@ implementations should be 100% compatible.
 
 SIKE Java provides an easy to use interface for generating keys and computing shared secrets.
 
+### Installation
+
+#### Install Using Maven
+
+The artifacts are currently not published in any public repository. Clone the project and install the artifact in the local Maven repository to use the library by running the following commands:
+
+```sh
+$ git clone https://github.com/wultra/sike-java.git
+$ cd sike-java
+$ git checkout tags/0.1.0 -b tags/0.1.0
+$ mvn clean install
+```
+
+After that, add the following dependency in your project `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>com.wultra.security</groupId>
+    <artifactId>sike-java</artifactId>
+    <version>0.1.0</version>
+</dependency>
+``` 
+
+#### Use JAR File
+
+Alternatively, use a pre-compiled `sike-java.jar` artifact from the [releases page](https://github.com/wultra/sike-java/releases).
+
 ### Initialization
 
 As the first step, initialize the Bouncy Castle provider:
@@ -204,7 +231,7 @@ The encrypted message `encryptedMessage` is transported to `BOB` who uses the pu
 byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);
 ```
 
-Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./Readme.md#Initialization).
+Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#Initialization).
 
 Note that SIKE provides higher security than SIDH. It is an ind-CCA2 scheme and can be used with long term keys.
 

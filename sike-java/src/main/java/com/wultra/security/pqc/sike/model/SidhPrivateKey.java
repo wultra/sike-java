@@ -145,9 +145,9 @@ public class SidhPrivateKey implements PrivateKey {
      */
     private int getKeyLength(Party party) {
         if (party == Party.ALICE) {
-            return (sikeParam.getMsbA() + 7) / 8;
+            return (sikeParam.getBitsA() + 7) / 8;
         } else if (party == Party.BOB){
-            return (sikeParam.getMsbB() - 1 + 7) / 8;
+            return (sikeParam.getBitsB() - 1 + 7) / 8;
         } else {
             throw new InvalidParameterException("Invalid party");
         }

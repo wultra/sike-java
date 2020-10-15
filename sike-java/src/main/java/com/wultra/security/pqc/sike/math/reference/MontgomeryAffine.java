@@ -144,13 +144,13 @@ public class MontgomeryAffine implements Montgomery {
      * @param curve Current curve.
      * @param m Scalar value.
      * @param p Point on the curve.
-     * @param msb Most significant bit.
+     * @param bits Number of bits in field elements.
      * @return Calculated new point.
      */
-    public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int msb) {
+    public Fp2Point doubleAndAdd(MontgomeryCurve curve, BigInteger m, Fp2Point p, int bits) {
         SikeParam sikeParam = curve.getSikeParam();
         Fp2Point q = Fp2PointAffine.infinity(sikeParam);
-        for (int i = msb - 1; i >= 0; i--) {
+        for (int i = bits - 1; i >= 0; i--) {
             q = xDbl(curve, q);
             if (m.testBit(i)) {
                 q = xAdd(curve, q, p);

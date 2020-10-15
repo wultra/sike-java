@@ -116,16 +116,17 @@ public class KeyGenerator {
     private BigInteger generateRandomKey(SikeParam sikeParam, Party party) throws GeneralSecurityException {
         if (party == Party.ALICE) {
             // random value in [0, 2^eA - 1]
-            int length = (sikeParam.getMsbA() + 7) / 8;
+            int length = (sikeParam.getBitsA() + 7) / 8;
             byte[] randomBytes = randomGenerator.generateRandomBytes(length);
-            return ByteEncoding.fromByteArray(randomBytes).mod(sikeParam.getOrdA());
+            randomBytes[randomBytes.length - 1] &= sikeParam.getMaskA();
+            return ByteEncoding.fromByteArray(randomBytes);
         }
         if (party == Party.BOB) {
             // random value in [0, 2^Floor(Log(2,3^eB)) - 1]
-            int length = (sikeParam.getMsbB() - 1 + 7) / 8;
+            int length = (sikeParam.getBitsB() - 1 + 7) / 8;
             byte[] randomBytes = randomGenerator.generateRandomBytes(length);
-            BigInteger modulo = new BigInteger("2").pow(sikeParam.getMsbB() - 1);
-            return ByteEncoding.fromByteArray(randomBytes).mod(modulo);
+            randomBytes[randomBytes.length - 1] &= sikeParam.getMaskB();
+            return ByteEncoding.fromByteArray(randomBytes);
         }
         throw new InvalidParameterException("Invalid party");
     }

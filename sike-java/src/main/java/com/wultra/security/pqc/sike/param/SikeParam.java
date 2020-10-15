@@ -99,13 +99,25 @@ public interface SikeParam {
      * Get most significant bit of A.
      * @return Most significant bit of A.
      */
-    int getMsbA();
+    int getBitsA();
 
     /**
      * Get most significant bit of B.
      * @return Most significant bit of B.
      */
-    int getMsbB();
+    int getBitsB();
+
+    /**
+     * Get mask used for key generation of A.
+     * @return Mask used for key generation of A.
+     */
+    byte getMaskA();
+
+    /**
+     * Get mask used for key generation of B.
+     * @return Mask used for key generation of B.
+     */
+    byte getMaskB();
 
     /**
      * Get field prime.

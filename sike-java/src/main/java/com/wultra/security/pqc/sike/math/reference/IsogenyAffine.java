@@ -268,7 +268,7 @@ public class IsogenyAffine implements Isogeny {
         SikeParam sikeParam = curve.getSikeParam();
         MontgomeryAffine montgomery = (MontgomeryAffine) sikeParam.getMontgomery();
         Isogeny isogeny = sikeParam.getIsogeny();
-        Fp2Point s = montgomery.doubleAndAdd(curve, privateKey.getFpElement().getX(), sikeParam.getQA(), sikeParam.getMsbA());
+        Fp2Point s = montgomery.doubleAndAdd(curve, privateKey.getFpElement().getX(), sikeParam.getQA(), sikeParam.getBitsA());
         s = montgomery.xAdd(curve, sikeParam.getPA(), s);
         EvaluatedCurve evaluatedCurve = isogeny.iso2e(curve, s, sikeParam.getPB(), sikeParam.getQB());
         return createPublicKey(sikeParam, evaluatedCurve);
@@ -279,7 +279,7 @@ public class IsogenyAffine implements Isogeny {
         SikeParam sikeParam = curve.getSikeParam();
         MontgomeryAffine montgomery = (MontgomeryAffine) sikeParam.getMontgomery();
         Isogeny isogeny = sikeParam.getIsogeny();
-        Fp2Point s = montgomery.doubleAndAdd(curve, privateKey.getFpElement().getX(), sikeParam.getQB(), sikeParam.getMsbB() - 1);
+        Fp2Point s = montgomery.doubleAndAdd(curve, privateKey.getFpElement().getX(), sikeParam.getQB(), sikeParam.getBitsB() - 1);
         s = montgomery.xAdd(curve, sikeParam.getPB(), s);
         EvaluatedCurve evaluatedCurve = isogeny.iso3e(curve, s, sikeParam.getPA(), sikeParam.getQA());
         return createPublicKey(sikeParam, evaluatedCurve);
@@ -309,7 +309,7 @@ public class IsogenyAffine implements Isogeny {
         EvaluatedCurve iso = montgomery.getYpYqAB(sikeParam, p2, q2, r2);
         MontgomeryCurve curve = iso.getCurve();
         BigInteger m = ByteEncoding.fromByteArray(sk2);
-        Fp2Point s = montgomery.doubleAndAdd(curve, m, iso.getQ(), sikeParam.getMsbA());
+        Fp2Point s = montgomery.doubleAndAdd(curve, m, iso.getQ(), sikeParam.getBitsA());
         s = montgomery.xAdd(curve, iso.getP(), s);
         EvaluatedCurve iso2 = iso2e(curve, s);
         return montgomery.jInv(iso2.getCurve());
@@ -321,7 +321,7 @@ public class IsogenyAffine implements Isogeny {
         EvaluatedCurve iso = montgomery.getYpYqAB(sikeParam, p3, q3, r3);
         MontgomeryCurve curve = iso.getCurve();
         BigInteger m = ByteEncoding.fromByteArray(sk3);
-        Fp2Point s = montgomery.doubleAndAdd(curve, m, iso.getQ(), sikeParam.getMsbB() - 1);
+        Fp2Point s = montgomery.doubleAndAdd(curve, m, iso.getQ(), sikeParam.getBitsB() - 1);
         s = montgomery.xAdd(curve, iso.getP(), s);
         EvaluatedCurve iso3 = iso3e(curve, s);
         return montgomery.jInv(iso3.getCurve());

@@ -56,8 +56,8 @@ public class SikeParamP610 implements SikeParam {
     private int eB;
     private BigInteger ordA;
     private BigInteger ordB;
-    private int msbA;
-    private int msbB;
+    private int bitsA;
+    private int bitsB;
 
     // Field prime and public points
     private BigInteger prime;
@@ -156,13 +156,23 @@ public class SikeParamP610 implements SikeParam {
     }
 
     @Override
-    public int getMsbA() {
-        return msbA;
+    public int getBitsA() {
+        return bitsA;
     }
 
     @Override
-    public int getMsbB() {
-        return msbB;
+    public int getBitsB() {
+        return bitsB;
+    }
+
+    @Override
+    public byte getMaskA() {
+        return 0x01;
+    }
+
+    @Override
+    public byte getMaskB() {
+        return (byte) 0xFF;
     }
 
     @Override
@@ -545,8 +555,8 @@ public class SikeParamP610 implements SikeParam {
         this.eB = FIELD_PRIME_PARAM_EB;
         this.ordA = new BigInteger("65185151242703554760590262029100101153646988597309960020356494379340201592426774597868716032");
         this.ordB = new BigInteger("40483766022843281411184472189571654752207506882090305742200116101065766026718820758174775041");
-        this.msbA = 306;
-        this.msbB = 305;
+        this.bitsA = 305;
+        this.bitsB = 305;
         this.pA = PUBLIC_POINT_PA;
         this.qA = PUBLIC_POINT_QA;
         this.rA = PUBLIC_POINT_RA;

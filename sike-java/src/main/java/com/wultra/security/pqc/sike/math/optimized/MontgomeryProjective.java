@@ -184,10 +184,10 @@ public class MontgomeryProjective implements Montgomery {
      * @param px The x coordinate of point P.
      * @param qx The x coordinate of point Q.
      * @param rx The x coordinate of point P - Q.
-     * @param msb Most significant bit.
+     * @param bits Number of bits in field elements.
      * @return Calculated new point.
      */
-    public Fp2Point ladder3Pt(MontgomeryCurve curve, byte[] m, Fp2Element px, Fp2Element qx, Fp2Element rx, int msb) {
+    public Fp2Point ladder3Pt(MontgomeryCurve curve, byte[] m, Fp2Element px, Fp2Element qx, Fp2Element rx, int bits) {
         SikeParam sikeParam = curve.getSikeParam();
         Fp2Element a = curve.getA();
         Fp2Point r0 = new Fp2PointProjective(qx.copy(), sikeParam.getFp2ElementFactory().one());
@@ -203,7 +203,7 @@ public class MontgomeryProjective implements Montgomery {
         Fp2Element aPlus2cOver4c = aPlus2c.multiply(c4Inv);
 
         byte prevBit = 0;
-        for (int i = 0; i < msb; i++) {
+        for (int i = 0; i < bits; i++) {
             byte bit = (byte) (m[i >>> 3] >>> (i & 7) & 1);
             byte swap = (byte) (prevBit ^ bit);
             prevBit = bit;

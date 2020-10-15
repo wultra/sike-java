@@ -208,7 +208,7 @@ public class Sike {
         byte[] dataR = new byte[(m.length + pk3Enc.length)];
         System.arraycopy(m, 0, dataR, 0, m.length);
         System.arraycopy(pk3Enc, 0, dataR, m.length, pk3Enc.length);
-        return Sha3.shake256(dataR, (sikeParam.getMsbA() + 7) / 8);
+        return Sha3.shake256(dataR, (sikeParam.getBitsA() + 7) / 8);
     }
 
     /**

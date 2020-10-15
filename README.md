@@ -11,7 +11,7 @@ We advise the readers who are new to SIDH or SIKE to check the official resource
 
 - The ["Supersingular isogeny key exchange for beginners"](https://eprint.iacr.org/2019/1321.pdf) article explains the main concepts nicely.
 - Official SIKE documentation: https://sike.org
-- SIKE specification from round 2 NIST submission: https://sike.org/files/SIDH-spec.pdf
+- SIKE specification from round 3 NIST submission: https://sike.org/files/SIDH-spec.pdf
 
 ## Features
 

@@ -1,5 +1,6 @@
 # SIKE Java Documentation
 
+[![Build Status](https://travis-ci.org/wultra/sike-java.svg?branch=develop)](https://travis-ci.org/wultra/sike-java)
 [![GitHub issues](https://img.shields.io/github/issues/wultra/sike-java.svg?maxAge=2592000)](https://github.com/wultra/sike-java/issues)
 [![Twitter](https://img.shields.io/badge/twitter-@wultra-blue.svg?style=flat)](http://twitter.com/wultra)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)

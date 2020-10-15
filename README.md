@@ -82,7 +82,7 @@ As the first step, initialize the Bouncy Castle provider:
 Security.addProvider(new BouncyCastleProvider());
 ```
 
-The Bouncy Castle initialization should be done at the application start before the use of the SIKE for Java functionality.
+Initialize Bouncy Castle at the application start before using any of the SIKE for Java functionality.
 
 Before generating keys, choose one of the available variants:
 

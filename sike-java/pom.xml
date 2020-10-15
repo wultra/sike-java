@@ -7,12 +7,12 @@
     <name>sike-java</name>
     <description>SIKE Java</description>
     <artifactId>sike-java</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <parent>
         <groupId>com.wultra.security</groupId>
         <artifactId>sike-java-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

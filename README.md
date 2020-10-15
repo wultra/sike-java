@@ -1,11 +1,11 @@
-# SIKE Java Documentation
+# SIKE for Java
 
 [![Build Status](https://travis-ci.org/wultra/sike-java.svg?branch=develop)](https://travis-ci.org/wultra/sike-java)
 [![GitHub issues](https://img.shields.io/github/issues/wultra/sike-java.svg)](https://github.com/wultra/sike-java/issues)
 [![Twitter](https://img.shields.io/badge/twitter-@wultra-blue.svg?style=flat)](http://twitter.com/wultra)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-SIKE Java is a software library that implements experimental supersingular isogeny cryptographic schemes that aim to provide protection against attackers running a large-scale quantum computer. The library is a result of a security research cooperation between [Wultra](https://wultra.com) and [Raiffeisen Bank International](http://www.rbinternational.com/) Competence Centre for Cryptology and Biometrics.
+SIKE for Java is a software library that implements experimental supersingular isogeny cryptographic schemes that aim to provide protection against attackers running a large-scale quantum computer. The library is a result of a security research cooperation between [Wultra](https://wultra.com) and [Raiffeisen Bank International](http://www.rbinternational.com/) Competence Centre for Cryptology and Biometrics.
 
 We advise the readers who are new to SIDH or SIKE to check the official resources, which provide many educational materials.
 
@@ -45,7 +45,7 @@ implementations should be 100% compatible.
 
 ## Usage
 
-SIKE Java provides an easy to use interface for generating keys and computing shared secrets.
+SIKE for Java provides an easy to use interface for generating keys and computing shared secrets.
 
 ### Installation
 
@@ -82,7 +82,7 @@ As the first step, initialize the Bouncy Castle provider:
 Security.addProvider(new BouncyCastleProvider());
 ```
 
-The Bouncy Castle initialization should be done at the application start before the use of the SIKE Java functionality.
+The Bouncy Castle initialization should be done at the application start before the use of the SIKE for Java functionality.
 
 Before generating keys, choose one of the available variants:
 
@@ -237,5 +237,6 @@ Note that SIKE provides higher security than SIDH. It is an ind-CCA2 scheme and 
 
 ## License
 
-SIKE Java is licensed using [GNU AGPLv3](https://github.com/wultra/sike-java/blob/develop/LICENSE) license. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
+SIKE for Java is currently licensed using [GNU AGPLv3](https://github.com/wultra/sike-java/blob/develop/LICENSE) license. We may change the license in the future to a less restrictive one. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
 
+Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners.

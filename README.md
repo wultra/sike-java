@@ -220,12 +220,18 @@ KeyPair keyPairB = keyGenerator.generateKeyPair(Party.BOB);
 Bob transports his public key `keyPairB` to `ALICE`, who uses the public key for the encapsulation phase of the KEM:
 
 ```java
+Sike sike = new Sike(sikeParam);
 EncapsulationResult encapsulationResult = sike.encapsulate(keyPairB.getPublic());
-EncryptedMessage encryptedMessage = encapsulationResult.getEncryptedMessage();
-byte[] secretA = encapsulationResult.getSecret();
 ```
 
-The encrypted message `encryptedMessage` is transported to `BOB` who uses the public key and cipher text included in the message for the decapsulation phase of KEM:
+At this point, `ALICE` can calculate the shared secret and the encrypted message:
+
+```java
+byte[] secretA = encapsulationResult.getSecret();
+EncryptedMessage encryptedMessage = encapsulationResult.getEncryptedMessage();
+```
+
+The encrypted message `encryptedMessage` is transported back to `BOB` who uses the public key and cipher text included in the message for the decapsulation phase of KEM:
 
 ```java
 byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);

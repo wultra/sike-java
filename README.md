@@ -217,7 +217,7 @@ KeyGenerator keyGenerator = new KeyGenerator(sikeParam);
 KeyPair keyPairB = keyGenerator.generateKeyPair(Party.BOB);
 ```
 
-Bob transports his public key `keyPairB` to `ALICE`, who uses the public key for the encapsulation phase of the KEM:
+`BOB` transports his public key `keyPairB` to `ALICE`, who uses the public key for the encapsulation phase of the KEM:
 
 ```java
 Sike sike = new Sike(sikeParam);

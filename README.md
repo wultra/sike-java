@@ -84,7 +84,7 @@ Security.addProvider(new BouncyCastleProvider());
 
 Initialize Bouncy Castle at the application start before using any of the SIKE for Java functionality.
 
-Before generating keys, choose one of the available variants:
+Before generating keys, choose one of the available algorithm variants depending on the desired NIST security level and parameter size (in bytes):
 
 | SIKE Variant Name | NIST Security Level | Private Key Size | Public Key Size | Shared Secret Size |
 | :---------------: | :-----------------: | :--------------: | :-------------: | :----------------: | 

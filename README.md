@@ -189,6 +189,11 @@ Public keys can also be imported from various serialization formats using the `S
 
 ### SIDH Key Agreement
 
+SIDH is an underlying algorithm used in SIKE. Unlike SIKE, SIDH alone provides insufficient security (it is an [IND-CPA](https://en.wikipedia.org/wiki/Ciphertext_indistinguishability) scheme) and should only be used with ephemeral keys on both sides of the key exchange. As a result, we recommend not using SIDH for anything else but experiments. This documentation mentions SIDH mostly for the purpose of completeness.
+
+<details>
+<summary><b>⚠️ Continue Reading About SIDH</b></summary>
+    
 After initializing the keys for both parties, it is easy to compute the shared secret using SIDH. The process is the same for both parties. Similarly to DH or ECDH, SIDH uses the opposite public and private keys:
 
 ```java
@@ -204,8 +209,7 @@ byte[] encoded = secret.getEncoded();
 ```
 
 Both secrets `secretA` and `secretB` are equal in case the key agreement succeeded. The shared secret sizes match the `Fp2Element` sizes in the chosen SIKE variant, which is 1/3 of the public key size. Using a hashing function on the shared secret values is advised to obtain shorter shared secret sizes and eliminate any risks related to using `BigInteger` representation of the j-invariant.
-
-Note that SIDH provides lower security than SIKE. It is an ind-CPA scheme and should only be used with ephemeral keys.
+</details>
 
 ### SIKE Key Encapsulation
 
@@ -239,7 +243,7 @@ byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), e
 
 Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#Initialization).
 
-Note that SIKE provides higher security than SIDH. It is an ind-CCA2 scheme and can be used with long term keys.
+Note that SIKE provides higher security than SIDH. It is an [IND-CCA2](https://en.wikipedia.org/wiki/Ciphertext_indistinguishability) scheme and can be used with long term keys.
 
 ## License
 

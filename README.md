@@ -245,7 +245,7 @@ The encrypted message `encryptedMessage` is transported back to `BOB` who uses t
 byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);
 ```
 
-Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#Initialization).  Using a hashing function on the shared secret value is advised to obtain shorter shared secret sizes as well as eliminate any risks related to using the numeric representation of the j-invariant directly.
+Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#Initialization). Using a hashing function on the shared secret value is advised to obtain shorter shared secret sizes.
 
 Note that SIKE provides higher security than SIDH. It is an [IND-CCA2](https://en.wikipedia.org/wiki/Ciphertext_indistinguishability) scheme and can be used with long term keys.
 

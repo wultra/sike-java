@@ -12,17 +12,18 @@ We advise the readers who are new to SIDH or SIKE to check the official resource
 - The ["Supersingular isogeny key exchange for beginners"](https://eprint.iacr.org/2019/1321.pdf) article explains the main concepts nicely.
 - Official SIKE documentation: https://sike.org
 - SIKE specification from round 3 NIST submission: https://sike.org/files/SIDH-spec.pdf
+- The ["Mathematics of Isogeny Based Cryptography"](https://arxiv.org/pdf/1711.04062.pdf) paper provides an introduction to the mathematics used by these algorithms.
 
 ## Features
 
 The port of SIKE to Java provides the following functionality:
 
 - Key generation
-- SIDH key agreement
-- SIKE key encryption/decryption
-- SIKE key encapsulation/decapsulation
+- SIDH key exchange
+- SIKE public key encryption (PKE)
+- SIKE key encapsulation mechanism (KEM)
 
-Following SIKE variants are supported:
+Following SIKE parameter sets are supported:
 
 - SIKEp434
 - SIKEp503
@@ -33,15 +34,19 @@ The project provides implementation ports for both reference and optimized imple
 
 The private and public keys can be exported into:
 
-- octet representation as defined in SIKE specification
-- byte array representation for a more optimal encoding
+- an octet representation as defined in the SIKE specification
+- a byte array representation useful for a more optimal encoding
 
 The private and public keys can be imported from either of these serialization formats.
 
-The port includes KAT test vectors for all supported SIKE variants.
+The port includes KAT test vectors for all supported SIKE parameter sets.
 
-Note that this port's aim was not to create a 100% identical port with the C code because the original syntax is not object-oriented. We also discovered minor issues during the port and reported them to the SIKE developers. There are small differences between the C and Java implementations. However, given the passing KAT test vectors, the
+Note that this port's aim was not to create a 100% identical port with the C code because the original syntax is not object-oriented. There are small differences between the C and Java implementations. However, given the passing KAT test vectors, the
 implementations should be 100% compatible.
+
+## Getting Started
+
+If you prefer watching a video over reading a manual, you can watch the [Getting Started Video](https://www.youtube.com/watch?v=0IK4XCY4qm8) which provides an introduction to using this library. 
 
 ## Usage
 
@@ -51,7 +56,7 @@ SIKE for Java provides an easy to use interface for generating keys and computin
 
 #### Install Using Maven
 
-The artifacts are currently not published in any public repository. Clone the project and install the artifact in the local Maven repository to use the library by running the following commands:
+The artifacts are currently not published in any public repository given the experimental stage of the implementation. Clone the project and install the artifact in the local Maven repository to use the library by running the following commands:
 
 ```sh
 $ git clone https://github.com/wultra/sike-java.git
@@ -84,9 +89,9 @@ Security.addProvider(new BouncyCastleProvider());
 
 Initialize Bouncy Castle at the application start before using any of the SIKE for Java functionality.
 
-Before generating keys, choose one of the available algorithm variants depending on the desired NIST security level and parameter size (in bytes):
+Before generating keys, choose one of the available algorithm parameter sets depending on the desired NIST security level and parameter size (in bytes):
 
-| SIKE Variant Name | NIST Security Level | Private Key Size | Public Key Size | Shared Secret Size |
+| SIKE Parameter Set | NIST Security Level | Private Key Size | Public Key Size | Shared Secret Size |
 | :---------------: | :-----------------: | :--------------: | :-------------: | :----------------: | 
 | SIKEp434 | 1 | 374 | 330 | 16 |
 | SIKEp503 | 2 | 434 | 378 | 24 |
@@ -135,10 +140,9 @@ PrivateKey priv = keyPair.getPrivate();
 PrivateKey pub = keyPair.getPrivate();
 ```
 
-To export the keys, cast them to `SidhPrivateKey` or `SidhPublicKey`, and call either of these methods:
-
+To export the keys into a byte array, call either of these methods:
 - `getEncoded()` - returns the byte array representation of the key
-- `toOctetString()` - converts the key to an octet string as defined in SIKE specification
+- `toOctetString()` - converts the key to an octet string as defined in SIKE specification, you need to cast the key to `SidhPrivateKey` or `SidhPublicKey` to access this method
 
 Obtain the numeric representation of keys using:
 
@@ -208,7 +212,7 @@ Obtain the byte array representing secret j-invariants of both sides using:
 byte[] encoded = secret.getEncoded();
 ```
 
-Both secrets `secretA` and `secretB` are equal in case the key agreement succeeded. The shared secret sizes match the `Fp2Element` sizes in the chosen SIKE variant, which is 1/3 of the public key size. Using a hashing function on the shared secret values is advised to obtain shorter shared secret sizes and eliminate any risks related to using `BigInteger` representation of the j-invariant.
+Both secrets `secretA` and `secretB` are equal in case the key agreement succeeded. The shared secret sizes match the `Fp2Element` sizes in the chosen SIKE parameter set, which is 1/3 of the public key size. Using a hashing function on the shared secret value is advised to obtain shorter shared secret sizes as well as eliminate any risks related to using the numeric representation of the j-invariant directly.
 </details>
 
 ### SIKE Key Encapsulation
@@ -241,7 +245,7 @@ The encrypted message `encryptedMessage` is transported back to `BOB` who uses t
 byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);
 ```
 
-Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#Initialization).
+Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#Initialization).  Using a hashing function on the shared secret value is advised to obtain shorter shared secret sizes as well as eliminate any risks related to using the numeric representation of the j-invariant directly.
 
 Note that SIKE provides higher security than SIDH. It is an [IND-CCA2](https://en.wikipedia.org/wiki/Ciphertext_indistinguishability) scheme and can be used with long term keys.
 

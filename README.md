@@ -137,7 +137,7 @@ Obtain the keys from the key pair using:
 
 ```java
 PrivateKey priv = keyPair.getPrivate();
-PrivateKey pub = keyPair.getPrivate();
+PublicKey pub = keyPair.getPublic();
 ```
 
 To export the keys into a byte array, call either of these methods:

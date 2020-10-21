@@ -101,10 +101,9 @@ public class SikeRandomTest {
         System.out.println("Testing SIKE encapsulation/decapsulation with message transport");
         EncapsulationResult encapsulationResult = sike.encapsulate(keyPair.getPublic());
         System.out.println("Alice's shared secret: " + new String(Base64.encode(encapsulationResult.getSecret())));
-        // Encrypted message is sent to Bob
+        // Encrypted message is serialized, transported over the network and deserialized
         EncryptedMessage encrypted = encapsulationResult.getEncryptedMessage();
         byte[] encodedMessage = encrypted.getEncoded();
-        // Message is transported over network
         EncryptedMessage transported = new EncryptedMessage(sikeParam, encodedMessage);
         byte[] secretDecaps = sike.decapsulate(keyPair.getPrivate(), keyPair.getPublic(), transported);
         System.out.println("Bob's shared secret:   " + new String(Base64.encode(secretDecaps)));

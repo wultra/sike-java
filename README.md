@@ -239,10 +239,17 @@ byte[] secretA = encapsulationResult.getSecret();
 EncryptedMessage encryptedMessage = encapsulationResult.getEncryptedMessage();
 ```
 
-The encrypted message `encryptedMessage` is transported back to `BOB` who uses the public key and cipher text included in the message for the decapsulation phase of KEM:
-
+The encrypted message `encryptedMessage` is converted into a byte array representation `encodedMessage` and transported back to `BOB` 
+who uses the public key and cipher text included in the message for the decapsulation phase of KEM.
+Obtain the byte array from the encrypted message for transport over network:
 ```java
-byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);
+byte[] byte[] encodedMessage = encryptedMessage.getEncoded();
+```
+
+The encrypted message is recreated by `BOB` after the message transport and decapsulation is performed:
+```java
+EncryptedMessage transportedMessage = new EncryptedMessage(sikeParam, encodedMessage);
+byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), transportedMessage);
 ```
 
 Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#Initialization). Using a hashing function on the shared secret value is advised to obtain shorter shared secret sizes.

@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SikeRandomTest {
 
     private Sike sike;
+    private SikeParam sikeParam;
     private KeyPair keyPair;
 
     static {
@@ -50,7 +51,7 @@ public class SikeRandomTest {
     }
 
     public void initSike() throws GeneralSecurityException {
-        SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
+        sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         KeyGenerator keyGenerator = new KeyGenerator(sikeParam);
         sike = new Sike(sikeParam);
         System.out.println("Prime: " + sikeParam.getPrime());
@@ -92,4 +93,24 @@ public class SikeRandomTest {
         System.out.println("Shared secrets match: " + match);
         assertTrue(match, "Decapsulation failed");
     }
+
+    @Test
+    public void testSikeEncapsulationWithMessageTransport() throws GeneralSecurityException {
+        System.out.println("----------------------------------------");
+        initSike();
+        System.out.println("Testing SIKE encapsulation/decapsulation with message transport");
+        EncapsulationResult encapsulationResult = sike.encapsulate(keyPair.getPublic());
+        System.out.println("Alice's shared secret: " + new String(Base64.encode(encapsulationResult.getSecret())));
+        // Encrypted message is sent to Bob
+        EncryptedMessage encrypted = encapsulationResult.getEncryptedMessage();
+        byte[] encodedMessage = encrypted.getEncoded();
+        // Message is transported over network
+        EncryptedMessage transported = new EncryptedMessage(sikeParam, encodedMessage);
+        byte[] secretDecaps = sike.decapsulate(keyPair.getPrivate(), keyPair.getPublic(), transported);
+        System.out.println("Bob's shared secret:   " + new String(Base64.encode(secretDecaps)));
+        boolean match = Arrays.equals(encapsulationResult.getSecret(), secretDecaps);
+        System.out.println("Shared secrets match: " + match);
+        assertTrue(match, "Decapsulation failed");
+    }
+
 }

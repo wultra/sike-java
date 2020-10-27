@@ -239,7 +239,7 @@ byte[] secretA = encapsulationResult.getSecret();
 EncryptedMessage encryptedMessage = encapsulationResult.getEncryptedMessage();
 ```
 
-The encrypted message `encryptedMessage` is converted into a byte array representation `encodedMessage` and transported back to `BOB` who uses the public key and cipher text included in the message for the decapsulation phase of KEM. Obtain the byte array from the encrypted message for transport over network:
+The `encryptedMessage` is converted into a byte array representation `encodedMessage` and transported back to `BOB` who uses the public key and cipher text included in the message for the decapsulation phase of KEM. Obtain the byte array from the encrypted message for transport over network:
 
 ```java
 byte[] encodedMessage = encryptedMessage.getEncoded();

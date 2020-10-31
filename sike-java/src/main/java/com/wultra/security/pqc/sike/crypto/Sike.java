@@ -113,6 +113,7 @@ public class Sike {
         PrivateKey rKey = new SidhPrivateKey(sikeParam, Party.ALICE, key);
         PublicKey c0Key = keyGenerator.derivePublicKey(Party.ALICE, rKey);
         byte[] k;
+        // The public key equals method runs in constant time
         if (c0Key.equals(encrypted.getC0())) {
             k = generateK(m, c0Key.getEncoded(), encrypted.getC1());
         } else {

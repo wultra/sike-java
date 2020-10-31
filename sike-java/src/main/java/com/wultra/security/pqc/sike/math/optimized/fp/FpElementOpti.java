@@ -270,7 +270,8 @@ public class FpElementOpti implements FpElement {
 
     @Override
     public boolean isZero() {
-        return Arrays.equals(new long[value.length], value);
+        FpElement zero = new FpElementOpti(sikeParam, new long[value.length]);
+        return org.bouncycastle.util.Arrays.constantTimeAreEqual(zero.getEncoded(), getEncoded());
     }
 
     /**
@@ -419,8 +420,9 @@ public class FpElementOpti implements FpElement {
         if (!(o instanceof FpElementOpti)) {
             return false;
         }
-        FpElementOpti other = (FpElementOpti) o;
-        return getX().equals(other.getX());
+        FpElementOpti that = (FpElementOpti) o;
+        // Use constant time comparison to avoid timing attacks
+        return org.bouncycastle.util.Arrays.constantTimeAreEqual(getX().toByteArray(), that.getX().toByteArray());
     }
 
     @Override

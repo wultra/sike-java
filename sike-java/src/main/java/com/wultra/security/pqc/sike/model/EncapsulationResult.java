@@ -60,7 +60,8 @@ public class EncapsulationResult {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EncapsulationResult that = (EncapsulationResult) o;
-        return Arrays.equals(secret, that.secret) &&
+        // Use constant time comparison to avoid timing attacks
+        return org.bouncycastle.util.Arrays.constantTimeAreEqual(secret, that.secret) &
                 encryptedMessage.equals(that.encryptedMessage);
     }
 

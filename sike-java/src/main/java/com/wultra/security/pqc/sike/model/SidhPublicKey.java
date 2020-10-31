@@ -20,6 +20,7 @@ import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
+import org.bouncycastle.util.Arrays;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -168,11 +169,10 @@ public class SidhPublicKey implements PublicKey {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SidhPublicKey publicKey = (SidhPublicKey) o;
-        return sikeParam.equals(publicKey.sikeParam)
-                && px.equals(publicKey.px)
-                && qx.equals(publicKey.qx)
-                && rx.equals(publicKey.rx);
+        SidhPublicKey that = (SidhPublicKey) o;
+        // Use constant time comparison to avoid timing attacks
+        return sikeParam.equals(that.sikeParam)
+                && Arrays.constantTimeAreEqual(getEncoded(), that.getEncoded());
     }
 
     @Override

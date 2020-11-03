@@ -110,8 +110,8 @@ public class Fp2PointProjective implements Fp2Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fp2PointProjective that = (Fp2PointProjective) o;
-        return x.equals(that.x) &&
-                z.equals(that.z);
+        // Use & to avoid timing attacks
+        return x.equals(that.x) & z.equals(that.z);
     }
 
     @Override

@@ -16,6 +16,8 @@
  */
 package com.wultra.security.pqc.sike.model;
 
+import com.wultra.security.pqc.sike.util.SideChannelUtil;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -60,7 +62,8 @@ public class EncapsulationResult {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EncapsulationResult that = (EncapsulationResult) o;
-        return Arrays.equals(secret, that.secret) &&
+        // Use constant time comparison to avoid timing attacks
+        return SideChannelUtil.constantTimeAreEqual(secret, that.secret) &
                 encryptedMessage.equals(that.encryptedMessage);
     }
 

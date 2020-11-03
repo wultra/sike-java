@@ -19,6 +19,7 @@ package com.wultra.security.pqc.sike.math.optimized.fp;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
+import com.wultra.security.pqc.sike.util.SideChannelUtil;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -279,9 +280,9 @@ public class Fp2ElementOpti implements Fp2Element {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fp2ElementOpti that = (Fp2ElementOpti) o;
+        // Use constant time comparison to avoid timing attacks
         return sikeParam.equals(that.sikeParam)
-                && x0.equals(that.x0)
-                && x1.equals(that.x1);
+                && SideChannelUtil.constantTimeAreEqual(getEncoded(), that.getEncoded());
     }
 
     @Override

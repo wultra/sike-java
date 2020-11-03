@@ -20,12 +20,12 @@ import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
+import com.wultra.security.pqc.sike.util.SideChannelUtil;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 import java.security.PrivateKey;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -231,9 +231,9 @@ public class SidhPrivateKey implements PrivateKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SidhPrivateKey that = (SidhPrivateKey) o;
+        // Use constant time comparison to avoid timing attacks
         return sikeParam.equals(that.sikeParam)
-                && Arrays.equals(s, that.s)
-                && Arrays.equals(key, that.key);
+                && SideChannelUtil.constantTimeAreEqual(getEncoded(), that.getEncoded());
     }
 
     @Override

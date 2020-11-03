@@ -272,7 +272,7 @@ public class FpElementOpti implements FpElement {
     @Override
     public boolean isZero() {
         FpElement zero = new FpElementOpti(sikeParam, new long[value.length]);
-        return SideChannelUtil.constantTimeAreEqual(zero.getEncoded(), getEncoded());
+        return equals(zero);
     }
 
     /**

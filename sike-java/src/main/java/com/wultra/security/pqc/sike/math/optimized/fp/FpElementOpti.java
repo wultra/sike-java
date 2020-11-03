@@ -20,6 +20,7 @@ import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
+import com.wultra.security.pqc.sike.util.SideChannelUtil;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -271,7 +272,7 @@ public class FpElementOpti implements FpElement {
     @Override
     public boolean isZero() {
         FpElement zero = new FpElementOpti(sikeParam, new long[value.length]);
-        return org.bouncycastle.util.Arrays.constantTimeAreEqual(zero.getEncoded(), getEncoded());
+        return SideChannelUtil.constantTimeAreEqual(zero.getEncoded(), getEncoded());
     }
 
     /**
@@ -422,7 +423,7 @@ public class FpElementOpti implements FpElement {
         }
         FpElementOpti that = (FpElementOpti) o;
         // Use constant time comparison to avoid timing attacks
-        return org.bouncycastle.util.Arrays.constantTimeAreEqual(getX().toByteArray(), that.getX().toByteArray());
+        return SideChannelUtil.constantTimeAreEqual(getX().toByteArray(), that.getX().toByteArray());
     }
 
     @Override

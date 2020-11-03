@@ -17,6 +17,7 @@
 package com.wultra.security.pqc.sike.model;
 
 import com.wultra.security.pqc.sike.param.SikeParam;
+import com.wultra.security.pqc.sike.util.SideChannelUtil;
 
 import java.security.InvalidParameterException;
 import java.security.PublicKey;
@@ -103,7 +104,7 @@ public class EncryptedMessage {
         if (o == null || getClass() != o.getClass()) return false;
         EncryptedMessage that = (EncryptedMessage) o;
         // Use constant time comparison to avoid timing attacks
-        return org.bouncycastle.util.Arrays.constantTimeAreEqual(getEncoded(), that.getEncoded());
+        return SideChannelUtil.constantTimeAreEqual(getEncoded(), that.getEncoded());
     }
 
     @Override

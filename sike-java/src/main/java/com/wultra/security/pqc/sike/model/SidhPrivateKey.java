@@ -20,6 +20,7 @@ import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
 import com.wultra.security.pqc.sike.util.OctetEncoding;
+import com.wultra.security.pqc.sike.util.SideChannelUtil;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -232,7 +233,7 @@ public class SidhPrivateKey implements PrivateKey {
         SidhPrivateKey that = (SidhPrivateKey) o;
         // Use constant time comparison to avoid timing attacks
         return sikeParam.equals(that.sikeParam)
-                && org.bouncycastle.util.Arrays.constantTimeAreEqual(getEncoded(), that.getEncoded());
+                && SideChannelUtil.constantTimeAreEqual(getEncoded(), that.getEncoded());
     }
 
     @Override

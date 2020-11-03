@@ -36,16 +36,6 @@ public class FpElementRef implements FpElement {
     private final SikeParam sikeParam;
 
     /**
-     * The F(p^) field element constructor for given integer value.
-     * @param sikeParam SIKE parameters.
-     * @param i Integer value.
-     */
-    public FpElementRef(SikeParam sikeParam, int i) {
-        this.sikeParam = sikeParam;
-        this.x = new BigInteger(String.valueOf(i)).mod(sikeParam.getPrime());
-    }
-
-    /**
      * The F(p^) field element constructor for given BigInteger value.
      * @param sikeParam Field prime.
      * @param x BigInteger value.

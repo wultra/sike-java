@@ -423,7 +423,7 @@ public class FpElementOpti implements FpElement {
         }
         FpElementOpti that = (FpElementOpti) o;
         // Use constant time comparison to avoid timing attacks
-        return SideChannelUtil.constantTimeAreEqual(getX().toByteArray(), that.getX().toByteArray());
+        return SideChannelUtil.constantTimeAreEqual(getEncoded(), that.getEncoded());
     }
 
     @Override

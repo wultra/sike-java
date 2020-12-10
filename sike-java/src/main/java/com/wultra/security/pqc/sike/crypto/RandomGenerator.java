@@ -27,7 +27,7 @@ import java.security.SecureRandom;
  */
 public class RandomGenerator {
 
-    private SecureRandom secureRandom;
+    private volatile SecureRandom secureRandom;
 
     /**
      * Default random generator constructor.
@@ -51,15 +51,22 @@ public class RandomGenerator {
      * @throws NoSuchAlgorithmException Thrown in case random generator algorithm is not available.
      */
     public synchronized byte[] generateRandomBytes(int length) throws NoSuchProviderException, NoSuchAlgorithmException {
-        if (secureRandom == null) {
-            // Use SecureRandom implementation from Bouncy Castle library, it is slower,
-            // however it reseeds periodically and it is quantum safe. The initialization is lazy
-            // to allow dynamic Bouncy Castle provider initialization and to allow instantiation
-            // of this class in fields.
-            secureRandom = SecureRandom.getInstance("DEFAULT", "BC");
+        SecureRandom localSecureRandom = secureRandom;
+
+        if (localSecureRandom == null) {
+            synchronized (RandomGenerator.class) {
+                localSecureRandom = secureRandom;
+                if (localSecureRandom == null)
+                    // Use SecureRandom implementation from Bouncy Castle library, it is slower,
+                    // however it reseeds periodically and it is quantum safe. The initialization is lazy
+                    // to allow dynamic Bouncy Castle provider initialization and to allow instantiation
+                    // of this class in fields.
+                    secureRandom = localSecureRandom = SecureRandom.getInstance("DEFAULT", "BC");
+            }
         }
+
         byte[] randomBytes = new byte[length];
-        secureRandom.nextBytes(randomBytes);
+        localSecureRandom.nextBytes(randomBytes);
         return randomBytes;
     }
 

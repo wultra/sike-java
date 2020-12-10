@@ -87,12 +87,12 @@ public class Fp2PointProjective implements Fp2Point {
 
     @Override
     public Fp2Point negate() {
-        throw new RuntimeException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public boolean isInfinite() {
-        throw new RuntimeException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override

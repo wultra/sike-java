@@ -69,13 +69,13 @@ public class SidhPrivateKey implements PrivateKey {
         if (bytes == null || bytes.length != sLength + keyLength) {
             throw new InvalidParameterException("Invalid private key");
         }
-        byte[] s = new byte[sLength];
+        byte[] s1 = new byte[sLength];
         key = new byte[keyLength];
-        System.arraycopy(bytes, 0, s, 0, sLength);
+        System.arraycopy(bytes, 0, s1, 0, sLength);
         System.arraycopy(bytes, sLength, key, 0, keyLength);
         BigInteger secret = ByteEncoding.fromByteArray(key);
         validatePrivateKey(secret);
-        this.s = s;
+        this.s = s1;
     }
 
     /**
@@ -93,12 +93,12 @@ public class SidhPrivateKey implements PrivateKey {
             throw new InvalidParameterException("Invalid private key");
         }
         byte[] bytes = octets.getBytes(StandardCharsets.UTF_8);
-        byte[] s = new byte[sLength * 2];
-        byte[] key = new byte[keyLength * 2];
-        System.arraycopy(bytes, 0, s, 0, sLength * 2);
-        System.arraycopy(bytes, sLength * 2, key, 0, keyLength * 2);
-        BigInteger sVal = OctetEncoding.fromOctetString(new String(s));
-        BigInteger secret = OctetEncoding.fromOctetString(new String(key));
+        byte[] s1 = new byte[sLength * 2];
+        byte[] key1 = new byte[keyLength * 2];
+        System.arraycopy(bytes, 0, s1, 0, sLength * 2);
+        System.arraycopy(bytes, sLength * 2, key1, 0, keyLength * 2);
+        BigInteger sVal = OctetEncoding.fromOctetString(new String(s1));
+        BigInteger secret = OctetEncoding.fromOctetString(new String(key1));
         validatePrivateKey(secret);
         this.s = ByteEncoding.toByteArray(sVal, sLength);
         int primeSize = (sikeParam.getPrime().bitLength() + 7) / 8;

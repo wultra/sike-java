@@ -29,14 +29,14 @@ import java.security.Security;
 /**
  * Test of KAT responses for SIKEp434.
  */
-public class KatP434Test {
+class KatP434Test {
 
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
 
     @Test
-    public void testKatP434() throws FileNotFoundException, GeneralSecurityException {
+    void testKatP434() throws FileNotFoundException, GeneralSecurityException {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         KatTester.run(sikeParam, "kat/PQCkemKAT_374.rsp");
     }

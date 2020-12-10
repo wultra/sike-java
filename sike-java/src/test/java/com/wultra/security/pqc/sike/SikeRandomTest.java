@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-public class SikeRandomTest {
+class SikeRandomTest {
 
     private Sike sike;
     private SikeParam sikeParam;
@@ -50,7 +50,7 @@ public class SikeRandomTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public void initSike() throws GeneralSecurityException {
+    void initSike() throws GeneralSecurityException {
         sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         KeyGenerator keyGenerator = new KeyGenerator(sikeParam);
         sike = new Sike(sikeParam);
@@ -63,7 +63,7 @@ public class SikeRandomTest {
     }
 
     @Test
-    public void testSikeEncryption() throws GeneralSecurityException {
+    void testSikeEncryption() throws GeneralSecurityException {
         System.out.println("----------------------------------------");
         initSike();
         System.out.println("Testing SIKE encryption/decryption");
@@ -79,7 +79,7 @@ public class SikeRandomTest {
     }
 
     @Test
-    public void testSikeEncapsulation() throws GeneralSecurityException {
+    void testSikeEncapsulation() throws GeneralSecurityException {
         System.out.println("----------------------------------------");
         initSike();
         System.out.println("Testing SIKE encapsulation/decapsulation");
@@ -95,7 +95,7 @@ public class SikeRandomTest {
     }
 
     @Test
-    public void testSikeEncapsulationWithMessageTransport() throws GeneralSecurityException {
+    void testSikeEncapsulationWithMessageTransport() throws GeneralSecurityException {
         System.out.println("----------------------------------------");
         initSike();
         System.out.println("Testing SIKE encapsulation/decapsulation with message transport");

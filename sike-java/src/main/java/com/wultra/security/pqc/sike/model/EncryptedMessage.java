@@ -73,7 +73,7 @@ public class EncryptedMessage {
      */
     public byte[] getEncoded() {
         if (c0 == null || c1 == null) {
-            return null;
+            return new byte[0];
         }
         byte[] pubKey = c0.getEncoded();
         byte[] encoded = new byte[pubKey.length + c1.length];

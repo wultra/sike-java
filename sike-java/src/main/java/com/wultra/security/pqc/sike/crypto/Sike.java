@@ -36,6 +36,8 @@ public class Sike {
     private final RandomGenerator randomGenerator;
     private final KeyGenerator keyGenerator;
     private final Sidh sidh;
+    private static final String INVALID_PUBLIC_KEY = "Invalid public key";
+
 
     /**
      * SIKE key encapsulation constructor.
@@ -68,7 +70,7 @@ public class Sike {
      */
     public EncapsulationResult encapsulate(PublicKey pk3) throws GeneralSecurityException {
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new InvalidKeyException("Invalid public key");
+            throw new InvalidKeyException(INVALID_PUBLIC_KEY);
         }
         byte[] m = randomGenerator.generateRandomBytes(sikeParam.getMessageBytes());
         byte[] r = generateR(m, pk3.getEncoded());
@@ -91,7 +93,7 @@ public class Sike {
             throw new InvalidKeyException("Invalid private key");
         }
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new InvalidKeyException("Invalid public key");
+            throw new InvalidKeyException(INVALID_PUBLIC_KEY);
         }
         if (encrypted == null) {
             throw new InvalidParameterException("Encrypted message is null");
@@ -143,7 +145,7 @@ public class Sike {
      */
     private EncryptedMessage encrypt(PublicKey pk3, byte[] m, byte[] r) throws GeneralSecurityException {
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new InvalidKeyException("Invalid public key");
+            throw new InvalidKeyException(INVALID_PUBLIC_KEY);
         }
         if (m == null || m.length != sikeParam.getMessageBytes()) {
             throw new InvalidParameterException("Invalid message");
@@ -184,7 +186,7 @@ public class Sike {
         }
         PublicKey c0 = encrypted.getC0();
         if (!(c0 instanceof SidhPublicKey)) {
-            throw new InvalidKeyException("Invalid public key");
+            throw new InvalidKeyException(INVALID_PUBLIC_KEY);
         }
         byte[] c1 = encrypted.getC1();
         if (c1 == null) {

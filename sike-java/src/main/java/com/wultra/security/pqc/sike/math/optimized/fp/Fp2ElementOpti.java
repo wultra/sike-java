@@ -83,10 +83,9 @@ public class Fp2ElementOpti implements Fp2Element {
      */
     public Fp2Element add(Fp2Element y) {
         // y = (x0 + i*x1) + (y0 + i*y1) = x0 + y0 + i*(x1 + y1)
-        FpElement r, i;
+        FpElement r = x0.add(y.getX0());
+        FpElement i = x1.add(y.getX1());
 
-        r = x0.add(y.getX0());
-        i = x1.add(y.getX1());
         return new Fp2ElementOpti(sikeParam, r, i);
     }
 
@@ -97,10 +96,9 @@ public class Fp2ElementOpti implements Fp2Element {
      */
     public Fp2Element subtract(Fp2Element y) {
         // y = (x0 + i*x1) - (y0 + i*y1) = x0 - y0 + i*(x1 - y1)
-        FpElement r, i;
+        FpElement r = x0.subtract(y.getX0());
+        FpElement i = x1.subtract(y.getX1());
 
-        r = x0.subtract(y.getX0());
-        i = x1.subtract(y.getX1());
         return new Fp2ElementOpti(sikeParam, r, i);
     }
 

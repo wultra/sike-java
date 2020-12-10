@@ -25,6 +25,13 @@ package com.wultra.security.pqc.sike.math.optimized.fp;
 public class UnsignedLong {
 
     /**
+     * Private constructor
+     */
+    private UnsignedLong() {
+
+    }
+
+    /**
      * Add two unsigned long values with carry.
      * @param x First unsigned long value.
      * @param y Second unsigned long value.

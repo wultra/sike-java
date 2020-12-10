@@ -40,9 +40,9 @@ public class FpElementOpti implements FpElement {
      * @param sikeParam SIKE parameters.
      */
     public FpElementOpti(SikeParam sikeParam) {
-        long[] value = new long[sikeParam.getFpWords()];
+        long[] val = new long[sikeParam.getFpWords()];
         this.sikeParam = sikeParam;
-        this.value = value;
+        this.value = val;
     }
 
     /**
@@ -63,15 +63,15 @@ public class FpElementOpti implements FpElement {
     public FpElementOpti(SikeParam sikeParam, BigInteger x) {
         this.sikeParam = sikeParam;
         // Convert element to Montgomery domain
-        long[] value = new long[sikeParam.getFpWords()];
+        long[] val = new long[sikeParam.getFpWords()];
         int primeSize = (sikeParam.getPrime().bitLength() + 7) / 8;
         byte[] encoded = ByteEncoding.toByteArray(x, primeSize);
         for (int i = 0; i < primeSize; i++) {
             int j = i / 8;
             int k = i % 8;
-            value[j] |= (Byte.toUnsignedLong(encoded[i]) << (8 * k));
+            val[j] |= (Byte.toUnsignedLong(encoded[i]) << (8 * k));
         }
-        FpElementOpti a = new FpElementOpti(sikeParam, value);
+        FpElementOpti a = new FpElementOpti(sikeParam, val);
         FpElementOpti b = (FpElementOpti) a.multiply(sikeParam.getPR2());
         FpElementOpti reduced = b.reduceMontgomery();
         this.value = new long[sikeParam.getFpWords()];

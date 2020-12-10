@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.math.optimized.fp;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
@@ -166,7 +167,7 @@ public class Fp2ElementOpti implements Fp2Element {
 
     @Override
     public Fp2Element pow(BigInteger n) {
-        throw new IllegalStateException("Not implemented yet");
+        throw new IllegalStateException();
     }
 
     /**
@@ -174,7 +175,7 @@ public class Fp2ElementOpti implements Fp2Element {
      * @return Calculation result.
      */
     public Fp2ElementOpti sqrt() {
-        throw new IllegalStateException("Not implemented yet");
+        throw new IllegalStateException(Constants.Exceptions.NOT_IMPLEMENTED);
     }
 
     /**

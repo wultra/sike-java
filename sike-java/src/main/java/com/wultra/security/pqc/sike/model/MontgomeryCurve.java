@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.model;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.model.optimized.MontgomeryConstants;
 import com.wultra.security.pqc.sike.param.SikeParam;
@@ -116,7 +117,7 @@ public class MontgomeryCurve {
      */
     public MontgomeryConstants getOptimizedConstants() {
         if (sikeParam.getImplementationType() != ImplementationType.OPTIMIZED) {
-            throw new InvalidParameterException("Invalid implementation type");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_IMPLEMENTATION_TYPE);
         }
         return optimizedConstants;
     }

@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.crypto;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.model.ImplementationType;
 import com.wultra.security.pqc.sike.model.MontgomeryCurve;
 import com.wultra.security.pqc.sike.model.Party;
@@ -88,7 +89,7 @@ public class KeyGenerator {
      */
     public PublicKey derivePublicKey(Party party, PrivateKey privateKey) throws InvalidKeyException {
         if (!(privateKey instanceof SidhPrivateKey)) {
-            throw new InvalidKeyException("Invalid private key");
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PRIVATE_KEY);
         }
         SidhPrivateKey priv = (SidhPrivateKey) privateKey;
         MontgomeryCurve curve;
@@ -97,14 +98,14 @@ public class KeyGenerator {
         } else if (sikeParam.getImplementationType() == ImplementationType.OPTIMIZED) {
             curve = new MontgomeryCurve(sikeParam, sikeParam.getA());
         } else {
-            throw new InvalidParameterException("Unsupported implementation type");
+            throw new InvalidParameterException(Constants.Exceptions.UNSUPPORTED_IMPLEMENTATION);
         }
         if (party == Party.ALICE) {
             return sikeParam.getIsogeny().isoGen2(curve, priv);
         } else if (party == Party.BOB) {
             return sikeParam.getIsogeny().isoGen3(curve, priv);
         }
-        throw new InvalidParameterException("Invalid party");
+        throw new InvalidParameterException(Constants.Exceptions.INVALID_PARTY);
     }
 
     /**
@@ -128,7 +129,7 @@ public class KeyGenerator {
             randomBytes[randomBytes.length - 1] &= sikeParam.getMaskB();
             return ByteEncoding.fromByteArray(randomBytes);
         }
-        throw new InvalidParameterException("Invalid party");
+        throw new InvalidParameterException(Constants.Exceptions.INVALID_PARTY);
     }
 
 }

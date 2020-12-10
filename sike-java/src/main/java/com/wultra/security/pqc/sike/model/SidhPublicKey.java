@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.model;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
@@ -64,7 +65,7 @@ public class SidhPublicKey implements PublicKey {
         BigInteger prime = sikeParam.getPrime();
         int primeSize = (prime.bitLength() + 7) / 8;
         if (bytes == null || bytes.length != 6 * primeSize) {
-            throw new IllegalStateException("Invalid public key");
+            throw new IllegalStateException(Constants.Exceptions.INVALID_PUBLIC_KEY);
         }
         BigInteger[] keyParts = new BigInteger[6];
         for (int i = 0; i < 6; i++) {
@@ -87,7 +88,7 @@ public class SidhPublicKey implements PublicKey {
         BigInteger prime = sikeParam.getPrime();
         int primeSize = (prime.bitLength() + 7) / 8;
         if (octets == null || octets.length() != 12 * primeSize) {
-            throw new IllegalStateException("Invalid public key");
+            throw new IllegalStateException(Constants.Exceptions.INVALID_PUBLIC_KEY);
         }
         byte[] octetBytes = octets.getBytes(StandardCharsets.UTF_8);
         BigInteger[] keyParts = new BigInteger[6];

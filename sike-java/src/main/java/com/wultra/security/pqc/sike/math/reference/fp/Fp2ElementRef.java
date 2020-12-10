@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.math.reference.fp;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
@@ -146,7 +147,7 @@ public class Fp2ElementRef implements Fp2Element {
      */
     public Fp2Element pow(BigInteger n) {
         if (n.compareTo(BigInteger.ZERO) < 0) {
-            throw new ArithmeticException("Negative exponent");
+            throw new ArithmeticException(Constants.Exceptions.NEGATIVE_EXPONENT);
         }
         if (n.compareTo(BigInteger.ZERO) == 0) {
             return sikeParam.getFp2ElementFactory().one();

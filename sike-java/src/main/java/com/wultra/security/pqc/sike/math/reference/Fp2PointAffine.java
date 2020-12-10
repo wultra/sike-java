@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.math.reference;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 import com.wultra.security.pqc.sike.param.SikeParam;
@@ -68,7 +69,7 @@ public class Fp2PointAffine implements Fp2Point {
      */
     @Override
     public Fp2Element getZ() {
-        throw new InvalidParameterException("Invalid point coordinate");
+        throw new InvalidParameterException(Constants.Exceptions.INVALID_POINT_COORDINATE);
     }
 
     @Override

@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.crypto;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.model.Party;
 import com.wultra.security.pqc.sike.model.SidhPrivateKey;
@@ -51,10 +52,10 @@ public class Sidh {
      */
     public Fp2Element generateSharedSecret(Party party, PrivateKey privateKey, PublicKey publicKey) throws GeneralSecurityException {
         if (!(privateKey instanceof SidhPrivateKey)) {
-            throw new InvalidKeyException("Invalid private key");
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PRIVATE_KEY);
         }
         if (!(publicKey instanceof SidhPublicKey)) {
-            throw new InvalidKeyException("Invalid public key");
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PUBLIC_KEY);
         }
         SidhPrivateKey priv = (SidhPrivateKey) privateKey;
         SidhPublicKey pub = (SidhPublicKey) publicKey;
@@ -64,6 +65,6 @@ public class Sidh {
         if (party == Party.BOB) {
             return sikeParam.getIsogeny().isoEx3(sikeParam, priv.getKey(), pub.getPx(), pub.getQx(), pub.getRx());
         }
-        throw new InvalidParameterException("Invalid party");
+        throw new InvalidParameterException(Constants.Exceptions.INVALID_PARTY);
     }
 }

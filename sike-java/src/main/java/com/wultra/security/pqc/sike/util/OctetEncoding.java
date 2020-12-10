@@ -16,6 +16,8 @@
  */
 package com.wultra.security.pqc.sike.util;
 
+import com.wultra.security.pqc.sike.Constants;
+
 import java.math.BigInteger;
 import java.security.InvalidParameterException;
 
@@ -35,7 +37,7 @@ public class OctetEncoding {
      */
     public static String toOctetString(BigInteger n, int length) {
         if (n.signum() == -1) {
-            throw new InvalidParameterException("Number is negative");
+            throw new InvalidParameterException(Constants.Exceptions.NEGATIVE_NUMBER);
         }
         String hex = n.toString(16).toUpperCase();
         if (hex.length() % 2 == 1) {
@@ -44,7 +46,7 @@ public class OctetEncoding {
         char[] chars = hex.toCharArray();
         int expectedLength = length * 2;
         if (chars.length > expectedLength) {
-            throw new InvalidParameterException("Number is too large, length: " + chars.length + ", expected: " + expectedLength);
+            throw new InvalidParameterException(Constants.Exceptions.NUMBER_TOO_LARGE + ", length: " + chars.length + ", expected: " + expectedLength);
         }
         StringBuilder sb = new StringBuilder();
         for (int i = hex.length() - 1; i >= 0; i -= 2) {
@@ -77,7 +79,7 @@ public class OctetEncoding {
      */
     public static BigInteger fromOctetString(String str) {
         if (str == null || str.length() % 2 == 1) {
-            throw new InvalidParameterException("Invalid octet string");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_OCTET_STRING);
         }
         char[] chars = str.toCharArray();
         StringBuilder sb = new StringBuilder();

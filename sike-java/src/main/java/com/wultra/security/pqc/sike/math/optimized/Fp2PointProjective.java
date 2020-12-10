@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.math.optimized;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.math.api.Fp2Point;
 
@@ -52,7 +53,7 @@ public class Fp2PointProjective implements Fp2Point {
      */
     @Override
     public Fp2Element getY() {
-        throw new InvalidParameterException("Invalid point coordinate");
+        throw new InvalidParameterException(Constants.Exceptions.INVALID_POINT_COORDINATE);
     }
 
     @Override
@@ -87,12 +88,12 @@ public class Fp2PointProjective implements Fp2Point {
 
     @Override
     public Fp2Point negate() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        throw new UnsupportedOperationException(Constants.Exceptions.NOT_IMPLEMENTED);
     }
 
     @Override
     public boolean isInfinite() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        throw new UnsupportedOperationException(Constants.Exceptions.NOT_IMPLEMENTED);
     }
 
     @Override

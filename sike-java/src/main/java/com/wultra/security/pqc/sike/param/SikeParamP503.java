@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.param;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.*;
 import com.wultra.security.pqc.sike.math.optimized.Fp2PointProjective;
 import com.wultra.security.pqc.sike.math.optimized.IsogenyProjective;
@@ -96,7 +97,7 @@ public class SikeParamP503 implements SikeParam {
             montgomery = new MontgomeryProjective();
             isogeny = new IsogenyProjective();
         } else {
-            throw new InvalidParameterException("Unsupported implementation type: " + implementationType);
+            throw new InvalidParameterException(Constants.Exceptions.UNSUPPORTED_IMPLEMENTATION + ": " + implementationType);
         }
         init();
     }

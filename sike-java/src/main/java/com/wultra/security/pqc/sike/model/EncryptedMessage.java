@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.model;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.SideChannelUtil;
 
@@ -51,14 +52,14 @@ public class EncryptedMessage {
      */
     public EncryptedMessage(SikeParam sikeParam, byte[] bytes) {
         if (sikeParam == null) {
-            throw new InvalidParameterException("Invalid parameter sikeParam");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_SIKE_PARAM);
         }
         int primeSize = (sikeParam.getPrime().bitLength() + 7) / 8;
         int pubKeySize = primeSize * 6;
         int messageSize = sikeParam.getMessageBytes();
         int expectedSize = pubKeySize + messageSize;
         if (bytes == null || bytes.length != expectedSize) {
-            throw new InvalidParameterException("Invalid parameter bytes");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_BYTES_PARAM);
         }
         byte[] pubKeyBytes = new byte[pubKeySize];
         System.arraycopy(bytes, 0, pubKeyBytes, 0, pubKeySize);

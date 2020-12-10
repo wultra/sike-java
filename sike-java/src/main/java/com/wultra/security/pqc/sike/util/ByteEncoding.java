@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.util;
 
+import com.wultra.security.pqc.sike.Constants;
 import org.bouncycastle.util.BigIntegers;
 
 import java.math.BigInteger;
@@ -47,7 +48,7 @@ public class ByteEncoding {
     public static byte[] toByteArray(BigInteger n, int length) {
         byte[] encoded = reverse(BigIntegers.asUnsignedByteArray(n));
         if (encoded.length > length) {
-            throw new InvalidParameterException("Number is too large");
+            throw new InvalidParameterException(Constants.Exceptions.NUMBER_TOO_LARGE);
         }
         if (encoded.length == length) {
             return encoded;

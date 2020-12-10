@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.model;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
@@ -67,7 +68,7 @@ public class SidhPrivateKey implements PrivateKey {
         int sLength = sikeParam.getMessageBytes();
         int keyLength = (sikeParam.getPrime().bitLength() + 7) / 8;
         if (bytes == null || bytes.length != sLength + keyLength) {
-            throw new InvalidParameterException("Invalid private key");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_PRIVATE_KEY);
         }
         byte[] s1 = new byte[sLength];
         key = new byte[keyLength];
@@ -90,7 +91,7 @@ public class SidhPrivateKey implements PrivateKey {
         int sLength = sikeParam.getMessageBytes();
         int keyLength = getKeyLength(party);
         if (octets == null || octets.length() != (sLength + keyLength) * 2) {
-            throw new InvalidParameterException("Invalid private key");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_PRIVATE_KEY);
         }
         byte[] bytes = octets.getBytes(StandardCharsets.UTF_8);
         byte[] s1 = new byte[sLength * 2];
@@ -123,18 +124,18 @@ public class SidhPrivateKey implements PrivateKey {
      */
     private void validatePrivateKey(BigInteger secret) {
         if (secret.compareTo(BigInteger.ZERO) <= 0) {
-            throw new InvalidParameterException("Invalid secret");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_SECRET);
         }
         if (party == Party.ALICE) {
             if (secret.compareTo(sikeParam.getOrdA()) >= 0) {
-                throw new InvalidParameterException("Invalid secret");
+                throw new InvalidParameterException(Constants.Exceptions.INVALID_SECRET);
             }
         } else if (party == Party.BOB) {
             if (secret.compareTo(sikeParam.getOrdB()) >= 0) {
-                throw new InvalidParameterException("Invalid secret");
+                throw new InvalidParameterException(Constants.Exceptions.INVALID_SECRET);
             }
         } else {
-            throw new InvalidParameterException("Invalid party");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_PARTY);
         }
     }
 
@@ -149,7 +150,7 @@ public class SidhPrivateKey implements PrivateKey {
         } else if (party == Party.BOB){
             return (sikeParam.getBitsB() - 1 + 7) / 8;
         } else {
-            throw new InvalidParameterException("Invalid party");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_PARTY);
         }
     }
 

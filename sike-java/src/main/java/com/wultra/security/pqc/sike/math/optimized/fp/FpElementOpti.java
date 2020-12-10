@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.math.optimized.fp;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.FpElement;
 import com.wultra.security.pqc.sike.param.SikeParam;
 import com.wultra.security.pqc.sike.util.ByteEncoding;
@@ -261,7 +262,7 @@ public class FpElementOpti implements FpElement {
 
     @Override
     public FpElement inverse() {
-        throw new IllegalStateException("Not implemented yet");
+        throw new IllegalStateException(Constants.Exceptions.NOT_IMPLEMENTED);
     }
 
     @Override

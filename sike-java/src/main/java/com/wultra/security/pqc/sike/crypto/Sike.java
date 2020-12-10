@@ -16,6 +16,7 @@
  */
 package com.wultra.security.pqc.sike.crypto;
 
+import com.wultra.security.pqc.sike.Constants;
 import com.wultra.security.pqc.sike.math.api.Fp2Element;
 import com.wultra.security.pqc.sike.model.*;
 import com.wultra.security.pqc.sike.param.SikeParam;
@@ -36,8 +37,6 @@ public class Sike {
     private final RandomGenerator randomGenerator;
     private final KeyGenerator keyGenerator;
     private final Sidh sidh;
-    private static final String INVALID_PUBLIC_KEY = "Invalid public key";
-
 
     /**
      * SIKE key encapsulation constructor.
@@ -70,7 +69,7 @@ public class Sike {
      */
     public EncapsulationResult encapsulate(PublicKey pk3) throws GeneralSecurityException {
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new InvalidKeyException(INVALID_PUBLIC_KEY);
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PUBLIC_KEY);
         }
         byte[] m = randomGenerator.generateRandomBytes(sikeParam.getMessageBytes());
         byte[] r = generateR(m, pk3.getEncoded());
@@ -90,23 +89,23 @@ public class Sike {
      */
     public byte[] decapsulate(PrivateKey sk3, PublicKey pk3, EncryptedMessage encrypted) throws GeneralSecurityException {
         if (!(sk3 instanceof SidhPrivateKey)) {
-            throw new InvalidKeyException("Invalid private key");
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PRIVATE_KEY);
         }
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new InvalidKeyException(INVALID_PUBLIC_KEY);
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PUBLIC_KEY);
         }
         if (encrypted == null) {
-            throw new InvalidParameterException("Encrypted message is null");
+            throw new InvalidParameterException(Constants.Exceptions.NULL_ENCRYPTED_MESSAGE);
         }
         if (encrypted.getC0() == null) {
-            throw new InvalidParameterException("Invalid parameter c0");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_C0);
         }
         if (encrypted.getC1() == null) {
-            throw new InvalidParameterException("Invalid parameter c1");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_C1);
         }
         SidhPrivateKey priv3 = (SidhPrivateKey) sk3;
         if (priv3.getS() == null) {
-            throw new InvalidParameterException("Private key cannot be used for decapsulation");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_PRIVATE_KEY_DECAPSULATION);
         }
         byte[] m = decrypt(sk3, encrypted);
         byte[] r = generateR(m, pk3.getEncoded());
@@ -145,10 +144,10 @@ public class Sike {
      */
     private EncryptedMessage encrypt(PublicKey pk3, byte[] m, byte[] r) throws GeneralSecurityException {
         if (!(pk3 instanceof SidhPublicKey)) {
-            throw new InvalidKeyException(INVALID_PUBLIC_KEY);
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PUBLIC_KEY);
         }
         if (m == null || m.length != sikeParam.getMessageBytes()) {
-            throw new InvalidParameterException("Invalid message");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_MESSAGE);
         }
         PrivateKey sk2;
         if (r == null) {
@@ -179,18 +178,18 @@ public class Sike {
      */
     public byte[] decrypt(PrivateKey sk3, EncryptedMessage encrypted) throws GeneralSecurityException {
         if (!(sk3 instanceof SidhPrivateKey)) {
-            throw new InvalidKeyException("Invalid private key");
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PRIVATE_KEY);
         }
         if (encrypted == null) {
-            throw new InvalidParameterException("Encrypted message is null");
+            throw new InvalidParameterException(Constants.Exceptions.NULL_ENCRYPTED_MESSAGE);
         }
         PublicKey c0 = encrypted.getC0();
         if (!(c0 instanceof SidhPublicKey)) {
-            throw new InvalidKeyException(INVALID_PUBLIC_KEY);
+            throw new InvalidKeyException(Constants.Exceptions.INVALID_PUBLIC_KEY);
         }
         byte[] c1 = encrypted.getC1();
         if (c1 == null) {
-            throw new InvalidParameterException("Invalid parameter c1");
+            throw new InvalidParameterException(Constants.Exceptions.INVALID_C1);
         }
         Fp2Element j = sidh.generateSharedSecret(Party.BOB, sk3, c0);
         byte[] h = Sha3.shake256(j.getEncoded(), sikeParam.getMessageBytes());

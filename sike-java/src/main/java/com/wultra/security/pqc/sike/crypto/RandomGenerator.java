@@ -50,7 +50,7 @@ public class RandomGenerator {
      * @throws NoSuchProviderException Thrown in case Bouncy Castle provider is not available.
      * @throws NoSuchAlgorithmException Thrown in case random generator algorithm is not available.
      */
-    public synchronized byte[] generateRandomBytes(int length) throws NoSuchProviderException, NoSuchAlgorithmException {
+    public byte[] generateRandomBytes(int length) throws NoSuchProviderException, NoSuchAlgorithmException {
         SecureRandom localSecureRandom = secureRandom;
 
         if (localSecureRandom == null) {

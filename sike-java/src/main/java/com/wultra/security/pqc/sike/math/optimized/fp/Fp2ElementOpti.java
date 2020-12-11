@@ -167,7 +167,7 @@ public class Fp2ElementOpti implements Fp2Element {
 
     @Override
     public Fp2Element pow(BigInteger n) {
-        throw new IllegalStateException();
+        throw new IllegalStateException(Constants.Exceptions.NOT_IMPLEMENTED);
     }
 
     /**

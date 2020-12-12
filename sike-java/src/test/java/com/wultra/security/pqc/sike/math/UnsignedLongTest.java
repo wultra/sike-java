@@ -26,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-class UnsignedLongTest {
+public class UnsignedLongTest {
 
     @Test
-    void testZeroAdd() {
+    public void testZeroAdd() {
         long x = 0L;
         long y = 0L;
         long carry = 0L;
@@ -39,7 +39,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testZeroOneAdd() {
+    public void testZeroOneAdd() {
         long x = 0L;
         long y = 1L;
         long carry = 0L;
@@ -49,7 +49,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testZeroOneAddAndCarry() {
+    public void testZeroOneAddAndCarry() {
         long x = 0L;
         long y = 1L;
         long carry = 1L;
@@ -59,7 +59,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMaxValueAddZero() {
+    public void testMaxValueAddZero() {
         long x = Long.parseUnsignedLong("18446744073709551615");
         long y = 0L;
         long carry = 0L;
@@ -69,7 +69,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMaxValueAddOne() {
+    public void testMaxValueAddOne() {
         long x = Long.parseUnsignedLong("18446744073709551615");
         long y = 1L;
         long carry = 0L;
@@ -79,7 +79,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMaxValueAddTwo() {
+    public void testMaxValueAddTwo() {
         long x = Long.parseUnsignedLong("18446744073709551615");
         long y = 2L;
         long carry = 0L;
@@ -89,7 +89,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMaxValueAddZeroAndCarry() {
+    public void testMaxValueAddZeroAndCarry() {
         long x = Long.parseUnsignedLong("18446744073709551615");
         long y = 0L;
         long carry = 1L;
@@ -99,7 +99,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMaxValueAddOneAndCarry() {
+    public void testMaxValueAddOneAndCarry() {
         long x = Long.parseUnsignedLong("18446744073709551615");
         long y = 1L;
         long carry = 1L;
@@ -109,7 +109,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMaxValueMinusOneAddZeroAndCarry() {
+    public void testMaxValueMinusOneAddZeroAndCarry() {
         long x = Long.parseUnsignedLong("18446744073709551614");
         long y = 0L;
         long carry = 1L;
@@ -119,7 +119,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testZeroSub() {
+    public void testZeroSub() {
         long x = 0L;
         long y = 0L;
         long borrow = 0L;
@@ -129,7 +129,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testOneZeroSub() {
+    public void testOneZeroSub() {
         long x = 1L;
         long y = 0L;
         long borrow = 0L;
@@ -139,7 +139,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testOneZeroSubBorrow() {
+    public void testOneZeroSubBorrow() {
         long x = 1L;
         long y = 0L;
         long borrow = 1L;
@@ -149,7 +149,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testZeroSubOne() {
+    public void testZeroSubOne() {
         long x = 0L;
         long y = 1L;
         long borrow = 0L;
@@ -159,7 +159,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testZeroSubZeroBorrow() {
+    public void testZeroSubZeroBorrow() {
         long x = 0L;
         long y = 0L;
         long borrow = 1L;
@@ -169,7 +169,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testZeroSubOneBorrow() {
+    public void testZeroSubOneBorrow() {
         long x = 0L;
         long y = 1L;
         long borrow = 1L;
@@ -179,7 +179,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMaxSubMax() {
+    public void testMaxSubMax() {
         long x = Long.parseUnsignedLong("18446744073709551615");
         long y = Long.parseUnsignedLong("18446744073709551615");
         long borrow = 0L;
@@ -189,7 +189,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMaxSubMaxMinusOneBorrow() {
+    public void testMaxSubMaxMinusOneBorrow() {
         long x = Long.parseUnsignedLong("18446744073709551615");
         long y = Long.parseUnsignedLong("18446744073709551614");
         long borrow = 1L;
@@ -199,7 +199,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMultiplyZeroByZero() {
+    public void testMultiplyZeroByZero() {
         long x = 0L;
         long y = 0L;
         long[] result = UnsignedLong.mul(x, y);
@@ -208,7 +208,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMultiplyOneByOne() {
+    public void testMultiplyOneByOne() {
         long x = 1L;
         long y = 1L;
         long[] result = UnsignedLong.mul(x, y);
@@ -217,7 +217,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMultiplyBigValueByTwo() {
+    public void testMultiplyBigValueByTwo() {
         long x = Long.parseUnsignedLong("9223372036854775807");
         long y = 2L;
         long[] result = UnsignedLong.mul(x, y);
@@ -226,7 +226,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMultiplyMaxByMax() {
+    public void testMultiplyMaxByMax() {
         long x = Long.parseUnsignedLong("18446744073709551615");
         long y = Long.parseUnsignedLong("18446744073709551615");
         long[] result = UnsignedLong.mul(x, y);
@@ -237,7 +237,7 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMultiplyHiLo1() {
+    public void testMultiplyHiLo1() {
         long x = Long.parseUnsignedLong("123456789123456789");
         long y = Long.parseUnsignedLong("987654321987654321");
         long[] result = UnsignedLong.mul(x, y);
@@ -246,16 +246,15 @@ class UnsignedLongTest {
     }
 
     @Test
-    void testMultiplyHiLo2() {
+    public void testMultiplyHiLo2() {
         long x = Long.parseUnsignedLong("11111111111");
         long y = Long.parseUnsignedLong("99999999999");
         long[] result = UnsignedLong.mul(x, y);
         assertEquals(Long.parseUnsignedLong("60"), result[0]);
         assertEquals(Long.parseUnsignedLong("4306466666315791929"), result[1]);
     }
-
     @Test
-    void testMultiplyHiLo3() {
+    public void testMultiplyHiLo3() {
         long x = Long.parseUnsignedLong("555555555");
         long y = Long.parseUnsignedLong("555555555");
         long[] result = UnsignedLong.mul(x, y);

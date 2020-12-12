@@ -33,10 +33,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-class OctetEncodingTest {
+public class OctetEncodingTest {
 
     @Test
-    void testConversionToString() {
+    public void testConversionToString() {
         assertEquals("000000", OctetEncoding.toOctetString(BigInteger.ZERO, 3));
         assertEquals("010000000000", OctetEncoding.toOctetString(BigInteger.ONE, 6));
         assertEquals("02010000000000000000", OctetEncoding.toOctetString(new BigInteger("258"), 10));
@@ -45,7 +45,7 @@ class OctetEncodingTest {
     }
 
     @Test
-    void testConversionFromString() {
+    public void testConversionFromString() {
         assertEquals(BigInteger.ZERO, OctetEncoding.fromOctetString("000000"));
         assertEquals(BigInteger.ONE, OctetEncoding.fromOctetString("010000000000"));
         assertEquals(new BigInteger("258"), OctetEncoding.fromOctetString("02010000000000000000"));
@@ -54,7 +54,7 @@ class OctetEncodingTest {
     }
 
     @Test
-    void testConversions() {
+    public void testConversions() {
         SecureRandom secureRandom = new SecureRandom();
         for (int i = 0; i < 100; i++) {
             BigInteger r = new BigInteger(i, secureRandom);
@@ -64,7 +64,7 @@ class OctetEncodingTest {
     }
 
     @Test
-    void testConversionToMontgomeryP434One() {
+    public void testConversionToMontgomeryP434One() {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti one = new FpElementOpti(sikeParam, new BigInteger("1"));
         assertArrayEquals(new long[]{
@@ -82,7 +82,7 @@ class OctetEncodingTest {
     }
 
     @Test
-    void testConversionFromMontgomeryP434() {
+    public void testConversionFromMontgomeryP434() {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti six = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("000000000002B90A", 16),
@@ -99,7 +99,7 @@ class OctetEncodingTest {
     }
 
     @Test
-    void testConversionToMontgomeryP434Six() {
+    public void testConversionToMontgomeryP434Six() {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti six = new FpElementOpti(sikeParam, new BigInteger("6"));
         assertArrayEquals(new long[]{
@@ -117,7 +117,7 @@ class OctetEncodingTest {
     }
 
     @Test
-    void testConversionFromMontgomeryP503() {
+    public void testConversionFromMontgomeryP503() {
         SikeParam sikeParam = new SikeParamP503(ImplementationType.OPTIMIZED);
         FpElementOpti six = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("00000000000017D8", 16),
@@ -135,7 +135,7 @@ class OctetEncodingTest {
     }
 
     @Test
-    void testConversionFromMontgomeryP610() {
+    public void testConversionFromMontgomeryP610() {
         SikeParam sikeParam = new SikeParamP610(ImplementationType.OPTIMIZED);
         FpElementOpti one = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("00000000670CC8E6", 16),
@@ -155,7 +155,7 @@ class OctetEncodingTest {
     }
 
     @Test
-    void testConversionFromMontgomeryP751() {
+    public void testConversionFromMontgomeryP751() {
         SikeParam sikeParam = new SikeParamP751(ImplementationType.OPTIMIZED);
         FpElementOpti one = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("00000000000249AD", 16),

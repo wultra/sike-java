@@ -32,12 +32,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-class Fp2MathTest {
+public class Fp2MathTest {
 
     private final SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
 
     @Test
-    void testAddZero() {
+    public void testAddZero() {
         FpElement x = new FpElementOpti(sikeParam);
         Fp2Element x2 = new Fp2ElementOpti(sikeParam, x, x);
         Fp2Element result = x2.add(x2);
@@ -45,7 +45,7 @@ class Fp2MathTest {
     }
 
     @Test
-    void testAddOneAndOne() {
+    public void testAddOneAndOne() {
         FpElementOpti x = new FpElementOpti(sikeParam);
         x.getValue()[x.size() - 1] = 1L;
         Fp2Element x2 = new Fp2ElementOpti(sikeParam, x, x);
@@ -57,7 +57,7 @@ class Fp2MathTest {
     }
 
     @Test
-    void testSubZero() {
+    public void testSubZero() {
         FpElement x = new FpElementOpti(sikeParam);
         Fp2Element x2 = new Fp2ElementOpti(sikeParam, x, x);
         Fp2Element result = x2.subtract(x2);

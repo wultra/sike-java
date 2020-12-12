@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-class SikeDeterministicTest {
+public class SikeDeterministicTest {
 
     private static final String SEED = "061550234D158C5EC95595FE04EF7A25767F2E24CC2BC479D09D86DC9ABCFDE7056A8C266F9EF97ED08541DBD2E1FFA1";
 
@@ -51,7 +51,7 @@ class SikeDeterministicTest {
     }
 
     @Test
-    void testDeterministicSike() throws GeneralSecurityException {
+    public void testDeterministicSike() throws GeneralSecurityException {
         System.out.println("----------------------------------------");
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         System.out.println("Prime: " + sikeParam.getPrime());

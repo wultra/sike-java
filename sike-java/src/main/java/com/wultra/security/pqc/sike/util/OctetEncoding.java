@@ -26,6 +26,10 @@ import java.security.InvalidParameterException;
  */
 public class OctetEncoding {
 
+    private OctetEncoding() {
+
+    }
+
     /**
      * Convert a BigInteger into octet string.
      *

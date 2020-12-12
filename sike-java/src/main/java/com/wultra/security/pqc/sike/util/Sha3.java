@@ -25,6 +25,10 @@ import org.bouncycastle.crypto.digests.SHAKEDigest;
  */
 public class Sha3 {
 
+    private Sha3() {
+        
+    }
+
     /**
      * Hash data using SHAKE256.
      * @param data Data to hash.

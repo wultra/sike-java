@@ -27,7 +27,7 @@ import java.security.SecureRandom;
  */
 public class RandomGenerator {
 
-    private SecureRandom secureRandom;
+    private volatile SecureRandom secureRandom;
 
     /**
      * Default random generator constructor.

@@ -38,14 +38,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-class SidhReferenceTest {
+public class SidhReferenceTest {
 
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
 
     @Test
-    void testSidhReferenceVsOptimized() throws GeneralSecurityException {
+    public void testSidhReferenceVsOptimized() throws GeneralSecurityException {
         SikeParam sikeParamReference = new SikeParamP434(ImplementationType.REFERENCE);
         SikeParam sikeParamOptimized = new SikeParamP434(ImplementationType.OPTIMIZED);
         System.out.println("Prime: " + sikeParamReference.getPrime());
@@ -119,7 +119,7 @@ class SidhReferenceTest {
     }
 
     @Test
-    void testSidhReferenceServerOptimizedClient() throws GeneralSecurityException {
+    public void testSidhReferenceServerOptimizedClient() throws GeneralSecurityException {
         SikeParam sikeParamReference = new SikeParamP434(ImplementationType.REFERENCE);
         SikeParam sikeParamOptimized = new SikeParamP434(ImplementationType.OPTIMIZED);
         System.out.println("Prime: " + sikeParamReference.getPrime());
@@ -156,7 +156,7 @@ class SidhReferenceTest {
     }
 
     @Test
-    void testSidhOptimizedServerReferenceClient() throws GeneralSecurityException {
+    public void testSidhOptimizedServerReferenceClient() throws GeneralSecurityException {
         SikeParam sikeParamReference = new SikeParamP434(ImplementationType.REFERENCE);
         SikeParam sikeParamOptimized = new SikeParamP434(ImplementationType.OPTIMIZED);
         System.out.println("Prime: " + sikeParamReference.getPrime());

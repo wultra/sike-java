@@ -35,14 +35,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-class KeyConversionTest {
+public class KeyConversionTest {
 
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
 
     @Test
-    void testConversionToByteArray() throws GeneralSecurityException {
+    public void testConversionToByteArray() throws GeneralSecurityException {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         KeyGenerator keyGenerator = new KeyGenerator(sikeParam);
         KeyPair keyPairA = keyGenerator.generateKeyPair(Party.ALICE);
@@ -62,7 +62,7 @@ class KeyConversionTest {
     }
 
     @Test
-    void testConversionToOctets() throws GeneralSecurityException {
+    public void testConversionToOctets() throws GeneralSecurityException {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         KeyGenerator keyGenerator = new KeyGenerator(sikeParam);
         KeyPair keyPairA = keyGenerator.generateKeyPair(Party.ALICE);

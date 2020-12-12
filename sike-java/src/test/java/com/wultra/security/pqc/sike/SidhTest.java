@@ -37,14 +37,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-class SidhTest {
+public class SidhTest {
 
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
 
     @Test
-    void testSidh() throws GeneralSecurityException {
+    public void testSidh() throws GeneralSecurityException {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         System.out.println("Prime: " + sikeParam.getPrime());
         KeyGenerator keyGenerator = new KeyGenerator(sikeParam);

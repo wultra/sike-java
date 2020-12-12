@@ -28,6 +28,10 @@ import java.security.InvalidParameterException;
  */
 public class ByteEncoding {
 
+    private ByteEncoding() {
+
+    }
+
     /**
      * Convert unsigned number from byte array. The byte array is stored in big-endian ordering.
      *

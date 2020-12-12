@@ -25,6 +25,10 @@ import org.bouncycastle.util.Arrays;
  */
 public class SideChannelUtil {
 
+    private SideChannelUtil() {
+        
+    }
+
     /**
      * Compare two byte arrays in constant time.
      * @param bytes1 First byte array.

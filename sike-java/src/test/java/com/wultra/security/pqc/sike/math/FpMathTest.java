@@ -30,19 +30,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-public class FpMathTest {
+class FpMathTest {
 
     private final SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
 
     @Test
-    public void testZeroAddRdc() {
+    void testZeroAddRdc() {
         FpElement x = new FpElementOpti(sikeParam);
         FpElement result = x.add(x);
         assertEquals(x, result);
     }
 
     @Test
-    public void testZeroAddOneRdc() {
+    void testZeroAddOneRdc() {
         FpElement x = new FpElementOpti(sikeParam);
         FpElementOpti y = new FpElementOpti(sikeParam);
         y.getValue()[y.size() - 1] = 1L;
@@ -51,7 +51,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testAddPZeroRdc() {
+    void testAddPZeroRdc() {
         FpElement x = sikeParam.getP();
         FpElement y = new FpElementOpti(sikeParam);
         FpElement result = x.add(y);
@@ -60,7 +60,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testAddPx2ZeroRdc() {
+    void testAddPx2ZeroRdc() {
         FpElement x = sikeParam.getPx2();
         FpElement y = new FpElementOpti(sikeParam);
         FpElement result = x.add(y);
@@ -69,7 +69,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testAddPx2OneRdc() {
+    void testAddPx2OneRdc() {
         FpElement x = sikeParam.getPx2();
         FpElementOpti y = new FpElementOpti(sikeParam);
         y.getValue()[y.size() - 1] = 1L;
@@ -79,14 +79,14 @@ public class FpMathTest {
     }
 
     @Test
-    public void testZeroSubRdc() {
+    void testZeroSubRdc() {
         FpElement x = new FpElementOpti(sikeParam);
         FpElement result = x.subtract(x);
         assertEquals(x, result);
     }
 
     @Test
-    public void testZeroSubOneRdc() {
+    void testZeroSubOneRdc() {
         FpElement x = new FpElementOpti(sikeParam);
         FpElementOpti y = new FpElementOpti(sikeParam);
         y.getValue()[y.size() - 1] = 1L;
@@ -98,7 +98,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testZeroRdcP() {
+    void testZeroRdcP() {
         FpElementOpti x = new FpElementOpti(sikeParam);
         x.reduce();
         FpElement expected = new FpElementOpti(sikeParam);
@@ -106,7 +106,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testPRdcP() {
+    void testPRdcP() {
         FpElementOpti x = sikeParam.getP();
         x.reduce();
         FpElement expected = new FpElementOpti(sikeParam);
@@ -114,7 +114,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFpSwapCondTrue() {
+    void testFpSwapCondTrue() {
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("05ADF455C5C345BF", 16),
                 Long.parseUnsignedLong("91935C5CC767AC2B", 16),
@@ -141,7 +141,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFpSwapCondFalse() {
+    void testFpSwapCondFalse() {
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("05ADF455C5C345BF", 16),
                 Long.parseUnsignedLong("91935C5CC767AC2B", 16),
@@ -168,7 +168,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFpMulZero() {
+    void testFpMulZero() {
         FpElement x = new FpElementOpti(sikeParam);
         FpElement y = new FpElementOpti(sikeParam);
         FpElement result = x.multiply(y);
@@ -180,7 +180,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFpMulOne() {
+    void testFpMulOne() {
         FpElementOpti x = new FpElementOpti(sikeParam);
         x.getValue()[x.size() - 1] = 1L;
         FpElementOpti y = new FpElementOpti(sikeParam);
@@ -196,7 +196,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFpMulOneTwo() {
+    void testFpMulOneTwo() {
         FpElementOpti x = new FpElementOpti(sikeParam);
         x.getValue()[x.size() - 1] = 1L;
         FpElementOpti y = new FpElementOpti(sikeParam);
@@ -212,7 +212,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFpMul() {
+    void testFpMul() {
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("05ADF455C5C345BF", 16),
                 Long.parseUnsignedLong("91935C5CC767AC2B", 16),
@@ -251,7 +251,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFpMontRed() {
+    void testFpMontRed() {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti value = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("9946470042253566783"),
@@ -282,7 +282,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFp2Add() {
+    void testFp2Add() {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("9946470042253566784"),
@@ -336,7 +336,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFp2Sub() {
+    void testFp2Sub() {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("9946470042253566784"),
@@ -390,7 +390,7 @@ public class FpMathTest {
     }
 
     @Test
-    public void testFp2Mul() {
+    void testFp2Mul() {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
                 Long.parseUnsignedLong("9946470042253566784"),

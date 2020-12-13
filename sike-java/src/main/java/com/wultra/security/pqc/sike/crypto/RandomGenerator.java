@@ -51,19 +51,23 @@ public class RandomGenerator {
      * @throws NoSuchAlgorithmException Thrown in case random generator algorithm is not available.
      */
     public byte[] generateRandomBytes(int length) throws NoSuchProviderException, NoSuchAlgorithmException {
-        if (secureRandom == null) {
-            synchronized (RandomGenerator.class) {
-                if (secureRandom == null) {
+        // Double-check locking, see: https://rules.sonarsource.com/java/tag/multi-threading/RSPEC-2168
+        SecureRandom localSecureRandom = secureRandom;
+
+        if (localSecureRandom == null) {
+            synchronized (this) {
+                localSecureRandom = secureRandom;
+                if (localSecureRandom == null)
                     // Use SecureRandom implementation from Bouncy Castle library, it is slower,
                     // however it reseeds periodically and it is quantum safe. The initialization is lazy
                     // to allow dynamic Bouncy Castle provider initialization and to allow instantiation
                     // of this class in fields.
-                    secureRandom = SecureRandom.getInstance("DEFAULT", "BC");
-                }
+                    secureRandom = localSecureRandom = SecureRandom.getInstance("DEFAULT", "BC");
             }
         }
+
         byte[] randomBytes = new byte[length];
-        secureRandom.nextBytes(randomBytes);
+        localSecureRandom.nextBytes(randomBytes);
         return randomBytes;
     }
 

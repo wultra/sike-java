@@ -68,13 +68,13 @@ class OctetEncodingTest {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti one = new FpElementOpti(sikeParam, new BigInteger("1"));
         assertArrayEquals(new long[]{
-                Long.parseUnsignedLong("000000000000742C", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("B90FF404FC000000", 16),
-                Long.parseUnsignedLong("D801A4FB559FACD4", 16),
-                Long.parseUnsignedLong("E93254545F77410C", 16),
-                Long.parseUnsignedLong("0000ECEEA7BD2EDA", 16)
+                0x000000000000742CL,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0xB90FF404FC000000L,
+                0xD801A4FB559FACD4L,
+                0xE93254545F77410CL,
+                0x0000ECEEA7BD2EDAL
         }, one.getValue());
         String octetString = one.toOctetString();
         assertEquals("01000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", octetString);
@@ -85,13 +85,13 @@ class OctetEncodingTest {
     void testConversionFromMontgomeryP434() {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti six = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("000000000002B90A", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("5ADCCB2822000000", 16),
-                Long.parseUnsignedLong("187D24F39F0CAFB4", 16),
-                Long.parseUnsignedLong("9D353A4D394145A0", 16),
-                Long.parseUnsignedLong("00012559A0403298", 16)
+                0x000000000002B90AL,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0x5ADCCB2822000000L,
+                0x187D24F39F0CAFB4L,
+                0x9D353A4D394145A0L,
+                0x00012559A0403298L
         });
         String octetString = six.toOctetString();
         assertEquals("06000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", octetString);
@@ -103,13 +103,13 @@ class OctetEncodingTest {
         SikeParam sikeParam = new SikeParamP434(ImplementationType.OPTIMIZED);
         FpElementOpti six = new FpElementOpti(sikeParam, new BigInteger("6"));
         assertArrayEquals(new long[]{
-                Long.parseUnsignedLong("000000000002B90A", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("5ADCCB2822000000", 16),
-                Long.parseUnsignedLong("187D24F39F0CAFB4", 16),
-                Long.parseUnsignedLong("9D353A4D394145A0", 16),
-                Long.parseUnsignedLong("00012559A0403298", 16)
+                0x000000000002B90AL,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0x5ADCCB2822000000L,
+                0x187D24F39F0CAFB4L,
+                0x9D353A4D394145A0L,
+                0x00012559A0403298L
         }, six.getValue());
         String octetString = six.toOctetString();
         assertEquals("06000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", octetString);
@@ -120,14 +120,14 @@ class OctetEncodingTest {
     void testConversionFromMontgomeryP503() {
         SikeParam sikeParam = new SikeParamP503(ImplementationType.OPTIMIZED);
         FpElementOpti six = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("00000000000017D8", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("E000000000000000", 16),
-                Long.parseUnsignedLong("30B1E6E3A51520FA", 16),
-                Long.parseUnsignedLong("B13BC3BF6FFB3992", 16),
-                Long.parseUnsignedLong("8045412EEB3E3DED", 16),
-                Long.parseUnsignedLong("0069182E2159DBB8", 16)
+                0x00000000000017D8L,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0xE000000000000000L,
+                0x30B1E6E3A51520FAL,
+                0xB13BC3BF6FFB3992L,
+                0x8045412EEB3E3DEDL,
+                0x0069182E2159DBB8L
         });
         String octetString = six.toOctetString();
         assertEquals("060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", octetString);
@@ -138,16 +138,16 @@ class OctetEncodingTest {
     void testConversionFromMontgomeryP610() {
         SikeParam sikeParam = new SikeParamP610(ImplementationType.OPTIMIZED);
         FpElementOpti one = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("00000000670CC8E6", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("9A34000000000000", 16),
-                Long.parseUnsignedLong("4D99C2BD28717A3F", 16),
-                Long.parseUnsignedLong("0A4A1839A323D41C", 16),
-                Long.parseUnsignedLong("D2B62215D06AD1E2", 16),
-                Long.parseUnsignedLong("1369026E862CAF3D", 16),
-                Long.parseUnsignedLong("000000010894E964", 16)
+                0x00000000670CC8E6L,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0x9A34000000000000L,
+                0x4D99C2BD28717A3FL,
+                0x0A4A1839A323D41CL,
+                0xD2B62215D06AD1E2L,
+                0x1369026E862CAF3DL,
+                0x000000010894E964L
         });
         String octetString = one.toOctetString();
         assertEquals("0100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", octetString);
@@ -158,18 +158,18 @@ class OctetEncodingTest {
     void testConversionFromMontgomeryP751() {
         SikeParam sikeParam = new SikeParamP751(ImplementationType.OPTIMIZED);
         FpElementOpti one = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("00000000000249AD", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("0000000000000000", 16),
-                Long.parseUnsignedLong("8310000000000000", 16),
-                Long.parseUnsignedLong("5527B1E4375C6C66", 16),
-                Long.parseUnsignedLong("697797BF3F4F24D0", 16),
-                Long.parseUnsignedLong("C89DB7B2AC5C4E2E", 16),
-                Long.parseUnsignedLong("4CA4B439D2076956", 16),
-                Long.parseUnsignedLong("10F7926C7512C7E9", 16),
-                Long.parseUnsignedLong("00002D5B24BCE5E2", 16)
+                0x00000000000249ADL,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0x0000000000000000L,
+                0x8310000000000000L,
+                0x5527B1E4375C6C66L,
+                0x697797BF3F4F24D0L,
+                0xC89DB7B2AC5C4E2EL,
+                0x4CA4B439D2076956L,
+                0x10F7926C7512C7E9L,
+                0x00002D5B24BCE5E2L
         });
         String octetString = one.toOctetString();
         assertEquals("01000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", octetString);

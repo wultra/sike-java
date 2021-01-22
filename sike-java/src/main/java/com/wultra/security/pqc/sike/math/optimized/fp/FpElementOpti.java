@@ -69,7 +69,7 @@ public class FpElementOpti implements FpElement {
         for (int i = 0; i < primeSize; i++) {
             int j = i / 8;
             int k = i % 8;
-            value[j] |= (Byte.toUnsignedLong(encoded[i]) << (8 * k));
+            value[j] |= ((encoded[i] & 0xFFL) << (8 * k));
         }
         FpElementOpti a = new FpElementOpti(sikeParam, value);
         FpElementOpti b = (FpElementOpti) a.multiply(sikeParam.getPR2());

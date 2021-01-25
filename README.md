@@ -87,6 +87,14 @@ As the first step, initialize the Bouncy Castle provider:
 Security.addProvider(new BouncyCastleProvider());
 ```
 
+On Android, first remove the default Bouncy Castle provider:
+
+```java
+Security.removeProvider("BC");
+Security.addProvider(new BouncyCastleProvider());
+```
+
+
 Initialize Bouncy Castle at the application start before using any of the SIKE for Java functionality.
 
 Before generating keys, choose one of the available algorithm parameter sets depending on the desired NIST security level and parameter size (in bytes):

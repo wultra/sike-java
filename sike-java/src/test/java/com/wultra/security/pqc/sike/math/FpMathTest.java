@@ -116,22 +116,22 @@ class FpMathTest {
     @Test
     void testFpSwapCondTrue() {
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("05ADF455C5C345BF", 16),
-                Long.parseUnsignedLong("91935C5CC767AC2B", 16),
-                Long.parseUnsignedLong("AFE4E879951F0257", 16),
-                Long.parseUnsignedLong("70E792DC89FA27B1", 16),
-                Long.parseUnsignedLong("F797F526BB48C8CD", 16),
-                Long.parseUnsignedLong("2181DB6131AF621F", 16),
-                Long.parseUnsignedLong("00000A1C08B1ECC4", 16)
+                0x05ADF455C5C345BFL,
+                0x91935C5CC767AC2BL,
+                0xAFE4E879951F0257L,
+                0x70E792DC89FA27B1L,
+                0xF797F526BB48C8CDL,
+                0x2181DB6131AF621FL,
+                0x00000A1C08B1ECC4L
         });
         FpElementOpti y = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("6E5497556EDD48A3", 16),
-                Long.parseUnsignedLong("2A61B501546F1C05", 16),
-                Long.parseUnsignedLong("EB919446D049887D", 16),
-                Long.parseUnsignedLong("5864A4A69D450C4F", 16),
-                Long.parseUnsignedLong("B883F276A6490D2B", 16),
-                Long.parseUnsignedLong("22CC287022D5F5B9", 16),
-                Long.parseUnsignedLong("0001BED4772E551F", 16)
+                0x6E5497556EDD48A3L,
+                0x2A61B501546F1C05L,
+                0xEB919446D049887DL,
+                0x5864A4A69D450C4FL,
+                0xB883F276A6490D2BL,
+                0x22CC287022D5F5B9L,
+                0x0001BED4772E551FL
         });
         FpElement xCopy = x.copy();
         FpElement yCopy = y.copy();
@@ -143,22 +143,22 @@ class FpMathTest {
     @Test
     void testFpSwapCondFalse() {
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("05ADF455C5C345BF", 16),
-                Long.parseUnsignedLong("91935C5CC767AC2B", 16),
-                Long.parseUnsignedLong("AFE4E879951F0257", 16),
-                Long.parseUnsignedLong("70E792DC89FA27B1", 16),
-                Long.parseUnsignedLong("F797F526BB48C8CD", 16),
-                Long.parseUnsignedLong("2181DB6131AF621F", 16),
-                Long.parseUnsignedLong("00000A1C08B1ECC4", 16)
+                0x05ADF455C5C345BFL,
+                0x91935C5CC767AC2BL,
+                0xAFE4E879951F0257L,
+                0x70E792DC89FA27B1L,
+                0xF797F526BB48C8CDL,
+                0x2181DB6131AF621FL,
+                0x00000A1C08B1ECC4L
         });
         FpElementOpti y = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("6E5497556EDD48A3", 16),
-                Long.parseUnsignedLong("2A61B501546F1C05", 16),
-                Long.parseUnsignedLong("EB919446D049887D", 16),
-                Long.parseUnsignedLong("5864A4A69D450C4F", 16),
-                Long.parseUnsignedLong("B883F276A6490D2B", 16),
-                Long.parseUnsignedLong("22CC287022D5F5B9", 16),
-                Long.parseUnsignedLong("0001BED4772E551F", 16)
+                0x6E5497556EDD48A3L,
+                0x2A61B501546F1C05L,
+                0xEB919446D049887DL,
+                0x5864A4A69D450C4FL,
+                0xB883F276A6490D2BL,
+                0x22CC287022D5F5B9L,
+                0x0001BED4772E551FL
         });
         FpElement xCopy = x.copy();
         FpElement yCopy = y.copy();
@@ -214,38 +214,38 @@ class FpMathTest {
     @Test
     void testFpMul() {
         FpElementOpti x = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("05ADF455C5C345BF", 16),
-                Long.parseUnsignedLong("91935C5CC767AC2B", 16),
-                Long.parseUnsignedLong("AFE4E879951F0257", 16),
-                Long.parseUnsignedLong("70E792DC89FA27B1", 16),
-                Long.parseUnsignedLong("F797F526BB48C8CD", 16),
-                Long.parseUnsignedLong("2181DB6131AF621F", 16),
-                Long.parseUnsignedLong("00000A1C08B1ECC4", 16)
+                0x05ADF455C5C345BFL,
+                0x91935C5CC767AC2BL,
+                0xAFE4E879951F0257L,
+                0x70E792DC89FA27B1L,
+                0xF797F526BB48C8CDL,
+                0x2181DB6131AF621FL,
+                0x00000A1C08B1ECC4L
         });
         FpElementOpti y = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("6E5497556EDD48A3", 16),
-                Long.parseUnsignedLong("2A61B501546F1C05", 16),
-                Long.parseUnsignedLong("EB919446D049887D", 16),
-                Long.parseUnsignedLong("5864A4A69D450C4F", 16),
-                Long.parseUnsignedLong("B883F276A6490D2B", 16),
-                Long.parseUnsignedLong("22CC287022D5F5B9", 16),
-                Long.parseUnsignedLong("0001BED4772E551F", 16)
+                0x6E5497556EDD48A3L,
+                0x2A61B501546F1C05L,
+                0xEB919446D049887DL,
+                0x5864A4A69D450C4FL,
+                0xB883F276A6490D2BL,
+                0x22CC287022D5F5B9L,
+                0x0001BED4772E551FL
         });
         FpElementOpti expected = new FpElementOpti(sikeParam, new long[]{
-                Long.parseUnsignedLong("202625321ED6209D", 16),
-                Long.parseUnsignedLong("E5C308F0E445240D", 16),
-                Long.parseUnsignedLong("AFEB6AE1CAB32EEE", 16),
-                Long.parseUnsignedLong("639387B1A8C840D5", 16),
-                Long.parseUnsignedLong("49688D3E3451B61C", 16),
-                Long.parseUnsignedLong("ECFC874B5CA69C20", 16),
-                Long.parseUnsignedLong("F5CF44DB153217C8", 16),
-                Long.parseUnsignedLong("A63433819DD3DB5A", 16),
-                Long.parseUnsignedLong("7C4C549B441B950B", 16),
-                Long.parseUnsignedLong("C2B2CC10DE04DE6E", 16),
-                Long.parseUnsignedLong("4B09D74EB1DD4601", 16),
-                Long.parseUnsignedLong("F814733B29B69DB1", 16),
-                Long.parseUnsignedLong("A46937B9CCE8C76", 16),
-                Long.parseUnsignedLong("11A53B12", 16)
+                0x202625321ED6209DL,
+                0xE5C308F0E445240DL,
+                0xAFEB6AE1CAB32EEEL,
+                0x639387B1A8C840D5L,
+                0x49688D3E3451B61CL,
+                0xECFC874B5CA69C20L,
+                0xF5CF44DB153217C8L,
+                0xA63433819DD3DB5AL,
+                0x7C4C549B441B950BL,
+                0xC2B2CC10DE04DE6EL,
+                0x4B09D74EB1DD4601L,
+                0xF814733B29B69DB1L,
+                0xA46937B9CCE8C76L,
+                0x11A53B12L
         });
         assertEquals(expected, x.multiply(y));
     }

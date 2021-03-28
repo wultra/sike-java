@@ -210,5 +210,5 @@ Note that SIKE provides higher security than SIDH. It is an ind-CCA2 scheme and 
 
 ## License
 
-SIKE Java is licensed using [GNU AGPLv3](./LICENSE) license. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
+SIKE Java is licensed using [GNU AGPLv3](https://github.com/wultra/sike-java/blob/develop/LICENSE#docucheck-keep-link) license. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
 

@@ -260,12 +260,12 @@ EncryptedMessage transportedMessage = new EncryptedMessage(sikeParam, encodedMes
 byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), transportedMessage);
 ```
 
-Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#Initialization). Using a hashing function on the shared secret value is advised to obtain shorter shared secret sizes.
+Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./README.md#initialization). Using a hashing function on the shared secret value is advised to obtain shorter shared secret sizes.
 
 Note that SIKE provides higher security than SIDH. It is an [IND-CCA2](https://en.wikipedia.org/wiki/Ciphertext_indistinguishability) scheme and can be used with long term keys.
 
 ## License
 
-SIKE for Java is currently licensed using [GNU AGPLv3](https://github.com/wultra/sike-java/blob/develop/LICENSE) license. We may change the license in the future to a less restrictive one. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
+SIKE for Java is currently licensed using [GNU AGPLv3](./LICENSE) license. We may change the license in the future to a less restrictive one. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
 
 Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners.

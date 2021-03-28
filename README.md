@@ -266,6 +266,6 @@ Note that SIKE provides higher security than SIDH. It is an [IND-CCA2](https://e
 
 ## License
 
-SIKE for Java is currently licensed using [GNU AGPLv3](./LICENSE) license. We may change the license in the future to a less restrictive one. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
+SIKE for Java is currently licensed using [GNU AGPLv3](https://github.com/wultra/sike-java/blob/develop/LICENSE#docucheck-keep-link) license. We may change the license in the future to a less restrictive one. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
 
 Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners.

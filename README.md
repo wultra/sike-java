@@ -204,11 +204,11 @@ The encrypted message `encryptedMessage` is transported to `BOB` who uses the pu
 byte[] secretB = sike.decapsulate(keyPairB.getPrivate(), keyPairB.getPublic(), encryptedMessage);
 ```
 
-Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./Readme.md#Initialization).
+Both secrets `secretA` and `secretB` are equal in case the key encapsulation and decapsulation succeeded. The shared secret sizes are listed in the table presented in the [Initialization chapter](./Readme.md#initialization).
 
 Note that SIKE provides higher security than SIDH. It is an ind-CCA2 scheme and can be used with long term keys.
 
 ## License
 
-SIKE Java is licensed using [GNU AGPLv3](https://github.com/wultra/sike-java/blob/develop/LICENSE) license. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
+SIKE Java is licensed using [GNU AGPLv3](./LICENSE) license. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
 

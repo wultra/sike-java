@@ -69,8 +69,6 @@ public class EncapsulationResult {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(encryptedMessage);
-        result = 31 * result + Arrays.hashCode(secret);
-        return result;
+        return Objects.hash(encryptedMessage, Arrays.hashCode(secret));
     }
 }

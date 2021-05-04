@@ -109,8 +109,6 @@ public class EncryptedMessage {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(c0);
-        result = 31 * result + Arrays.hashCode(c1);
-        return result;
+        return Objects.hash(c0, Arrays.hashCode(c1));
     }
 }

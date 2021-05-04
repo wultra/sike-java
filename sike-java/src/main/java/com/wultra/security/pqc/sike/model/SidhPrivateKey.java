@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 import java.security.PrivateKey;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -238,6 +239,6 @@ public class SidhPrivateKey implements PrivateKey {
 
     @Override
     public int hashCode() {
-        return Objects.hash(sikeParam, s, key);
+        return Objects.hash(sikeParam, Arrays.hashCode(s), Arrays.hashCode(key));
     }
 }

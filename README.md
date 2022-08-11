@@ -1,4 +1,4 @@
-**In July 2022, Wouter Castryck (KU Leuven) and Thomas Decru (KU Leuven) published an article "An efficient key recovery attack on SIDH" which provides an efficient attack on SIKE. As a result, the implementation below should only be used for research purposes and not for production deployment.**
+**⚠️ In July 2022, Wouter Castryck (KU Leuven) and Thomas Decru (KU Leuven) published an article "An efficient key recovery attack on SIDH" which provides an efficient attack on SIKE. As a result, the implementation below should only be used for research purposes and not for production deployment.**
 
 # SIKE for Java
 
